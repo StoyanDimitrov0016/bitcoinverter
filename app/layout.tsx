@@ -6,8 +6,9 @@ type RootLayoutProps = {
 };
 
 export const metadata: Metadata = {
-  title: "BitCoinverter",
-  description: "A fresh Next.js and HeroUI application.",
+  title: "BitCoinverter — Bitcoin Accumulation Calculator",
+  description:
+    "A private, open-source calculator for understanding the impact of steady Bitcoin accumulation.",
 };
 
 export default function RootLayout({ children }: RootLayoutProps) {
