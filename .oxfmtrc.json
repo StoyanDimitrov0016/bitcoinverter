@@ -1,0 +1,7 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "ignorePatterns": ["node_modules/**", ".next/**", "out/**", "coverage/**", "package-lock.json"],
+  "printWidth": 100,
+  "singleQuote": false,
+  "trailingComma": "es5"
+}
