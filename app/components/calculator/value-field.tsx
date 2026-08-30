@@ -14,7 +14,7 @@ export function ValueField({ label, value, step, error, onChange }: ValueFieldPr
   return (
     <TextField fullWidth isInvalid={!!error} name={label.toLowerCase().replaceAll(" ", "-")}>
       <Label>{label}</Label>
-      <div className="flex overflow-hidden rounded-field bg-field shadow focus-within:ring-2 focus-within:ring-slate-300">
+      <div className="flex overflow-hidden rounded-field bg-field shadow-field focus-within:focus-field-ring">
         <Button
           isIconOnly
           aria-label={`Decrease ${label}`}
@@ -24,7 +24,7 @@ export function ValueField({ label, value, step, error, onChange }: ValueFieldPr
           −
         </Button>
         <Input
-          className="min-w-0 flex-1 rounded-none shadow-none focus:!ring-0 focus-visible:!ring-0"
+          className="min-w-0 flex-1 rounded-none font-mono shadow-none focus:ring-0! focus-visible:ring-0!"
           inputMode="decimal"
           value={value}
           onChange={(event) => onChange(event.target.value)}

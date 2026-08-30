@@ -1,6 +1,7 @@
-import { Button, ButtonGroup } from "@heroui/react";
+import { ToggleButton, ToggleButtonGroup } from "@heroui/react";
 
 type UnitPickerProps<TUnit extends string> = {
+  isLabelHidden?: boolean;
   label: string;
   value: TUnit;
   values: readonly TUnit[];
@@ -8,6 +9,7 @@ type UnitPickerProps<TUnit extends string> = {
 };
 
 export function UnitPicker<TUnit extends string>({
+  isLabelHidden = false,
   label,
   value,
   values,
@@ -15,20 +17,27 @@ export function UnitPicker<TUnit extends string>({
 }: UnitPickerProps<TUnit>) {
   return (
     <div className="space-y-2">
-      <p className="text-sm font-medium text-slate-700">{label}</p>
-      <ButtonGroup aria-label={label} size="sm" variant="secondary">
+      <p className={isLabelHidden ? "sr-only" : "text-sm font-medium text-foreground"}>{label}</p>
+      <ToggleButtonGroup
+        aria-label={label}
+        className="rounded-3xl border border-border"
+        disallowEmptySelection
+        selectedKeys={[value]}
+        selectionMode="single"
+        size="sm"
+        onSelectionChange={(keys) => {
+          const next = values.find((candidate) => keys.has(candidate));
+          if (next) {
+            onChange(next);
+          }
+        }}
+      >
         {values.map((item) => (
-          <Button
-            key={item}
-            aria-pressed={value === item}
-            className="text-black"
-            variant={value === item ? "primary" : "secondary"}
-            onPress={() => onChange(item)}
-          >
+          <ToggleButton key={item} className="font-mono" id={item}>
             {item === "SATS" ? "sats" : item}
-          </Button>
+          </ToggleButton>
         ))}
-      </ButtonGroup>
+      </ToggleButtonGroup>
     </div>
   );
 }
