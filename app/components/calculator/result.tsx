@@ -1,21 +1,27 @@
-type ResultProps = { label: string; value: string };
+import type { ReactNode } from "react";
+
+type ResultProps = { label: string; value: ReactNode };
 
 export function Result({ label, value }: ResultProps) {
   return (
     <div>
-      <p className="text-sm text-slate-500">{label}</p>
-      <p className="mt-1 text-xl font-semibold tabular-nums text-slate-950">{value}</p>
+      <dt className="text-sm text-muted">{label}</dt>
+      <dd className="m-0 mt-1 flex items-center gap-0.5 font-mono text-xl font-semibold text-foreground tabular-nums">
+        {value}
+      </dd>
     </div>
   );
 }
 
-type ResultRowProps = { label: string; value: string };
+type ResultRowProps = { label: string; value: ReactNode };
 
 export function ResultRow({ label, value }: ResultRowProps) {
   return (
-    <div className="flex items-center justify-between gap-4 border-b border-slate-100 py-3 last:border-0">
-      <span className="text-slate-600">{label}</span>
-      <strong className="text-right tabular-nums text-slate-950">{value}</strong>
+    <div className="flex items-center justify-between gap-4 border-b border-separator py-3 last:border-0">
+      <dt className="text-muted">{label}</dt>
+      <dd className="m-0 flex items-center gap-0.5 font-mono text-foreground tabular-nums">
+        {value}
+      </dd>
     </div>
   );
 }
