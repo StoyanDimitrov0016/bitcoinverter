@@ -8,17 +8,14 @@ import {
 import { formatAccumulationAmount, formatFiat, formatNumber } from "@/lib/number-format.utils";
 import type { AccumulationInput } from "@/lib/schemas/calculator.schemas";
 import type { BitcoinPrices } from "@/lib/schemas/price.schemas";
-
+import { useCalculatorData } from "./calculator-data-context";
 import { ImpactInfoDialog } from "./impact-info-dialog";
+import { FiatSkeleton, PendingValue } from "./numeric-skeleton";
 import { ResultRow } from "./result";
 
-type PriceImpactLevelsProps = {
-  input: AccumulationInput | null;
-  prices: BitcoinPrices | null;
-  results: AccumulationResults | null;
-};
-
-export function PriceImpactLevels({ input, prices, results }: PriceImpactLevelsProps) {
+export function PriceImpactLevels() {
+  const { input, isPriceLoading, prices, results } = useCalculatorData();
+  const contributionCurrency = input?.contributionUnit === "USD" ? "USD" : "EUR";
   const hundredPercentLevel =
     input && results && input.contributionUnit !== "BTC"
       ? calculatePriceImpactLevel(input.contribution, results.currentBtc, 100)
@@ -40,31 +37,41 @@ export function PriceImpactLevels({ input, prices, results }: PriceImpactLevelsP
           />
         </ImpactInfoDialog>
       </Card.Header>
-      <Card.Content className="space-y-1">
-        {ImpactTargets.toReversed().map((target) => {
-          const level =
-            input && results && input.contributionUnit !== "BTC"
-              ? calculatePriceImpactLevel(input.contribution, results.currentBtc, target)
-              : null;
-          return (
-            <ResultRow
-              key={target}
-              label={`Adds ${target}% of current holdings`}
-              value={
-                level !== null && input && input.contributionUnit !== "BTC"
-                  ? formatFiat(level, input.contributionUnit)
-                  : "—"
-              }
-            />
-          );
-        })}
+      <Card.Content>
+        <dl className="space-y-1">
+          {ImpactTargets.toReversed().map((target) => {
+            const level =
+              input && results && input.contributionUnit !== "BTC"
+                ? calculatePriceImpactLevel(input.contribution, results.currentBtc, target)
+                : null;
+            return (
+              <ResultRow
+                key={target}
+                label={`Adds ${target}% of current holdings`}
+                value={
+                  <PendingValue
+                    fallback={<FiatSkeleton currency={contributionCurrency} width="long" />}
+                    isLoading={isPriceLoading && input?.contributionUnit !== "BTC"}
+                  >
+                    {level !== null && input && input.contributionUnit !== "BTC"
+                      ? formatFiat(level, input.contributionUnit)
+                      : null}
+                  </PendingValue>
+                }
+              />
+            );
+          })}
+        </dl>
       </Card.Content>
     </Card>
   );
 }
 
-type PriceImpactExplanationProps = PriceImpactLevelsProps & {
+type PriceImpactExplanationProps = {
   hundredPercentLevel: number | null;
+  input: AccumulationInput | null;
+  prices: BitcoinPrices | null;
+  results: AccumulationResults | null;
 };
 
 function PriceImpactExplanation({
@@ -82,8 +89,8 @@ function PriceImpactExplanation({
   if (input.contributionUnit === "BTC") {
     return (
       <p>
-        Your contribution is already entered in BTC, so its BTC amount does not change with price.
-        Price thresholds are available when the monthly contribution is entered in EUR or USD.
+        Your contribution is already in BTC, so price doesn’t change its amount. Thresholds appear
+        once the monthly contribution is set to EUR or USD.
       </p>
     );
   }
