@@ -1,4 +1,4 @@
-import { Value } from "typebox/value";
+import * as z from "zod";
 import {
   AccumulationInputSchema,
   AccumulationFormSchema,
@@ -16,6 +16,14 @@ import type { BitcoinPrices } from "./schemas/price.schemas";
 export const SATS_PER_BTC = 100_000_000;
 export const ImpactTargets = [10, 25, 50, 75, 100] as const;
 export const AccumulationMonths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] as const;
+export const ImpactBands = [
+  { label: "Negligible Impact", minimum: 0 },
+  { label: "Low Impact", minimum: 10 },
+  { label: "Moderate Impact", minimum: 25 },
+  { label: "Meaningful Impact", minimum: 50 },
+  { label: "High Impact", minimum: 75 },
+  { label: "Extreme Impact", minimum: 100 },
+] as const;
 
 export type AccumulationResults = {
   currentBtc: number;
@@ -31,7 +39,7 @@ export function getAmountStep(unit: ConverterUnit) {
 export function parseDecimalAmount(value: string) {
   const normalizedValue = value.replace(",", ".");
   const amount = Number(normalizedValue);
-  return Value.Check(NonNegativeAmountSchema, amount) ? amount : null;
+  return z.validate(NonNegativeAmountSchema, amount) ? amount : null;
 }
 
 export function adjustDecimalAmount(value: string, step: number, direction: 1 | -1) {
@@ -43,7 +51,7 @@ export function adjustDecimalAmount(value: string, step: number, direction: 1 | 
 }
 
 export function parseAccumulationForm(value: AccumulationFormValues) {
-  if (!Value.Check(AccumulationFormSchema, value)) {
+  if (!z.validate(AccumulationFormSchema, value)) {
     return null;
   }
   const holding = parseDecimalAmount(value.holding);
@@ -51,19 +59,19 @@ export function parseAccumulationForm(value: AccumulationFormValues) {
   if (holding === null || contribution === null) {
     return null;
   }
-  return Value.Parse(AccumulationInputSchema, { ...value, holding, contribution });
+  return AccumulationInputSchema.parse({ ...value, holding, contribution });
 }
 
 export function parseConverterForm(value: ConverterFormValues) {
-  if (!Value.Check(ConverterFormSchema, value)) {
+  if (!z.validate(ConverterFormSchema, value)) {
     return null;
   }
   const amount = parseDecimalAmount(value.value);
-  return amount === null ? null : Value.Parse(ConverterInputSchema, { ...value, value: amount });
+  return amount === null ? null : ConverterInputSchema.parse({ ...value, value: amount });
 }
 
 export function calculateAccumulation(input: AccumulationInput, prices: BitcoinPrices) {
-  if (!Value.Check(AccumulationInputSchema, input)) {
+  if (!z.validate(AccumulationInputSchema, input)) {
     return null;
   }
   const currentBtc =
@@ -78,7 +86,7 @@ export function calculateAccumulation(input: AccumulationInput, prices: BitcoinP
 }
 
 export function convertToBitcoin(input: ConverterInput, prices: BitcoinPrices) {
-  if (!Value.Check(ConverterInputSchema, input)) {
+  if (!z.validate(ConverterInputSchema, input)) {
     return null;
   }
   if (input.unit === "BTC") {
@@ -91,22 +99,10 @@ export function convertToBitcoin(input: ConverterInput, prices: BitcoinPrices) {
 }
 
 export function getImpactBand(percent: number) {
-  if (percent >= 100) {
-    return "Very High Impact";
-  }
-  if (percent >= 75) {
-    return "High Impact";
-  }
-  if (percent >= 50) {
-    return "Meaningful Impact";
-  }
-  if (percent >= 25) {
-    return "Moderate Impact";
-  }
-  if (percent >= 10) {
-    return "Low Impact";
-  }
-  return "Negligible Impact";
+  return (
+    ImpactBands.findLast((impactBand) => percent >= impactBand.minimum)?.label ??
+    ImpactBands[0].label
+  );
 }
 
 export function calculateImpactHorizon(results: AccumulationResults, target: number) {

@@ -1,4 +1,3 @@
-import { Value } from "typebox/value";
 import {
   BitcoinPricesSchema,
   KrakenTickerResponseSchema,
@@ -29,14 +28,15 @@ export class KrakenPriceProvider implements PriceProvider {
         throw new PriceProviderError(`Kraken responded with HTTP ${response.status}`);
       }
 
-      const payload = Value.Parse(KrakenTickerResponseSchema, await response.json());
-      if (payload.error.length > 0) {
-        throw new PriceProviderError(payload.error.join(", "));
+      const responseData: unknown = await response.json();
+      const tickerResponse = KrakenTickerResponseSchema.parse(responseData);
+      if (tickerResponse.error.length > 0) {
+        throw new PriceProviderError(tickerResponse.error.join(", "));
       }
 
-      return Value.Parse(BitcoinPricesSchema, {
-        EUR: Value.Parse(PositivePriceSchema, Number(payload.result.XXBTZEUR.c[0])),
-        USD: Value.Parse(PositivePriceSchema, Number(payload.result.XXBTZUSD.c[0])),
+      return BitcoinPricesSchema.parse({
+        EUR: PositivePriceSchema.parse(Number(tickerResponse.result.XXBTZEUR.c[0])),
+        USD: PositivePriceSchema.parse(Number(tickerResponse.result.XXBTZUSD.c[0])),
         fetchedAt: new Date().toISOString(),
         provider: "Kraken",
       });
