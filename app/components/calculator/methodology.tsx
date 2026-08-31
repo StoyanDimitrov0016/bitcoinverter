@@ -52,7 +52,7 @@ export function Methodology() {
               </Accordion.Trigger>
             </Accordion.Heading>
             <Accordion.Panel>
-              <Accordion.Body className="text-sm leading-6 text-slate-600">
+              <Accordion.Body className="text-sm leading-6 text-muted">
                 {item.content}
               </Accordion.Body>
             </Accordion.Panel>
