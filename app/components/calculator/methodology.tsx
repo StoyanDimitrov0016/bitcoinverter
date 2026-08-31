@@ -1,4 +1,4 @@
-import { Accordion, Alert } from "@heroui/react";
+import { Accordion } from "@heroui/react";
 
 const MethodologyItems = [
   {
@@ -41,35 +41,20 @@ const MethodologyItems = [
 
 export function Methodology() {
   return (
-    <div className="space-y-4">
-      <Accordion variant="surface">
-        {MethodologyItems.map((item) => (
-          <Accordion.Item key={item.id} id={item.id}>
-            <Accordion.Heading>
-              <Accordion.Trigger>
-                {item.title}
-                <Accordion.Indicator />
-              </Accordion.Trigger>
-            </Accordion.Heading>
-            <Accordion.Panel>
-              <Accordion.Body className="text-sm leading-6 text-muted">
-                {item.content}
-              </Accordion.Body>
-            </Accordion.Panel>
-          </Accordion.Item>
-        ))}
-      </Accordion>
-
-      <Alert status="warning">
-        <Alert.Indicator />
-        <Alert.Content>
-          <Alert.Title>A quantity calculator, not financial advice</Alert.Title>
-          <Alert.Description>
-            The results describe a simplified accumulation scenario. They do not forecast prices,
-            estimate returns, or recommend buying Bitcoin.
-          </Alert.Description>
-        </Alert.Content>
-      </Alert>
-    </div>
+    <Accordion variant="surface">
+      {MethodologyItems.map((item) => (
+        <Accordion.Item key={item.id} id={item.id}>
+          <Accordion.Heading>
+            <Accordion.Trigger>
+              {item.title}
+              <Accordion.Indicator />
+            </Accordion.Trigger>
+          </Accordion.Heading>
+          <Accordion.Panel>
+            <Accordion.Body className="text-sm leading-6 text-muted">{item.content}</Accordion.Body>
+          </Accordion.Panel>
+        </Accordion.Item>
+      ))}
+    </Accordion>
   );
 }
