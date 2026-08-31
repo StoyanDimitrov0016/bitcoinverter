@@ -1,7 +1,12 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   "plugins": ["typescript", "react", "nextjs", "import", "promise", "unicorn", "oxc"],
-  "jsPlugins": ["./scripts/oxlint-plugin.js"],
+  "jsPlugins": ["./scripts/oxlint-plugin.js", "oxlint-tailwindcss"],
+  "settings": {
+    "tailwindcss": {
+      "entryPoint": "app/globals.css"
+    }
+  },
   "env": { "browser": true, "node": true, "es2024": true },
   "ignorePatterns": ["node_modules/**", ".next/**", "out/**", "coverage/**", "scripts/**"],
   "categories": {
@@ -83,6 +88,23 @@
     "prefer-regex-literals": "deny",
     "eqeqeq": ["deny", "always", { "null": "ignore" }],
     "curly": ["deny", "all"],
-    "radix": "deny"
+    "radix": "deny",
+    "tailwindcss/no-unknown-classes": "deny",
+    "tailwindcss/no-duplicate-classes": "deny",
+    "tailwindcss/no-conflicting-classes": "deny",
+    "tailwindcss/no-deprecated-classes": "deny",
+    "tailwindcss/no-unnecessary-whitespace": "deny",
+    "tailwindcss/no-dark-without-light": "deny",
+    "tailwindcss/no-contradicting-variants": "deny",
+    "tailwindcss/enforce-sort-order": "deny",
+    "tailwindcss/enforce-shorthand": "deny",
+    "tailwindcss/enforce-logical": "deny",
+    "tailwindcss/consistent-variant-order": "deny",
+    "tailwindcss/enforce-consistent-important-position": "deny",
+    "tailwindcss/enforce-consistent-variable-syntax": "deny",
+    "tailwindcss/no-unnecessary-arbitrary-value": "deny",
+    "tailwindcss/no-hardcoded-colors": "deny",
+    "tailwindcss/prefer-theme-tokens": "deny",
+    "tailwindcss/prefer-scale-token": "deny"
   }
 }
