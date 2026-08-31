@@ -44,3 +44,29 @@ html {
   background: var(--accent-soft);
   color: var(--accent-soft-foreground);
 }
+
+@keyframes price-ticker-slide {
+  0%,
+  42% {
+    transform: translateY(0);
+  }
+
+  50%,
+  92% {
+    transform: translateY(-1.25rem);
+  }
+
+  100% {
+    transform: translateY(-2.5rem);
+  }
+}
+
+.price-ticker-track {
+  animation: price-ticker-slide 10s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .price-ticker-track {
+    animation: none;
+  }
+}
