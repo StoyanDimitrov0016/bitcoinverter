@@ -1,35 +1,26 @@
 import { Card } from "@heroui/react";
 
-import {
-  calculateImpactHorizon,
-  ImpactTargets,
-  type AccumulationResults,
-} from "@/lib/bitcoin-calculator.utils";
+import { calculateImpactHorizon, ImpactTargets } from "@/lib/bitcoin-calculator.utils";
 import {
   formatAccumulationAmount,
   formatFiat,
   formatImpactHorizon,
   formatNumber,
 } from "@/lib/number-format.utils";
-import type { AccumulationInput } from "@/lib/schemas/calculator.schemas";
-import type { BitcoinPrices } from "@/lib/schemas/price.schemas";
-
+import { useCalculatorData } from "./calculator-data-context";
 import { ImpactInfoDialog } from "./impact-info-dialog";
+import { HoldingAtReferencePrice } from "./holding-at-reference-price";
+import { NumericSkeleton } from "./numeric-skeleton";
 import { ResultRow } from "./result";
 
-type ImpactHorizonProps = {
-  input: AccumulationInput | null;
-  prices: BitcoinPrices | null;
-  results: AccumulationResults | null;
-};
-
-export function ImpactHorizon({ input, prices, results }: ImpactHorizonProps) {
+export function ImpactHorizon() {
+  const { input, isPriceLoading, prices, results } = useCalculatorData();
   return (
     <Card>
       <Card.Header className="flex-row items-start justify-between gap-3">
         <Card.Title>
           How long until you own more BTC
-          <span className="ml-2 text-sm font-normal text-slate-500">at today’s BTC price</span>
+          <span className="ms-2 text-sm font-normal text-muted">at today’s reference price</span>
         </Card.Title>
         <ImpactInfoDialog
           ariaLabel="Explain the accumulation timeline"
@@ -39,14 +30,13 @@ export function ImpactHorizon({ input, prices, results }: ImpactHorizonProps) {
             <>
               <p>
                 You currently hold{" "}
-                <strong>{formatAccumulationAmount(input.holding, input.holdingUnit)}</strong>, or{" "}
-                <strong>{formatNumber(results.currentBtc)} BTC</strong> at today’s reference price.
+                <HoldingAtReferencePrice currentBtc={results.currentBtc} input={input} />.
               </p>
               <p>
                 Each row shows how many months of{" "}
                 <strong>
                   {formatAccumulationAmount(input.contribution, input.contributionUnit)}
-                </strong>
+                </strong>{" "}
                 contributions are needed to add that percentage of your current holdings.
               </p>
               <p>
@@ -63,17 +53,27 @@ export function ImpactHorizon({ input, prices, results }: ImpactHorizonProps) {
           )}
         </ImpactInfoDialog>
       </Card.Header>
-      <Card.Content className="space-y-1">
-        {ImpactTargets.map((target) => {
-          const months = results ? calculateImpactHorizon(results, target) : null;
-          return (
-            <ResultRow
-              key={target}
-              label={`${target}% more BTC`}
-              value={formatImpactHorizon(months)}
-            />
-          );
-        })}
+      <Card.Content>
+        <dl className="space-y-1">
+          {ImpactTargets.map((target) => {
+            const months = results ? calculateImpactHorizon(results, target) : null;
+            return (
+              <ResultRow
+                key={target}
+                label={`${target}% more BTC`}
+                value={
+                  months === null && isPriceLoading ? (
+                    <>
+                      <NumericSkeleton /> months
+                    </>
+                  ) : (
+                    formatImpactHorizon(months)
+                  )
+                }
+              />
+            );
+          })}
+        </dl>
       </Card.Content>
     </Card>
   );

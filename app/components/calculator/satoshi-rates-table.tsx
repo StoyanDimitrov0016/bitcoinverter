@@ -2,36 +2,65 @@ import { Card, Table } from "@heroui/react";
 
 import { SATS_PER_BTC } from "@/lib/bitcoin-calculator.utils";
 import { formatBitcoin, formatNumber, formatRateFiat } from "@/lib/number-format.utils";
-import type { BitcoinPrices } from "@/lib/schemas/price.schemas";
+import { useCalculatorData } from "./calculator-data-context";
+import { ConverterBitcoinSymbol, SatoshiSymbol } from "./currency-symbol";
+import { FiatSkeleton, PendingValue } from "./numeric-skeleton";
 
 const SatoshiAmounts = [
   1, 10, 100, 1_000, 10_000, 100_000, 1_000_000, 10_000_000, 100_000_000,
 ] as const;
 
-type SatoshiRatesTableProps = { prices: BitcoinPrices };
-
-export function SatoshiRatesTable({ prices }: SatoshiRatesTableProps) {
+export function SatoshiRatesTable() {
+  const { isPriceLoading, prices } = useCalculatorData();
   return (
-    <Card>
+    <Card className="pb-2">
       <Card.Content>
         <Table variant="secondary">
           <Table.ScrollContainer>
-            <Table.Content aria-label="Common satoshi amounts and their live Bitcoin, US dollar, and euro equivalents">
+            <Table.Content aria-label="Common satoshi amounts and their live Bitcoin, USD, and euro equivalents">
               <Table.Header>
                 <Table.Column isRowHeader>Satoshis</Table.Column>
                 <Table.Column>Bitcoin</Table.Column>
-                <Table.Column>US dollar</Table.Column>
+                <Table.Column>USD</Table.Column>
                 <Table.Column>Euro</Table.Column>
               </Table.Header>
               <Table.Body>
                 {SatoshiAmounts.map((satoshis) => {
                   const bitcoin = satoshis / SATS_PER_BTC;
                   return (
-                    <Table.Row key={satoshis} id={satoshis}>
-                      <Table.Cell>{formatNumber(satoshis, 0)} sats</Table.Cell>
-                      <Table.Cell>{formatBitcoin(bitcoin)} BTC</Table.Cell>
-                      <Table.Cell>{formatRateFiat(bitcoin * prices.USD, "USD")}</Table.Cell>
-                      <Table.Cell>{formatRateFiat(bitcoin * prices.EUR, "EUR")}</Table.Cell>
+                    <Table.Row
+                      key={satoshis}
+                      className="last:[&_.table__cell]:border-b-0"
+                      id={satoshis}
+                    >
+                      <Table.Cell className="font-mono tabular-nums">
+                        <span className="flex items-center gap-0.5">
+                          <SatoshiSymbol />
+                          {formatNumber(satoshis, 0)}
+                        </span>
+                      </Table.Cell>
+                      <Table.Cell className="font-mono tabular-nums">
+                        <span className="flex items-center gap-0.5">
+                          <ConverterBitcoinSymbol />
+                          {formatBitcoin(bitcoin)}
+                        </span>
+                      </Table.Cell>
+                      <Table.Cell className="font-mono tabular-nums">
+                        <PendingValue
+                          fallback={<FiatSkeleton currency="USD" width="long" />}
+                          isLoading={isPriceLoading}
+                        >
+                          {prices ? formatRateFiat(bitcoin * prices.USD, "USD") : null}
+                        </PendingValue>
+                      </Table.Cell>
+                      <Table.Cell className="font-mono tabular-nums">
+                        <PendingValue
+                          fallback={<FiatSkeleton currency="EUR" width="long" />}
+                          isLoading={isPriceLoading}
+                        >
+                          {prices ? formatRateFiat(bitcoin * prices.EUR, "EUR") : null}
+                        </PendingValue>
+                      </Table.Cell>
                     </Table.Row>
                   );
                 })}
