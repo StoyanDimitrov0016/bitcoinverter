@@ -21,11 +21,6 @@ export function ImpactInfoDialog({ ariaLabel, title, children }: ImpactInfoDialo
               <Modal.Heading>{title}</Modal.Heading>
             </Modal.Header>
             <Modal.Body className="space-y-3 text-sm leading-6 text-muted">{children}</Modal.Body>
-            <Modal.Footer>
-              <Button slot="close" variant="secondary">
-                Close
-              </Button>
-            </Modal.Footer>
           </Modal.Dialog>
         </Modal.Container>
       </Modal.Backdrop>

@@ -69,11 +69,6 @@ export function MonthlyHoldingsDialog() {
                 </Table.ScrollContainer>
               </Table>
             </Modal.Body>
-            <Modal.Footer>
-              <Button slot="close" variant="secondary">
-                Close
-              </Button>
-            </Modal.Footer>
           </Modal.Dialog>
         </Modal.Container>
       </Modal.Backdrop>
