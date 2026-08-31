@@ -23,14 +23,17 @@ export function AccumulationForm({
   errors,
   onContributionUnitChange,
 }: AccumulationFormProps) {
-  const amountRule = schemaValidationRule("DecimalAmountInputSchema", DecimalAmountInputSchema);
+  const amountRule = schemaValidationRule(
+    DecimalAmountInputSchema,
+    "Enter a valid, non-negative amount."
+  );
   const holdingUnit = useWatch({ control, name: "holdingUnit" });
   const contributionUnit = useWatch({ control, name: "contributionUnit" });
   return (
-    <Card>
-      <Card.Content>
-        <Form className="space-y-6">
-          <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3">
+    <Card className="py-3">
+      <Card.Content className="h-full">
+        <Form className="flex h-full flex-col justify-center gap-5">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
             <Controller
               control={control}
               name="holding"
@@ -50,7 +53,8 @@ export function AccumulationForm({
               name="holdingUnit"
               render={({ field }) => (
                 <UnitPicker
-                  label="Unit"
+                  isLabelHidden
+                  label="Current holdings unit"
                   value={field.value}
                   values={["USD", "EUR", "BTC"]}
                   onChange={field.onChange}
@@ -58,7 +62,7 @@ export function AccumulationForm({
               )}
             />
           </div>
-          <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
             <Controller
               control={control}
               name="contribution"
@@ -78,7 +82,8 @@ export function AccumulationForm({
               name="contributionUnit"
               render={({ field }) => (
                 <UnitPicker
-                  label="Currency"
+                  isLabelHidden
+                  label="Monthly contribution unit"
                   value={field.value}
                   values={["USD", "EUR", "BTC"]}
                   onChange={onContributionUnitChange}

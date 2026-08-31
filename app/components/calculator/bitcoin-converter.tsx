@@ -1,6 +1,7 @@
 import { Card, Form } from "@heroui/react";
 import { Controller, useForm, useWatch } from "react-hook-form";
-import { Check as check } from "typebox/value";
+import type { ReactNode } from "react";
+import * as z from "zod";
 
 import {
   convertToBitcoin,
@@ -15,35 +16,35 @@ import {
   DecimalAmountInputSchema,
   type ConverterFormValues,
 } from "@/lib/schemas/calculator.schemas";
-import type { BitcoinPrices } from "@/lib/schemas/price.schemas";
-
+import { useCalculatorData } from "./calculator-data-context";
+import { ConverterBitcoinSymbol, SatoshiSymbol } from "./currency-symbol";
+import { FiatSkeleton, NumericSkeleton, PendingValue } from "./numeric-skeleton";
 import { UnitPicker } from "./unit-picker";
 import { ValueField } from "./value-field";
 import { SatoshiRatesTable } from "./satoshi-rates-table";
 
-type BitcoinConverterProps = { prices: BitcoinPrices | null };
-
-export function BitcoinConverter({ prices }: BitcoinConverterProps) {
+export function BitcoinConverter() {
+  const { isPriceLoading, prices } = useCalculatorData();
   const { control, formState } = useForm<ConverterFormValues>({
     defaultValues: { value: "1", unit: "EUR" },
     mode: "onChange",
   });
   const formValue = useWatch({ control });
-  const input = check(ConverterFormSchema, formValue) ? parseConverterForm(formValue) : null;
+  const input = z.validate(ConverterFormSchema, formValue) ? parseConverterForm(formValue) : null;
   const bitcoinValue = input && prices ? convertToBitcoin(input, prices) : null;
 
   return (
     <div className="space-y-4">
-      <Card>
+      <Card className="py-2">
         <Card.Content className="grid items-start gap-8 lg:grid-cols-[0.7fr_1.3fr]">
-          <Form className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3">
+          <Form className="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
             <Controller
               control={control}
               name="value"
               rules={{
                 validate: schemaValidationRule(
-                  "DecimalAmountInputSchema",
-                  DecimalAmountInputSchema
+                  DecimalAmountInputSchema,
+                  "Enter a valid, non-negative amount."
                 ),
               }}
               render={({ field }) => (
@@ -72,15 +73,45 @@ export function BitcoinConverter({ prices }: BitcoinConverterProps) {
           <div className="grid gap-3 sm:grid-cols-3">
             <Conversion
               label="Bitcoin"
-              value={bitcoinValue === null ? "—" : `${formatNumber(bitcoinValue)} BTC`}
+              value={
+                <PendingValue
+                  fallback={
+                    <>
+                      <ConverterBitcoinSymbol />
+                      <NumericSkeleton width="long" />
+                    </>
+                  }
+                  isLoading={isPriceLoading}
+                >
+                  {bitcoinValue === null ? null : (
+                    <>
+                      <ConverterBitcoinSymbol />
+                      {formatNumber(bitcoinValue)}
+                    </>
+                  )}
+                </PendingValue>
+              }
             />
             {formValue.unit !== "SATS" && (
               <Conversion
                 label="Satoshis"
                 value={
-                  bitcoinValue === null
-                    ? "—"
-                    : `${formatNumber(bitcoinValue * SATS_PER_BTC, 0)} sats`
+                  <PendingValue
+                    fallback={
+                      <>
+                        <SatoshiSymbol />
+                        <NumericSkeleton width="long" />
+                      </>
+                    }
+                    isLoading={isPriceLoading}
+                  >
+                    {bitcoinValue === null ? null : (
+                      <>
+                        <SatoshiSymbol />
+                        {formatNumber(bitcoinValue * SATS_PER_BTC, 0)}
+                      </>
+                    )}
+                  </PendingValue>
                 }
               />
             )}
@@ -88,37 +119,49 @@ export function BitcoinConverter({ prices }: BitcoinConverterProps) {
               <Conversion
                 label="Euro"
                 value={
-                  bitcoinValue === null || !prices
-                    ? "—"
-                    : formatFiat(bitcoinValue * prices.EUR, "EUR")
+                  <PendingValue
+                    fallback={<FiatSkeleton currency="EUR" width="long" />}
+                    isLoading={isPriceLoading}
+                  >
+                    {bitcoinValue === null || !prices
+                      ? null
+                      : formatFiat(bitcoinValue * prices.EUR, "EUR")}
+                  </PendingValue>
                 }
               />
             )}
             {formValue.unit !== "USD" && (
               <Conversion
-                label="US dollar"
+                label="USD"
                 value={
-                  bitcoinValue === null || !prices
-                    ? "—"
-                    : formatFiat(bitcoinValue * prices.USD, "USD")
+                  <PendingValue
+                    fallback={<FiatSkeleton currency="USD" width="long" />}
+                    isLoading={isPriceLoading}
+                  >
+                    {bitcoinValue === null || !prices
+                      ? null
+                      : formatFiat(bitcoinValue * prices.USD, "USD")}
+                  </PendingValue>
                 }
               />
             )}
           </div>
         </Card.Content>
       </Card>
-      {prices && <SatoshiRatesTable prices={prices} />}
+      <SatoshiRatesTable />
     </div>
   );
 }
 
-type ConversionProps = { label: string; value: string };
+type ConversionProps = { label: string; value: ReactNode };
 
 function Conversion({ label, value }: ConversionProps) {
   return (
-    <div className="rounded-xl bg-slate-50 p-4">
-      <p className="text-sm text-slate-500">{label}</p>
-      <p className="mt-2 break-all text-lg font-semibold tabular-nums text-slate-950">{value}</p>
+    <div className="rounded-xl bg-surface-secondary p-3">
+      <p className="text-sm text-muted">{label}</p>
+      <p className="mt-1 flex items-center gap-0.5 font-mono text-lg font-semibold break-all text-foreground tabular-nums">
+        {value}
+      </p>
     </div>
   );
 }
