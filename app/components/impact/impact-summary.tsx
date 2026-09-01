@@ -4,7 +4,7 @@ import { TbTriangleFilled } from "react-icons/tb";
 import { getImpactBand, IMPACT_BANDS } from "@/lib/bitcoin-calculator.utils";
 import { formatAccumulationAmount, formatFiat, formatNumber } from "@/lib/number-format.utils";
 import { BitcoinSymbol } from "../shared/currency-symbol";
-import { useCalculatorData } from "../shared/calculator-data-context";
+import { useCalculatorData } from "../calculator/calculator-data-context";
 import { HoldingAtReferencePrice } from "./holding-at-reference-price";
 import { ImpactInfoDialog } from "./impact-info-dialog";
 import { MonthlyHoldingsDialog } from "./monthly-holdings";
@@ -44,7 +44,7 @@ function getImpactRange(index: number) {
 
 export function ImpactSummary() {
   const { input, isPriceLoading, prices, results } = useCalculatorData();
-  const currentBand = results && results.currentBtc > 0 ? getImpactBand(results.impact) : null;
+  const currentBand = results && results.impact !== null ? getImpactBand(results.impact) : null;
   const currentBandIndex = IMPACT_BANDS.findIndex((impactBand) => impactBand.label === currentBand);
   const meterValue = currentBandIndex + 1;
   const impactStatus = getImpactStatus(currentBandIndex);
@@ -77,11 +77,19 @@ export function ImpactSummary() {
                   every month for 12 months would add{" "}
                   <strong>{formatNumber(results.addedBtc)} BTC</strong>.
                 </p>
-                <p>
-                  That equals a <strong>{formatNumber(results.impact, 1)}% increase</strong> in your
-                  current BTC holdings. The same reference price is used for each monthly purchase:{" "}
-                  {formatFiat(prices.EUR, "EUR")} / {formatFiat(prices.USD, "USD")}.
-                </p>
+                {results.impact === null ? (
+                  <p>
+                    A relative percentage needs current BTC holdings above zero. The same reference
+                    price is used for each monthly purchase: {formatFiat(prices.EUR, "EUR")} /{" "}
+                    {formatFiat(prices.USD, "USD")}.
+                  </p>
+                ) : (
+                  <p>
+                    That equals a <strong>{formatNumber(results.impact, 1)}% increase</strong> in
+                    your current BTC holdings. The same reference price is used for each monthly
+                    purchase: {formatFiat(prices.EUR, "EUR")} / {formatFiat(prices.USD, "USD")}.
+                  </p>
+                )}
               </>
             ) : (
               <p>
@@ -139,7 +147,9 @@ export function ImpactSummary() {
                 }
                 isLoading={isPriceLoading}
               >
-                {results && results.currentBtc > 0 ? `${formatNumber(results.impact, 1)}%` : null}
+                {results?.impact === null || !results
+                  ? null
+                  : `${formatNumber(results.impact, 1)}%`}
               </PendingValue>
             }
           />

@@ -1,7 +1,7 @@
 import { Button, Chip, Link } from "@heroui/react";
 import { SiGithub } from "react-icons/si";
 
-import type { PriceState } from "@/app/hooks/use-bitcoin-prices";
+import type { PriceState } from "@/app/providers/bitcoin-prices-provider";
 import { formatFiat } from "@/lib/number-format.utils";
 import type { BitcoinPrices } from "@/lib/schemas/price.schemas";
 

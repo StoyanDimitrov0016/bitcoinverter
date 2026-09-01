@@ -5,7 +5,7 @@ import { ACCUMULATION_MONTHS } from "@/lib/bitcoin-calculator.utils";
 import { formatNumber } from "@/lib/number-format.utils";
 
 import { BitcoinSymbol } from "../shared/currency-symbol";
-import { useCalculatorData } from "../shared/calculator-data-context";
+import { useCalculatorData } from "../calculator/calculator-data-context";
 import { NumericSkeleton } from "../shared/numeric-skeleton";
 
 export function MonthlyHoldingsDialog() {

@@ -8,7 +8,7 @@ import {
 import { formatAccumulationAmount, formatFiat, formatNumber } from "@/lib/number-format.utils";
 import type { AccumulationInput } from "@/lib/schemas/calculator.schemas";
 import type { BitcoinPrices } from "@/lib/schemas/price.schemas";
-import { useCalculatorData } from "../shared/calculator-data-context";
+import { useCalculatorData } from "../calculator/calculator-data-context";
 import { ImpactInfoDialog } from "./impact-info-dialog";
 import { FiatSkeleton, PendingValue } from "../shared/numeric-skeleton";
 import { ResultRow } from "../shared/result";
@@ -91,6 +91,15 @@ function PriceImpactExplanation({
       <p>
         Your contribution is already in BTC, so price doesn’t change its amount. Thresholds appear
         once the monthly contribution is set to EUR or USD.
+      </p>
+    );
+  }
+
+  if (results.currentBtc === 0) {
+    return (
+      <p>
+        Relative price thresholds need current BTC holdings above zero. Enter an existing holding to
+        compare it with one year of contributions.
       </p>
     );
   }
