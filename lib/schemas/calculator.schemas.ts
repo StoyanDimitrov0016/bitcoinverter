@@ -4,21 +4,20 @@ export const FiatCurrencySchema = z.union([z.literal("EUR"), z.literal("USD")]);
 export const HoldingUnitSchema = z.union([z.literal("BTC"), FiatCurrencySchema]);
 export const ContributionUnitSchema = HoldingUnitSchema;
 export const ConverterUnitSchema = z.union([HoldingUnitSchema, z.literal("SATS")]);
-export const NonNegativeAmountSchema = z.number().min(0);
 export const DecimalAmountInputSchema = z.string().regex(/^(?:\d+(?:[.,]\d*)?|[.,]\d+)$/);
 
 export const AccumulationInputSchema = z.compile(
   z.object({
-    holding: NonNegativeAmountSchema,
+    holding: z.number().min(0),
     holdingUnit: HoldingUnitSchema,
-    contribution: NonNegativeAmountSchema,
+    contribution: z.number().min(0),
     contributionUnit: ContributionUnitSchema,
   })
 );
 
 export const ConverterInputSchema = z.compile(
   z.object({
-    value: NonNegativeAmountSchema,
+    value: z.number().min(0),
     unit: ConverterUnitSchema,
   })
 );

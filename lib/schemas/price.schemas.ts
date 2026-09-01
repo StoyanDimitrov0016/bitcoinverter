@@ -1,11 +1,9 @@
 import * as z from "zod";
 
-export const PositivePriceSchema = z.number().gt(0);
-
 export const BitcoinPricesSchema = z.compile(
   z.object({
-    EUR: PositivePriceSchema,
-    USD: PositivePriceSchema,
+    EUR: z.number().gt(0),
+    USD: z.number().gt(0),
     fetchedAt: z.string(),
     provider: z.literal("Kraken"),
   })
