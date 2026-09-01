@@ -7,11 +7,11 @@ import {
   formatImpactHorizon,
   formatNumber,
 } from "@/lib/number-format.utils";
-import { useCalculatorData } from "./calculator-data-context";
+import { useCalculatorData } from "../shared/calculator-data-context";
 import { ImpactInfoDialog } from "./impact-info-dialog";
 import { HoldingAtReferencePrice } from "./holding-at-reference-price";
-import { NumericSkeleton } from "./numeric-skeleton";
-import { ResultRow } from "./result";
+import { NumericSkeleton } from "../shared/numeric-skeleton";
+import { ResultRow } from "../shared/result";
 
 export function ImpactHorizon() {
   const { input, isPriceLoading, prices, results } = useCalculatorData();

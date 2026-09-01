@@ -5,8 +5,8 @@ import type { PriceState } from "@/app/hooks/use-bitcoin-prices";
 import { formatFiat } from "@/lib/number-format.utils";
 import type { BitcoinPrices } from "@/lib/schemas/price.schemas";
 
-import { BitcoinSymbol } from "./calculator/currency-symbol";
-import { FiatSkeleton } from "./calculator/numeric-skeleton";
+import { BitcoinSymbol } from "./shared/currency-symbol";
+import { FiatSkeleton } from "./shared/numeric-skeleton";
 import { ThemeToggle } from "./theme-toggle";
 
 const NAVIGATION_ITEMS = [

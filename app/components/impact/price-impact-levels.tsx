@@ -8,10 +8,10 @@ import {
 import { formatAccumulationAmount, formatFiat, formatNumber } from "@/lib/number-format.utils";
 import type { AccumulationInput } from "@/lib/schemas/calculator.schemas";
 import type { BitcoinPrices } from "@/lib/schemas/price.schemas";
-import { useCalculatorData } from "./calculator-data-context";
+import { useCalculatorData } from "../shared/calculator-data-context";
 import { ImpactInfoDialog } from "./impact-info-dialog";
-import { FiatSkeleton, PendingValue } from "./numeric-skeleton";
-import { ResultRow } from "./result";
+import { FiatSkeleton, PendingValue } from "../shared/numeric-skeleton";
+import { ResultRow } from "../shared/result";
 
 export function PriceImpactLevels() {
   const { input, isPriceLoading, prices, results } = useCalculatorData();

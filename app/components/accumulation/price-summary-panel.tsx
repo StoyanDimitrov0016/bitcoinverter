@@ -3,9 +3,9 @@ import { Suspense } from "react";
 import { calculateAccumulation } from "@/lib/bitcoin-calculator.utils";
 import type { AccumulationInput } from "@/lib/schemas/calculator.schemas";
 
-import { CalculatorDataProvider } from "./calculator-data-context";
-import { ImpactSummary } from "./impact-summary";
 import { useBitcoinPrices } from "../../hooks/use-bitcoin-prices";
+import { CalculatorDataProvider } from "../shared/calculator-data-context";
+import { ImpactSummary } from "../impact/impact-summary";
 
 type PriceSummaryPanelProps = {
   input: AccumulationInput | null;
