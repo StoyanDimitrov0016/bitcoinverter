@@ -2,14 +2,14 @@ import type { ReactElement, ReactNode } from "react";
 
 import type { FiatCurrency } from "@/lib/schemas/calculator.schemas";
 
-const WidthClasses = {
+const WIDTH_CLASSES = {
   short: "w-10",
   medium: "w-16",
   long: "w-24",
 } as const;
 
 type NumericSkeletonProps = {
-  width?: keyof typeof WidthClasses;
+  width?: keyof typeof WIDTH_CLASSES;
 };
 
 export function NumericSkeleton({ width = "medium" }: NumericSkeletonProps) {
@@ -17,7 +17,7 @@ export function NumericSkeleton({ width = "medium" }: NumericSkeletonProps) {
     <span aria-label="Loading value" className="inline-flex items-center">
       <span
         aria-hidden="true"
-        className={`${WidthClasses[width]} inline-block h-[0.8em] animate-pulse rounded-sm bg-muted/20`}
+        className={`${WIDTH_CLASSES[width]} inline-block h-[0.8em] animate-pulse rounded-sm bg-muted/20`}
       />
     </span>
   );

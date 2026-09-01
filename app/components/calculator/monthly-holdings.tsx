@@ -1,7 +1,7 @@
 import { Button, Modal, Table } from "@heroui/react";
 import { TbTable } from "react-icons/tb";
 
-import { AccumulationMonths } from "@/lib/bitcoin-calculator.utils";
+import { ACCUMULATION_MONTHS } from "@/lib/bitcoin-calculator.utils";
 import { formatNumber } from "@/lib/number-format.utils";
 
 import { BitcoinSymbol } from "./currency-symbol";
@@ -33,7 +33,7 @@ export function MonthlyHoldingsDialog() {
                       <Table.Column className="text-end">Total</Table.Column>
                     </Table.Header>
                     <Table.Body>
-                      {AccumulationMonths.map((month) => (
+                      {ACCUMULATION_MONTHS.map((month) => (
                         <Table.Row key={month} id={month}>
                           <Table.Cell className="font-mono tabular-nums">{month}</Table.Cell>
                           <Table.Cell className="font-mono tabular-nums">

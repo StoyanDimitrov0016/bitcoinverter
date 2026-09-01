@@ -9,7 +9,7 @@ import { BitcoinSymbol } from "./calculator/currency-symbol";
 import { FiatSkeleton } from "./calculator/numeric-skeleton";
 import { ThemeToggle } from "./theme-toggle";
 
-const NavigationItems = [
+const NAVIGATION_ITEMS = [
   { href: "#calculator", label: "Calculator" },
   { href: "#impact", label: "Impact" },
   { href: "#converter", label: "Converter" },
@@ -40,7 +40,7 @@ export function SiteHeader({ prices, priceState, onRetry }: SiteHeaderProps) {
           aria-label="Primary navigation"
           className="order-last flex w-full items-center justify-center gap-4 overflow-x-auto border-t border-border-secondary pt-3 text-sm sm:order-0 sm:w-auto sm:flex-1 sm:gap-5 sm:border-0 sm:pt-0"
         >
-          {NavigationItems.map((item) => (
+          {NAVIGATION_ITEMS.map((item) => (
             <Link key={item.href} className="shrink-0 text-muted" href={item.href}>
               {item.label}
             </Link>

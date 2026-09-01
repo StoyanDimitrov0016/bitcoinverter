@@ -2,7 +2,7 @@ import { Card } from "@heroui/react";
 
 import {
   calculatePriceImpactLevel,
-  ImpactTargets,
+  IMPACT_TARGETS,
   type AccumulationResults,
 } from "@/lib/bitcoin-calculator.utils";
 import { formatAccumulationAmount, formatFiat, formatNumber } from "@/lib/number-format.utils";
@@ -39,7 +39,7 @@ export function PriceImpactLevels() {
       </Card.Header>
       <Card.Content>
         <dl className="space-y-1">
-          {ImpactTargets.toReversed().map((target) => {
+          {IMPACT_TARGETS.toReversed().map((target) => {
             const level =
               input && results && input.contributionUnit !== "BTC"
                 ? calculatePriceImpactLevel(input.contribution, results.currentBtc, target)

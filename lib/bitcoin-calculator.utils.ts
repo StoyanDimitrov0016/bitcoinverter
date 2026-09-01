@@ -14,9 +14,9 @@ import {
 import type { BitcoinPrices } from "./schemas/price.schemas";
 
 export const SATS_PER_BTC = 100_000_000;
-export const ImpactTargets = [10, 25, 50, 75, 100] as const;
-export const AccumulationMonths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] as const;
-export const ImpactBands = [
+export const IMPACT_TARGETS = [10, 25, 50, 75, 100] as const;
+export const ACCUMULATION_MONTHS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] as const;
+export const IMPACT_BANDS = [
   { label: "Negligible Impact", minimum: 0 },
   { label: "Low Impact", minimum: 10 },
   { label: "Moderate Impact", minimum: 25 },
@@ -104,8 +104,8 @@ export function convertToBitcoin(input: ConverterInput, prices: BitcoinPrices) {
 
 export function getImpactBand(percent: number) {
   return (
-    ImpactBands.findLast((impactBand) => percent >= impactBand.minimum)?.label ??
-    ImpactBands[0].label
+    IMPACT_BANDS.findLast((impactBand) => percent >= impactBand.minimum)?.label ??
+    IMPACT_BANDS[0].label
   );
 }
 
