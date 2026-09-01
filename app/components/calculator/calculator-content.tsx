@@ -77,7 +77,7 @@ export function CalculatorContent() {
         id="converter"
       >
         <SectionHeading id="converter-section-title" title="Bitcoin converter" />
-        <BitcoinConverterPanel input={input} />
+        <BitcoinConverterPanel />
       </section>
     </>
   );

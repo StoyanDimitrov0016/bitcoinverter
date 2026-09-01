@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, type ReactNode } from "react";
+import { createContext, use, type ReactNode } from "react";
 
 import type { AccumulationResults } from "@/lib/bitcoin-calculator.utils";
 import type { AccumulationInput } from "@/lib/schemas/calculator.schemas";
@@ -32,7 +32,7 @@ export function CalculatorDataProvider({
 }
 
 export function useCalculatorData() {
-  const value = useContext(CalculatorDataContext);
+  const value = use(CalculatorDataContext);
   if (!value) {
     throw new Error("useCalculatorData must be used within CalculatorDataProvider");
   }

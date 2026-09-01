@@ -2,7 +2,7 @@ import { Card, Table } from "@heroui/react";
 
 import { SATS_PER_BTC } from "@/lib/bitcoin-calculator.utils";
 import { formatBitcoin, formatNumber, formatRateFiat } from "@/lib/number-format.utils";
-import { useCalculatorData } from "../shared/calculator-data-context";
+import { useCalculatorData } from "../calculator/calculator-data-context";
 import { ConverterBitcoinSymbol, SatoshiSymbol } from "../shared/currency-symbol";
 import { FiatSkeleton, PendingValue } from "../shared/numeric-skeleton";
 

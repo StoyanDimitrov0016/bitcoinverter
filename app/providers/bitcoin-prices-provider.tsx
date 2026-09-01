@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, use, useContext, useState, type ReactNode } from "react";
+import { createContext, use, useState, type ReactNode } from "react";
 
 import {
   BitcoinPricesSchema,
@@ -50,7 +50,7 @@ export function BitcoinPricesProvider({ children, pricesPromise }: BitcoinPrices
 }
 
 export function usePriceRetry() {
-  const value = useContext(BitcoinPricesContext);
+  const value = use(BitcoinPricesContext);
   if (!value) {
     throw new Error("usePriceRetry must be used within a BitcoinPricesProvider");
   }
@@ -58,7 +58,7 @@ export function usePriceRetry() {
 }
 
 export function useBitcoinPrices() {
-  const value = useContext(BitcoinPricesContext);
+  const value = use(BitcoinPricesContext);
   if (!value) {
     throw new Error("useBitcoinPrices must be used within a BitcoinPricesProvider");
   }
@@ -69,7 +69,6 @@ export function useBitcoinPrices() {
   return {
     prices: result.prices,
     priceState,
-    isPriceLoading: false,
     retry: value.retry,
   };
 }

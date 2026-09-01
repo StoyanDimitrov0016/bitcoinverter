@@ -1,19 +1,25 @@
-import { CalculatorContent } from "./components/layout/calculator-content";
-import { PriceHeader } from "./components/layout/price-header";
+import { CalculatorContent } from "./components/calculator/calculator-content";
 import { Methodology } from "./components/methodology/methodology";
+import { PriceHeader } from "./components/price-header";
 import { SiteFooter } from "./components/site-footer";
 import { SectionHeading } from "./components/section-heading";
-import { BitcoinPricesProvider } from "./hooks/use-bitcoin-prices";
+import { BitcoinPricesProvider } from "./providers/bitcoin-prices-provider";
 
 import { priceProvider } from "@/lib/price-provider";
 
 import type { BitcoinPricesResult } from "@/lib/schemas/price.schemas";
 
+async function getBitcoinPricesResult(): Promise<BitcoinPricesResult> {
+  try {
+    const prices = await priceProvider.getBitcoinPrices();
+    return { prices };
+  } catch {
+    return { prices: null };
+  }
+}
+
 export default function Home() {
-  const pricesPromise: Promise<BitcoinPricesResult> = priceProvider
-    .getBitcoinPrices()
-    .then((prices) => ({ prices }))
-    .catch(() => ({ prices: null }));
+  const pricesPromise = getBitcoinPricesResult();
 
   return (
     <BitcoinPricesProvider pricesPromise={pricesPromise}>
@@ -35,7 +41,7 @@ export default function Home() {
               Bitcoin accumulation calculator
             </h1>
             <p className="text-muted">
-              See how steady contributions compound, priced against Kraken’s live BTC rate.
+              See how steady contributions compound, priced against Kraken's live BTC rate.
             </p>
           </div>
           <CalculatorContent />

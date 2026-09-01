@@ -2,8 +2,9 @@
 
 import { Suspense } from "react";
 
-import { SiteHeader } from "../site-header";
-import { useBitcoinPrices, usePriceRetry } from "../../hooks/use-bitcoin-prices";
+import { useBitcoinPrices, usePriceRetry } from "../providers/bitcoin-prices-provider";
+
+import { SiteHeader } from "./site-header";
 
 export function PriceHeader() {
   const retry = usePriceRetry();
