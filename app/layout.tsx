@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { SITE_CONFIG } from "@/lib/site-config";
 import "./globals.css";
 
 type RootLayoutProps = {
@@ -13,15 +14,26 @@ const geistMono = Geist_Mono({
   display: "swap",
 });
 
-const title = "BitCoinverter | Bitcoin Accumulation Calculator";
-const description =
-  "A private, open-source calculator for understanding the impact of steady Bitcoin accumulation.";
-
 export const metadata: Metadata = {
-  title,
-  description,
-  openGraph: { title, description, type: "website" },
-  twitter: { card: "summary", title, description },
+  metadataBase: new URL(SITE_CONFIG.url),
+  applicationName: SITE_CONFIG.name,
+  title: SITE_CONFIG.title,
+  description: SITE_CONFIG.description,
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: SITE_CONFIG.title,
+    description: SITE_CONFIG.description,
+    locale: "en_US",
+    siteName: SITE_CONFIG.name,
+    type: "website",
+    url: "/",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_CONFIG.title,
+    description: SITE_CONFIG.description,
+    images: [{ url: "/opengraph-image", alt: `Preview of ${SITE_CONFIG.name}` }],
+  },
 };
 
 export const viewport: Viewport = {
