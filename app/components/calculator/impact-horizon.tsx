@@ -1,6 +1,6 @@
 import { Card } from "@heroui/react";
 
-import { calculateImpactHorizon, ImpactTargets } from "@/lib/bitcoin-calculator.utils";
+import { calculateImpactHorizon, IMPACT_TARGETS } from "@/lib/bitcoin-calculator.utils";
 import {
   formatAccumulationAmount,
   formatFiat,
@@ -18,10 +18,7 @@ export function ImpactHorizon() {
   return (
     <Card>
       <Card.Header className="flex-row items-start justify-between gap-3">
-        <Card.Title>
-          How long until you own more BTC
-          <span className="ms-2 text-sm font-normal text-muted">at today’s reference price</span>
-        </Card.Title>
+        <Card.Title>How long until you own more BTC</Card.Title>
         <ImpactInfoDialog
           ariaLabel="Explain the accumulation timeline"
           title="How the timeline is calculated"
@@ -29,7 +26,8 @@ export function ImpactHorizon() {
           {input && prices && results ? (
             <>
               <p>
-                You currently hold{" "}
+                This timeline uses today's Kraken reference price for every monthly purchase. You
+                currently hold{" "}
                 <HoldingAtReferencePrice currentBtc={results.currentBtc} input={input} />.
               </p>
               <p>
@@ -41,7 +39,7 @@ export function ImpactHorizon() {
               </p>
               <p>
                 For example, the 100% row means adding another {formatNumber(results.currentBtc)}{" "}
-                BTC. At the current reference price ({formatFiat(prices.EUR, "EUR")} /{" "}
+                BTC. At today's reference price ({formatFiat(prices.EUR, "EUR")} /{" "}
                 {formatFiat(prices.USD, "USD")}), that takes{" "}
                 <strong>{formatImpactHorizon(calculateImpactHorizon(results, 100))}</strong>.
               </p>
@@ -55,7 +53,7 @@ export function ImpactHorizon() {
       </Card.Header>
       <Card.Content>
         <dl className="space-y-1">
-          {ImpactTargets.map((target) => {
+          {IMPACT_TARGETS.map((target) => {
             const months = results ? calculateImpactHorizon(results, target) : null;
             return (
               <ResultRow
