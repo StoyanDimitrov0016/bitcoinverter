@@ -4,7 +4,6 @@ import {
   AccumulationFormSchema,
   ConverterInputSchema,
   ConverterFormSchema,
-  NonNegativeAmountSchema,
   type AccumulationFormValues,
   type AccumulationInput,
   type ConverterUnit,
@@ -42,7 +41,7 @@ export function getAmountStep(unit: ConverterUnit) {
 export function parseDecimalAmount(value: string) {
   const normalizedValue = value.replace(",", ".");
   const amount = Number(normalizedValue);
-  return z.validate(NonNegativeAmountSchema, amount) ? amount : null;
+  return z.validate(z.number().min(0), amount) ? amount : null;
 }
 
 export function adjustDecimalAmount(value: string, step: number, direction: 1 | -1) {
