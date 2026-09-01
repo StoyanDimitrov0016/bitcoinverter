@@ -29,19 +29,20 @@ async function createClientPricesPromise(): Promise<BitcoinPricesResult> {
 }
 
 type BitcoinPricesContext = {
-  pricesPromise: Promise<BitcoinPricesResult>;
+  pricesPromise: Promise<BitcoinPricesResult> | null;
   retry: () => void;
 };
 
 const BitcoinPricesContext = createContext<BitcoinPricesContext | null>(null);
 
+const initialPricesPromise = typeof window === "undefined" ? null : createClientPricesPromise();
+
 type BitcoinPricesProviderProps = {
   children: ReactNode;
-  pricesPromise: Promise<BitcoinPricesResult>;
 };
 
-export function BitcoinPricesProvider({ children, pricesPromise }: BitcoinPricesProviderProps) {
-  const [currentPricesPromise, setCurrentPricesPromise] = useState(pricesPromise);
+export function BitcoinPricesProvider({ children }: BitcoinPricesProviderProps) {
+  const [currentPricesPromise, setCurrentPricesPromise] = useState(initialPricesPromise);
   const retry = () => setCurrentPricesPromise(createClientPricesPromise());
 
   const contextValue = { pricesPromise: currentPricesPromise, retry };
@@ -63,12 +64,22 @@ export function useBitcoinPrices() {
     throw new Error("useBitcoinPrices must be used within a BitcoinPricesProvider");
   }
 
+  if (!value.pricesPromise) {
+    return {
+      prices: null,
+      priceState: "loading" as const,
+      isPriceLoading: true,
+      retry: value.retry,
+    };
+  }
+
   const result = use(value.pricesPromise);
   const priceState: Exclude<PriceState, "loading"> = result.prices ? "ready" : "error";
 
   return {
     prices: result.prices,
     priceState,
+    isPriceLoading: false,
     retry: value.retry,
   };
 }

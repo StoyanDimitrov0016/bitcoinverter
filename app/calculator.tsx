@@ -15,21 +15,17 @@ import { SiteFooter } from "./components/site-footer";
 import { SiteHeader } from "./components/site-header";
 import { SectionHeading } from "./components/section-heading";
 import { BitcoinPricesProvider, useBitcoinPrices, usePriceRetry } from "./hooks/use-bitcoin-prices";
+
 import { calculateAccumulation, parseAccumulationForm } from "@/lib/bitcoin-calculator.utils";
 import {
   AccumulationFormSchema,
   type AccumulationFormValues,
   type ContributionUnit,
 } from "@/lib/schemas/calculator.schemas";
-import type { BitcoinPricesResult } from "@/lib/schemas/price.schemas";
 
-type CalculatorProps = {
-  pricesPromise: Promise<BitcoinPricesResult>;
-};
-
-export default function Calculator({ pricesPromise }: CalculatorProps) {
+export default function Calculator() {
   return (
-    <BitcoinPricesProvider pricesPromise={pricesPromise}>
+    <BitcoinPricesProvider>
       <CalculatorShell />
     </BitcoinPricesProvider>
   );
@@ -165,11 +161,16 @@ type ResolvedBitcoinConverterProps = PricePanelProps;
 type BitcoinConverterFallbackProps = PricePanelProps;
 
 function ResolvedImpactSummary({ input }: ResolvedImpactSummaryProps) {
-  const { prices } = useBitcoinPrices();
+  const { isPriceLoading, prices } = useBitcoinPrices();
   const results = input && prices ? calculateAccumulation(input, prices) : null;
 
   return (
-    <CalculatorDataProvider input={input} isPriceLoading={false} prices={prices} results={results}>
+    <CalculatorDataProvider
+      input={input}
+      isPriceLoading={isPriceLoading}
+      prices={prices}
+      results={results}
+    >
       <ImpactSummary />
     </CalculatorDataProvider>
   );
@@ -184,11 +185,16 @@ function ImpactSummaryFallback({ input }: ImpactSummaryFallbackProps) {
 }
 
 function ResolvedImpactAnalysis({ input }: ResolvedImpactAnalysisProps) {
-  const { prices } = useBitcoinPrices();
+  const { isPriceLoading, prices } = useBitcoinPrices();
   const results = input && prices ? calculateAccumulation(input, prices) : null;
 
   return (
-    <CalculatorDataProvider input={input} isPriceLoading={false} prices={prices} results={results}>
+    <CalculatorDataProvider
+      input={input}
+      isPriceLoading={isPriceLoading}
+      prices={prices}
+      results={results}
+    >
       <div className="grid gap-4 lg:grid-cols-2">
         <ImpactHorizon />
         <PriceImpactLevels />
@@ -209,11 +215,16 @@ function ImpactAnalysisFallback({ input }: ImpactAnalysisFallbackProps) {
 }
 
 function ResolvedBitcoinConverter({ input }: ResolvedBitcoinConverterProps) {
-  const { prices } = useBitcoinPrices();
+  const { isPriceLoading, prices } = useBitcoinPrices();
   const results = input && prices ? calculateAccumulation(input, prices) : null;
 
   return (
-    <CalculatorDataProvider input={input} isPriceLoading={false} prices={prices} results={results}>
+    <CalculatorDataProvider
+      input={input}
+      isPriceLoading={isPriceLoading}
+      prices={prices}
+      results={results}
+    >
       <BitcoinConverter />
     </CalculatorDataProvider>
   );
