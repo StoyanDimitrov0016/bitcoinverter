@@ -23,9 +23,15 @@ import {
   type ContributionUnit,
 } from "@/lib/schemas/calculator.schemas";
 
-export default function Calculator() {
+import type { BitcoinPricesResult } from "@/lib/schemas/price.schemas";
+
+type CalculatorProps = {
+  pricesPromise: Promise<BitcoinPricesResult>;
+};
+
+export default function Calculator({ pricesPromise }: CalculatorProps) {
   return (
-    <BitcoinPricesProvider>
+    <BitcoinPricesProvider pricesPromise={pricesPromise}>
       <CalculatorShell />
     </BitcoinPricesProvider>
   );
