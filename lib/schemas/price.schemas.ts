@@ -9,6 +9,10 @@ export const BitcoinPricesSchema = z.compile(
   })
 );
 
+export type BitcoinPricesResult = {
+  prices: BitcoinPrices | null;
+};
+
 const KrakenTickerSchema = z.object({ c: z.tuple([z.string(), z.string()]) });
 
 export const KrakenTickerResponseSchema = z.compile(
