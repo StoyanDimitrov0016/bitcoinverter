@@ -31,7 +31,7 @@ export type AccumulationResults = {
   currentBtc: number;
   monthlyBtc: number;
   addedBtc: number;
-  impact: number;
+  impact: number | null;
 };
 
 export function getAmountStep(unit: ConverterUnit) {
@@ -84,7 +84,7 @@ export function calculateAccumulation(input: AccumulationInput, prices: BitcoinP
       ? input.contribution
       : input.contribution / prices[input.contributionUnit];
   const addedBtc = monthlyBtc * 12;
-  const impact = currentBtc > 0 ? (addedBtc / currentBtc) * 100 : 0;
+  const impact = currentBtc > 0 ? (addedBtc / currentBtc) * 100 : null;
   return { currentBtc, monthlyBtc, addedBtc, impact } satisfies AccumulationResults;
 }
 
@@ -109,7 +109,7 @@ export function getImpactBand(percent: number) {
 }
 
 export function calculateImpactHorizon(results: AccumulationResults, target: number) {
-  return results.monthlyBtc > 0
+  return results.currentBtc > 0 && results.monthlyBtc > 0
     ? Math.ceil((results.currentBtc * target) / 100 / results.monthlyBtc)
     : null;
 }

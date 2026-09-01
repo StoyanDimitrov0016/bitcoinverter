@@ -25,8 +25,4 @@ export const KrakenTickerResponseSchema = z.compile(
   })
 );
 
-export const PriceApiErrorSchema = z.object({
-  error: z.string(),
-});
-
 export type BitcoinPrices = z.infer<typeof BitcoinPricesSchema>;
