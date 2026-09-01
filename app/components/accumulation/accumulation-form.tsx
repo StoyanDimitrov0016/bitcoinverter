@@ -15,12 +15,14 @@ import { ValueField } from "../shared/value-field";
 type AccumulationFormProps = {
   control: Control<AccumulationFormValues>;
   errors: FieldErrors<AccumulationFormValues>;
+  onContributionEdit: () => void;
   onContributionUnitChange: (value: ContributionUnit) => void;
 };
 
 export function AccumulationForm({
   control,
   errors,
+  onContributionEdit,
   onContributionUnitChange,
 }: AccumulationFormProps) {
   const amountRule = schemaValidationRule(
@@ -73,7 +75,10 @@ export function AccumulationForm({
                   label="Monthly contribution"
                   step={getAmountStep(contributionUnit)}
                   value={field.value}
-                  onChange={field.onChange}
+                  onChange={(value) => {
+                    onContributionEdit();
+                    field.onChange(value);
+                  }}
                 />
               )}
             />

@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import * as z from "zod";
 
@@ -16,7 +17,14 @@ import {
   type ContributionUnit,
 } from "@/lib/schemas/calculator.schemas";
 
+const CONTRIBUTION_DEFAULTS: Record<ContributionUnit, string> = {
+  USD: "100",
+  EUR: "100",
+  BTC: "0.001",
+};
+
 export function CalculatorContent() {
+  const hasEditedContributionRef = useRef(false);
   const { control, formState, setValue } = useForm<AccumulationFormValues>({
     defaultValues: {
       holding: "0.01",
@@ -31,16 +39,17 @@ export function CalculatorContent() {
     ? parseAccumulationForm(formValue)
     : null;
 
+  const markContributionEdited = () => {
+    hasEditedContributionRef.current = true;
+  };
+
   const changeContributionUnit = (nextUnit: ContributionUnit) => {
-    const defaults: Record<ContributionUnit, string> = {
-      USD: "100",
-      EUR: "100",
-      BTC: "0.001",
-    };
-    setValue("contribution", defaults[nextUnit], {
-      shouldDirty: true,
-      shouldValidate: true,
-    });
+    if (!hasEditedContributionRef.current) {
+      setValue("contribution", CONTRIBUTION_DEFAULTS[nextUnit], {
+        shouldDirty: false,
+        shouldValidate: true,
+      });
+    }
     setValue("contributionUnit", nextUnit, { shouldDirty: true, shouldValidate: true });
   };
 
@@ -56,6 +65,7 @@ export function CalculatorContent() {
           <AccumulationForm
             control={control}
             errors={formState.errors}
+            onContributionEdit={markContributionEdited}
             onContributionUnitChange={changeContributionUnit}
           />
           <PriceSummaryPanel input={input} />
