@@ -1,7 +1,7 @@
 import { Card, Meter, Skeleton } from "@heroui/react";
 import { TbTriangleFilled } from "react-icons/tb";
 
-import { getImpactBand, ImpactBands } from "@/lib/bitcoin-calculator.utils";
+import { getImpactBand, IMPACT_BANDS } from "@/lib/bitcoin-calculator.utils";
 import { formatAccumulationAmount, formatFiat, formatNumber } from "@/lib/number-format.utils";
 import { BitcoinSymbol } from "./currency-symbol";
 import { useCalculatorData } from "./calculator-data-context";
@@ -11,7 +11,7 @@ import { MonthlyHoldingsDialog } from "./monthly-holdings";
 import { NumericSkeleton, PendingValue } from "./numeric-skeleton";
 import { Result } from "./result";
 
-const ImpactBandShortLabels = [
+const IMPACT_BAND_SHORT_LABELS = [
   "Negligible",
   "Low",
   "Moderate",
@@ -22,14 +22,14 @@ const ImpactBandShortLabels = [
 
 function getImpactStatus(index: number) {
   if (index >= 0) {
-    return ImpactBandShortLabels[index];
+    return IMPACT_BAND_SHORT_LABELS[index];
   }
   return "Unavailable";
 }
 
 function getImpactRange(index: number) {
-  const impactBand = ImpactBands[index];
-  const nextImpactBand = ImpactBands[index + 1];
+  const impactBand = IMPACT_BANDS[index];
+  const nextImpactBand = IMPACT_BANDS[index + 1];
   if (!impactBand) {
     return "Unavailable";
   }
@@ -45,7 +45,7 @@ function getImpactRange(index: number) {
 export function ImpactSummary() {
   const { input, isPriceLoading, prices, results } = useCalculatorData();
   const currentBand = results && results.currentBtc > 0 ? getImpactBand(results.impact) : null;
-  const currentBandIndex = ImpactBands.findIndex((impactBand) => impactBand.label === currentBand);
+  const currentBandIndex = IMPACT_BANDS.findIndex((impactBand) => impactBand.label === currentBand);
   const meterValue = currentBandIndex + 1;
   const impactStatus = getImpactStatus(currentBandIndex);
   const isImpactLoading = isPriceLoading && currentBand === null;
@@ -94,9 +94,9 @@ export function ImpactSummary() {
                 current BTC holdings, multiplied by 100.
               </p>
               <ul className="mt-2 grid gap-x-6 gap-y-1 sm:grid-cols-2">
-                {ImpactBands.map((impactBand, index) => (
+                {IMPACT_BANDS.map((impactBand, index) => (
                   <li key={impactBand.label} className="flex justify-between gap-3">
-                    <span>{ImpactBandShortLabels[index]}</span>
+                    <span>{IMPACT_BAND_SHORT_LABELS[index]}</span>
                     <span className="font-mono text-foreground">{getImpactRange(index)}</span>
                   </li>
                 ))}
@@ -162,7 +162,7 @@ export function ImpactSummary() {
           <Meter
             aria-label="Accumulation impact level"
             aria-valuetext={currentBand ?? "Impact unavailable"}
-            maxValue={ImpactBands.length}
+            maxValue={IMPACT_BANDS.length}
             minValue={0}
             value={meterValue}
           >
@@ -181,7 +181,7 @@ export function ImpactSummary() {
             aria-hidden="true"
             className="mt-2 hidden grid-cols-6 gap-2 text-center text-xs text-muted sm:grid"
           >
-            {ImpactBandShortLabels.map((label) => (
+            {IMPACT_BAND_SHORT_LABELS.map((label) => (
               <span key={label}>{label}</span>
             ))}
           </div>
