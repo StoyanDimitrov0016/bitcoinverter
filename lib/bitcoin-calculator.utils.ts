@@ -25,6 +25,9 @@ export const ImpactBands = [
   { label: "Extreme Impact", minimum: 100 },
 ] as const;
 
+const DECIMAL_TRAILING_ZEROS_PATTERN = /(\.\d*?[1-9])0+$/;
+const ZERO_DECIMAL_PATTERN = /\.0+$/;
+
 export type AccumulationResults = {
   currentBtc: number;
   monthlyBtc: number;
@@ -45,9 +48,10 @@ export function parseDecimalAmount(value: string) {
 export function adjustDecimalAmount(value: string, step: number, direction: 1 | -1) {
   const amount = parseDecimalAmount(value) ?? 0;
   const precision = step < 1 ? 8 : 0;
-  return Math.max(0, amount + step * direction)
-    .toFixed(precision)
-    .replace(/\.?0+$/, "");
+  const formatted = Math.max(0, amount + step * direction).toFixed(precision);
+  return precision === 0
+    ? formatted
+    : formatted.replace(DECIMAL_TRAILING_ZEROS_PATTERN, "$1").replace(ZERO_DECIMAL_PATTERN, "");
 }
 
 export function parseAccumulationForm(value: AccumulationFormValues) {
