@@ -5,7 +5,7 @@ import type { AccumulationInput } from "@/lib/schemas/calculator.schemas";
 
 import { useBitcoinPrices } from "../../hooks/use-bitcoin-prices";
 import { BitcoinConverter } from "./bitcoin-converter";
-import { CalculatorDataProvider } from "./calculator-data-context";
+import { CalculatorDataProvider } from "../shared/calculator-data-context";
 
 type BitcoinConverterPanelProps = {
   input: AccumulationInput | null;

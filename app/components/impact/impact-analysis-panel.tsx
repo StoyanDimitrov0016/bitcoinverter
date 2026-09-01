@@ -4,7 +4,7 @@ import { calculateAccumulation } from "@/lib/bitcoin-calculator.utils";
 import type { AccumulationInput } from "@/lib/schemas/calculator.schemas";
 
 import { useBitcoinPrices } from "../../hooks/use-bitcoin-prices";
-import { CalculatorDataProvider } from "./calculator-data-context";
+import { CalculatorDataProvider } from "../shared/calculator-data-context";
 import { ImpactHorizon } from "./impact-horizon";
 import { PriceImpactLevels } from "./price-impact-levels";
 

@@ -3,13 +3,13 @@ import { TbTriangleFilled } from "react-icons/tb";
 
 import { getImpactBand, IMPACT_BANDS } from "@/lib/bitcoin-calculator.utils";
 import { formatAccumulationAmount, formatFiat, formatNumber } from "@/lib/number-format.utils";
-import { BitcoinSymbol } from "./currency-symbol";
-import { useCalculatorData } from "./calculator-data-context";
+import { BitcoinSymbol } from "../shared/currency-symbol";
+import { useCalculatorData } from "../shared/calculator-data-context";
 import { HoldingAtReferencePrice } from "./holding-at-reference-price";
 import { ImpactInfoDialog } from "./impact-info-dialog";
 import { MonthlyHoldingsDialog } from "./monthly-holdings";
-import { NumericSkeleton, PendingValue } from "./numeric-skeleton";
-import { Result } from "./result";
+import { NumericSkeleton, PendingValue } from "../shared/numeric-skeleton";
+import { Result } from "../shared/result";
 
 const IMPACT_BAND_SHORT_LABELS = [
   "Negligible",

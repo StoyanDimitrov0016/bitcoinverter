@@ -1,4 +1,9 @@
-import Calculator from "./calculator";
+import { CalculatorContent } from "./components/layout/calculator-content";
+import { PriceHeader } from "./components/layout/price-header";
+import { Methodology } from "./components/methodology/methodology";
+import { SiteFooter } from "./components/site-footer";
+import { SectionHeading } from "./components/section-heading";
+import { BitcoinPricesProvider } from "./hooks/use-bitcoin-prices";
 
 import { priceProvider } from "@/lib/price-provider";
 
@@ -10,5 +15,41 @@ export default function Home() {
     .then((prices) => ({ prices }))
     .catch(() => ({ prices: null }));
 
-  return <Calculator pricesPromise={pricesPromise} />;
+  return (
+    <BitcoinPricesProvider pricesPromise={pricesPromise}>
+      <>
+        <a
+          className="fixed start-2 top-2 z-[60] -translate-y-16 rounded-lg bg-accent px-4 py-2 text-accent-foreground transition-transform focus:translate-y-0"
+          href="#top"
+        >
+          Skip to main content
+        </a>
+        <PriceHeader />
+        <main
+          id="top"
+          tabIndex={-1}
+          className="mx-auto w-full max-w-7xl space-y-8 px-4 py-6 sm:px-5 sm:py-8"
+        >
+          <div className="sr-only">
+            <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+              Bitcoin accumulation calculator
+            </h1>
+            <p className="text-muted">
+              See how steady contributions compound, priced against Kraken’s live BTC rate.
+            </p>
+          </div>
+          <CalculatorContent />
+          <section
+            aria-labelledby="methodology-section-title"
+            className="scroll-mt-32 space-y-3"
+            id="methodology"
+          >
+            <SectionHeading id="methodology-section-title" title="Methodology" />
+            <Methodology />
+          </section>
+        </main>
+        <SiteFooter />
+      </>
+    </BitcoinPricesProvider>
+  );
 }

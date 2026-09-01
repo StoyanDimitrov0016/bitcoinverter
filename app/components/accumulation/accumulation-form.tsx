@@ -9,8 +9,8 @@ import {
   type ContributionUnit,
 } from "@/lib/schemas/calculator.schemas";
 
-import { UnitPicker } from "./unit-picker";
-import { ValueField } from "./value-field";
+import { UnitPicker } from "../shared/unit-picker";
+import { ValueField } from "../shared/value-field";
 
 type AccumulationFormProps = {
   control: Control<AccumulationFormValues>;

@@ -2,9 +2,9 @@ import { Card, Table } from "@heroui/react";
 
 import { SATS_PER_BTC } from "@/lib/bitcoin-calculator.utils";
 import { formatBitcoin, formatNumber, formatRateFiat } from "@/lib/number-format.utils";
-import { useCalculatorData } from "./calculator-data-context";
-import { ConverterBitcoinSymbol, SatoshiSymbol } from "./currency-symbol";
-import { FiatSkeleton, PendingValue } from "./numeric-skeleton";
+import { useCalculatorData } from "../shared/calculator-data-context";
+import { ConverterBitcoinSymbol, SatoshiSymbol } from "../shared/currency-symbol";
+import { FiatSkeleton, PendingValue } from "../shared/numeric-skeleton";
 
 const SATOSHI_AMOUNTS = [
   1, 10, 100, 1_000, 10_000, 100_000, 1_000_000, 10_000_000, 100_000_000,
