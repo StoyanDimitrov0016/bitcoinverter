@@ -2,11 +2,11 @@ import { Card, Table } from "@heroui/react";
 
 import { SATS_PER_BTC } from "@/lib/bitcoin-calculator.utils";
 import { formatBitcoin, formatNumber, formatRateFiat } from "@/lib/number-format.utils";
-import { useCalculatorData } from "./calculator-data-context";
-import { ConverterBitcoinSymbol, SatoshiSymbol } from "./currency-symbol";
-import { FiatSkeleton, PendingValue } from "./numeric-skeleton";
+import { useCalculatorData } from "../calculator/calculator-data-context";
+import { ConverterBitcoinSymbol, SatoshiSymbol } from "../shared/currency-symbol";
+import { FiatSkeleton, PendingValue } from "../shared/numeric-skeleton";
 
-const SatoshiAmounts = [
+const SATOSHI_AMOUNTS = [
   1, 10, 100, 1_000, 10_000, 100_000, 1_000_000, 10_000_000, 100_000_000,
 ] as const;
 
@@ -25,7 +25,7 @@ export function SatoshiRatesTable() {
                 <Table.Column>Euro</Table.Column>
               </Table.Header>
               <Table.Body>
-                {SatoshiAmounts.map((satoshis) => {
+                {SATOSHI_AMOUNTS.map((satoshis) => {
                   const bitcoin = satoshis / SATS_PER_BTC;
                   return (
                     <Table.Row

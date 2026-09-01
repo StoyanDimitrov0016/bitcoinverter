@@ -2,16 +2,16 @@ import { Card } from "@heroui/react";
 
 import {
   calculatePriceImpactLevel,
-  ImpactTargets,
+  IMPACT_TARGETS,
   type AccumulationResults,
 } from "@/lib/bitcoin-calculator.utils";
 import { formatAccumulationAmount, formatFiat, formatNumber } from "@/lib/number-format.utils";
 import type { AccumulationInput } from "@/lib/schemas/calculator.schemas";
 import type { BitcoinPrices } from "@/lib/schemas/price.schemas";
-import { useCalculatorData } from "./calculator-data-context";
+import { useCalculatorData } from "../calculator/calculator-data-context";
 import { ImpactInfoDialog } from "./impact-info-dialog";
-import { FiatSkeleton, PendingValue } from "./numeric-skeleton";
-import { ResultRow } from "./result";
+import { FiatSkeleton, PendingValue } from "../shared/numeric-skeleton";
+import { ResultRow } from "../shared/result";
 
 export function PriceImpactLevels() {
   const { input, isPriceLoading, prices, results } = useCalculatorData();
@@ -39,7 +39,7 @@ export function PriceImpactLevels() {
       </Card.Header>
       <Card.Content>
         <dl className="space-y-1">
-          {ImpactTargets.toReversed().map((target) => {
+          {IMPACT_TARGETS.toReversed().map((target) => {
             const level =
               input && results && input.contributionUnit !== "BTC"
                 ? calculatePriceImpactLevel(input.contribution, results.currentBtc, target)
@@ -91,6 +91,15 @@ function PriceImpactExplanation({
       <p>
         Your contribution is already in BTC, so price doesn’t change its amount. Thresholds appear
         once the monthly contribution is set to EUR or USD.
+      </p>
+    );
+  }
+
+  if (results.currentBtc === 0) {
+    return (
+      <p>
+        Relative price thresholds need current BTC holdings above zero. Enter an existing holding to
+        compare it with one year of contributions.
       </p>
     );
   }

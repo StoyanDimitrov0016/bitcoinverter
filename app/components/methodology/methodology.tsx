@@ -1,6 +1,6 @@
 import { Accordion } from "@heroui/react";
 
-const MethodologyItems = [
+const METHODOLOGY_ITEMS = [
   {
     id: "calculation",
     title: "How the calculation works",
@@ -42,7 +42,7 @@ const MethodologyItems = [
 export function Methodology() {
   return (
     <Accordion variant="surface">
-      {MethodologyItems.map((item) => (
+      {METHODOLOGY_ITEMS.map((item) => (
         <Accordion.Item key={item.id} id={item.id}>
           <Accordion.Heading>
             <Accordion.Trigger>

@@ -1,7 +1,10 @@
+import "server-only";
+
+import * as z from "zod";
+
 import {
   BitcoinPricesSchema,
   KrakenTickerResponseSchema,
-  PositivePriceSchema,
   type BitcoinPrices,
 } from "./schemas/price.schemas";
 
@@ -35,8 +38,8 @@ export class KrakenPriceProvider implements PriceProvider {
       }
 
       return BitcoinPricesSchema.parse({
-        EUR: PositivePriceSchema.parse(Number(tickerResponse.result.XXBTZEUR.c[0])),
-        USD: PositivePriceSchema.parse(Number(tickerResponse.result.XXBTZUSD.c[0])),
+        EUR: z.number().gt(0).parse(Number(tickerResponse.result.XXBTZEUR.c[0])),
+        USD: z.number().gt(0).parse(Number(tickerResponse.result.XXBTZUSD.c[0])),
         fetchedAt: new Date().toISOString(),
         provider: "Kraken",
       });

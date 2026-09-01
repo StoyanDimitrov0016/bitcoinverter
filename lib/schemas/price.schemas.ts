@@ -1,15 +1,17 @@
 import * as z from "zod";
 
-export const PositivePriceSchema = z.number().gt(0);
-
 export const BitcoinPricesSchema = z.compile(
   z.object({
-    EUR: PositivePriceSchema,
-    USD: PositivePriceSchema,
+    EUR: z.number().gt(0),
+    USD: z.number().gt(0),
     fetchedAt: z.string(),
     provider: z.literal("Kraken"),
   })
 );
+
+export type BitcoinPricesResult = {
+  prices: BitcoinPrices | null;
+};
 
 const KrakenTickerSchema = z.object({ c: z.tuple([z.string(), z.string()]) });
 
@@ -22,9 +24,5 @@ export const KrakenTickerResponseSchema = z.compile(
     }),
   })
 );
-
-export const PriceApiErrorSchema = z.object({
-  error: z.string(),
-});
 
 export type BitcoinPrices = z.infer<typeof BitcoinPricesSchema>;

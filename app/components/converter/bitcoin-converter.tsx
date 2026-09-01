@@ -16,11 +16,11 @@ import {
   DecimalAmountInputSchema,
   type ConverterFormValues,
 } from "@/lib/schemas/calculator.schemas";
-import { useCalculatorData } from "./calculator-data-context";
-import { ConverterBitcoinSymbol, SatoshiSymbol } from "./currency-symbol";
-import { FiatSkeleton, NumericSkeleton, PendingValue } from "./numeric-skeleton";
-import { UnitPicker } from "./unit-picker";
-import { ValueField } from "./value-field";
+import { useCalculatorData } from "../calculator/calculator-data-context";
+import { ConverterBitcoinSymbol, SatoshiSymbol } from "../shared/currency-symbol";
+import { FiatSkeleton, NumericSkeleton, PendingValue } from "../shared/numeric-skeleton";
+import { UnitPicker } from "../shared/unit-picker";
+import { ValueField } from "../shared/value-field";
 import { SatoshiRatesTable } from "./satoshi-rates-table";
 
 export function BitcoinConverter() {
@@ -64,7 +64,7 @@ export function BitcoinConverter() {
                 <UnitPicker
                   label="Unit"
                   value={field.value}
-                  values={["SATS", "EUR", "USD"]}
+                  values={["BTC", "SATS", "EUR", "USD"]}
                   onChange={field.onChange}
                 />
               )}

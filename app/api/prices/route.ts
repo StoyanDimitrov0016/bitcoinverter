@@ -1,15 +1,14 @@
 import { priceProvider } from "@/lib/price-provider";
-import { PriceApiErrorSchema } from "@/lib/schemas/price.schemas";
+
+const PRICE_API_ERROR = {
+  error: "Live Bitcoin prices are temporarily unavailable.",
+} as const;
 
 export async function GET() {
   try {
-    return Response.json(await priceProvider.getBitcoinPrices());
+    const prices = await priceProvider.getBitcoinPrices();
+    return Response.json(prices);
   } catch {
-    return Response.json(
-      PriceApiErrorSchema.parse({
-        error: "Live Bitcoin prices are temporarily unavailable.",
-      }),
-      { status: 503 }
-    );
+    return Response.json(PRICE_API_ERROR, { status: 503 });
   }
 }
