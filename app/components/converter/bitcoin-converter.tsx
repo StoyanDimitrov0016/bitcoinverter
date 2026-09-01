@@ -62,15 +62,63 @@ export function BitcoinConverter() {
               name="unit"
               render={({ field }) => (
                 <UnitPicker
+                  isLabelHidden
                   label="Unit"
                   value={field.value}
-                  values={["BTC", "SATS", "EUR", "USD"]}
+                  values={["SATS", "EUR", "USD", "BTC"]}
                   onChange={field.onChange}
                 />
               )}
             />
           </Form>
-          <div className="grid gap-3 sm:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <Conversion
+              label="Satoshis"
+              value={
+                <PendingValue
+                  fallback={
+                    <>
+                      <SatoshiSymbol />
+                      <NumericSkeleton width="long" />
+                    </>
+                  }
+                  isLoading={isPriceLoading}
+                >
+                  {bitcoinValue === null ? null : (
+                    <>
+                      <SatoshiSymbol />
+                      {formatNumber(bitcoinValue * SATS_PER_BTC, 0)}
+                    </>
+                  )}
+                </PendingValue>
+              }
+            />
+            <Conversion
+              label="Euro"
+              value={
+                <PendingValue
+                  fallback={<FiatSkeleton currency="EUR" width="long" />}
+                  isLoading={isPriceLoading}
+                >
+                  {bitcoinValue === null || !prices
+                    ? null
+                    : formatFiat(bitcoinValue * prices.EUR, "EUR")}
+                </PendingValue>
+              }
+            />
+            <Conversion
+              label="USD"
+              value={
+                <PendingValue
+                  fallback={<FiatSkeleton currency="USD" width="long" />}
+                  isLoading={isPriceLoading}
+                >
+                  {bitcoinValue === null || !prices
+                    ? null
+                    : formatFiat(bitcoinValue * prices.USD, "USD")}
+                </PendingValue>
+              }
+            />
             <Conversion
               label="Bitcoin"
               value={
@@ -92,59 +140,6 @@ export function BitcoinConverter() {
                 </PendingValue>
               }
             />
-            {formValue.unit !== "SATS" && (
-              <Conversion
-                label="Satoshis"
-                value={
-                  <PendingValue
-                    fallback={
-                      <>
-                        <SatoshiSymbol />
-                        <NumericSkeleton width="long" />
-                      </>
-                    }
-                    isLoading={isPriceLoading}
-                  >
-                    {bitcoinValue === null ? null : (
-                      <>
-                        <SatoshiSymbol />
-                        {formatNumber(bitcoinValue * SATS_PER_BTC, 0)}
-                      </>
-                    )}
-                  </PendingValue>
-                }
-              />
-            )}
-            {formValue.unit !== "EUR" && (
-              <Conversion
-                label="Euro"
-                value={
-                  <PendingValue
-                    fallback={<FiatSkeleton currency="EUR" width="long" />}
-                    isLoading={isPriceLoading}
-                  >
-                    {bitcoinValue === null || !prices
-                      ? null
-                      : formatFiat(bitcoinValue * prices.EUR, "EUR")}
-                  </PendingValue>
-                }
-              />
-            )}
-            {formValue.unit !== "USD" && (
-              <Conversion
-                label="USD"
-                value={
-                  <PendingValue
-                    fallback={<FiatSkeleton currency="USD" width="long" />}
-                    isLoading={isPriceLoading}
-                  >
-                    {bitcoinValue === null || !prices
-                      ? null
-                      : formatFiat(bitcoinValue * prices.USD, "USD")}
-                  </PendingValue>
-                }
-              />
-            )}
           </div>
         </Card.Content>
       </Card>
