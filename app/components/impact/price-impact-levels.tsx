@@ -1,68 +1,100 @@
-import { Card } from "@heroui/react";
+"use client";
 
+import { Card, Tabs } from "@heroui/react";
+import { useState } from "react";
+
+import type { AccumulationResults } from "@/lib/bitcoin-calculator.utils";
+import { getPriceImpactData } from "@/lib/impact-chart.utils";
 import {
-  calculatePriceImpactLevel,
-  IMPACT_TARGETS,
-  type AccumulationResults,
-} from "@/lib/bitcoin-calculator.utils";
-import { formatAccumulationAmount, formatFiat, formatNumber } from "@/lib/number-format.utils";
+  formatAccumulationAmount,
+  formatChartFiat,
+  formatFiat,
+  formatNumber,
+} from "@/lib/number-format.utils";
 import type { AccumulationInput } from "@/lib/schemas/calculator.schemas";
 import type { BitcoinPrices } from "@/lib/schemas/price.schemas";
 import { useCalculatorData } from "../calculator/calculator-data-context";
 import { ImpactInfoDialog } from "./impact-info-dialog";
 import { FiatSkeleton, PendingValue } from "../shared/numeric-skeleton";
 import { ResultRow } from "../shared/result";
+import { ImpactChart } from "./impact-chart";
+import { ImpactTabs, ImpactViewTabList, type ImpactView } from "./impact-view-tabs";
+
+const formatPercent = (value: number) => `${formatNumber(value, 0)}%`;
 
 export function PriceImpactLevels() {
   const { input, isPriceLoading, prices, results } = useCalculatorData();
+  const [view, setView] = useState<ImpactView>("chart");
   const contributionCurrency = input?.contributionUnit === "USD" ? "USD" : "EUR";
-  const hundredPercentLevel =
-    input && results && input.contributionUnit !== "BTC"
-      ? calculatePriceImpactLevel(input.contribution, results.currentBtc, 100)
-      : null;
+  const {
+    rows: thresholdRows,
+    chartData,
+    hundredPercentLevel,
+  } = getPriceImpactData(input, results, prices, contributionCurrency);
+  const formatPrice = (value: number) => formatChartFiat(value, contributionCurrency);
 
   return (
     <Card>
-      <Card.Header className="flex-row items-start justify-between gap-3">
-        <Card.Title>BTC price needed for each yearly increase</Card.Title>
-        <ImpactInfoDialog
-          ariaLabel="Explain the BTC price thresholds"
-          title="How the price thresholds are calculated"
-        >
-          <PriceImpactExplanation
-            hundredPercentLevel={hundredPercentLevel}
-            input={input}
-            prices={prices}
-            results={results}
-          />
-        </ImpactInfoDialog>
-      </Card.Header>
-      <Card.Content>
-        <dl className="space-y-1">
-          {IMPACT_TARGETS.toReversed().map((target) => {
-            const level =
-              input && results && input.contributionUnit !== "BTC"
-                ? calculatePriceImpactLevel(input.contribution, results.currentBtc, target)
-                : null;
-            return (
-              <ResultRow
-                key={target}
-                label={`Adds ${target}% of current holdings`}
-                value={
-                  <PendingValue
-                    fallback={<FiatSkeleton currency={contributionCurrency} width="long" />}
-                    isLoading={isPriceLoading && input?.contributionUnit !== "BTC"}
-                  >
-                    {level !== null && input && input.contributionUnit !== "BTC"
-                      ? formatFiat(level, input.contributionUnit)
-                      : null}
-                  </PendingValue>
-                }
+      <ImpactTabs value={view} onChange={setView}>
+        <Card.Header className="flex-row items-start justify-between gap-3">
+          <div>
+            <Card.Title>Monthly contribution runway by BTC price</Card.Title>
+            <Card.Description className="-mt-1 text-xs">
+              at today’s reference price
+            </Card.Description>
+          </div>
+          <div className="flex shrink-0 items-center gap-1">
+            <ImpactViewTabList />
+            <ImpactInfoDialog
+              ariaLabel="Explain the BTC price thresholds"
+              title="How the price thresholds are calculated"
+            >
+              <PriceImpactExplanation
+                hundredPercentLevel={hundredPercentLevel}
+                input={input}
+                prices={prices}
+                results={results}
               />
-            );
-          })}
-        </dl>
-      </Card.Content>
+            </ImpactInfoDialog>
+          </div>
+        </Card.Header>
+        <Card.Content>
+          <Tabs.Panel className="m-0 p-0" id="chart">
+            {chartData.length > 0 ? (
+              <ImpactChart
+                ariaLabel="Percentage increase in holdings at different BTC price levels"
+                data={chartData}
+                xLabel={`BTC price (${contributionCurrency})`}
+                xValue={formatPrice}
+                yLabel="Increase in holdings (%)"
+                yValue={formatPercent}
+              />
+            ) : null}
+          </Tabs.Panel>
+          <Tabs.Panel className="m-0 p-0" id="table">
+            <dl className="space-y-1">
+              {thresholdRows.toReversed().map(({ target, level }) => {
+                return (
+                  <ResultRow
+                    key={target}
+                    label={`Adds ${target}% of current holdings`}
+                    value={
+                      <PendingValue
+                        fallback={<FiatSkeleton currency={contributionCurrency} width="long" />}
+                        isLoading={isPriceLoading && input?.contributionUnit !== "BTC"}
+                      >
+                        {level !== null && input && input.contributionUnit !== "BTC"
+                          ? formatFiat(level, input.contributionUnit)
+                          : null}
+                      </PendingValue>
+                    }
+                  />
+                );
+              })}
+            </dl>
+          </Tabs.Panel>
+        </Card.Content>
+      </ImpactTabs>
     </Card>
   );
 }
