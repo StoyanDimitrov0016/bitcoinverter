@@ -32,11 +32,7 @@ export function SatoshiRatesTable() {
                 {SATOSHI_AMOUNTS.map((satoshis) => {
                   const bitcoin = satoshis / SATS_PER_BTC;
                   return (
-                    <Table.Row
-                      key={satoshis}
-                      className="last:[&_.table__cell]:border-b-0"
-                      id={satoshis}
-                    >
+                    <Table.Row key={satoshis} id={satoshis}>
                       <Table.Cell className="font-mono tabular-nums">
                         <span className="flex items-center gap-0.5">
                           <SatoshiSymbol />
