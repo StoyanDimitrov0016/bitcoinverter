@@ -1,4 +1,5 @@
-import type { FiatCurrency, HoldingUnit } from "./schemas/calculator.schemas";
+import type { FiatCurrency, HoldingUnit } from "./calculator/calculator.schemas";
+import { MONTHS_PER_YEAR } from "./calculator/calculator.constants";
 
 export function formatNumber(value: number, maximumFractionDigits = 8) {
   return new Intl.NumberFormat("en", { maximumFractionDigits }).format(value);
@@ -44,11 +45,10 @@ export function formatAccumulationAmount(value: number, unit: HoldingUnit) {
   return unit === "BTC" ? `${formatNumber(value)} BTC` : formatFiat(value, unit);
 }
 
-export function formatImpactHorizon(months: number | null) {
-  if (!months) {
-    return "—";
+export function formatImpactHorizon(months: number) {
+  if (months < 24) {
+    return `${months} months`;
   }
-  return months < 24
-    ? `${months} months`
-    : `${formatNumber(months / 12, 1)} years (${months} months)`;
+
+  return `${formatNumber(months / MONTHS_PER_YEAR, 1)} years (${months} months)`;
 }

@@ -1,6 +1,4 @@
-import type { ReactElement, ReactNode } from "react";
-
-import type { FiatCurrency } from "@/lib/schemas/calculator.schemas";
+import type { FiatCurrency } from "@/lib/calculator/calculator.schemas";
 
 const WIDTH_CLASSES = {
   short: "w-10",
@@ -34,20 +32,4 @@ export function FiatSkeleton({ currency, width }: FiatSkeletonProps) {
       <NumericSkeleton width={width} />
     </span>
   );
-}
-
-type PendingValueProps = {
-  children: ReactNode | null;
-  fallback: ReactNode;
-  isLoading: boolean;
-};
-
-export function PendingValue({ children, fallback, isLoading }: PendingValueProps): ReactElement {
-  if (children !== null) {
-    return <>{children}</>;
-  }
-  if (isLoading) {
-    return <>{fallback}</>;
-  }
-  return <span>—</span>;
 }
