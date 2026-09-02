@@ -2,8 +2,8 @@
 
 import { Suspense, type ReactNode } from "react";
 
-import { calculateAccumulation } from "@/lib/bitcoin-calculator.utils";
-import type { AccumulationInput } from "@/lib/schemas/calculator.schemas";
+import { calculateAccumulation } from "@/lib/calculator/calculator.calculations";
+import type { AccumulationInput } from "@/lib/calculator/calculator.schemas";
 
 import { useBitcoinPrices } from "../../providers/bitcoin-prices-provider";
 import { CalculatorDataProvider } from "./calculator-data-context";
@@ -17,9 +17,7 @@ type ResolvedCalculatorDataProps = Required<CalculatorDataBoundaryProps>;
 
 export function CalculatorDataBoundary({ children, input = null }: CalculatorDataBoundaryProps) {
   const fallback = (
-    <CalculatorDataProvider input={input} isPriceLoading prices={null} results={null}>
-      {children}
-    </CalculatorDataProvider>
+    <CalculatorDataProvider value={{ status: "loading" }}>{children}</CalculatorDataProvider>
   );
 
   return (
@@ -30,12 +28,34 @@ export function CalculatorDataBoundary({ children, input = null }: CalculatorDat
 }
 
 function ResolvedCalculatorData({ children, input }: ResolvedCalculatorDataProps) {
-  const { prices } = useBitcoinPrices();
-  const results = input && prices ? calculateAccumulation(input, prices) : null;
+  const priceState = useBitcoinPrices();
+
+  if (priceState.status === "error") {
+    return (
+      <CalculatorDataProvider value={{ status: "price-error" }}>{children}</CalculatorDataProvider>
+    );
+  }
+
+  const calculation = getCalculationState(input, priceState.prices);
 
   return (
-    <CalculatorDataProvider input={input} isPriceLoading={false} prices={prices} results={results}>
+    <CalculatorDataProvider value={{ status: "ready", prices: priceState.prices, calculation }}>
       {children}
     </CalculatorDataProvider>
   );
+}
+
+function getCalculationState(
+  input: AccumulationInput | null,
+  prices: Parameters<typeof calculateAccumulation>[1]
+) {
+  if (!input) {
+    return { status: "invalid-input" as const };
+  }
+
+  return {
+    status: "ready" as const,
+    input,
+    results: calculateAccumulation(input, prices),
+  };
 }
