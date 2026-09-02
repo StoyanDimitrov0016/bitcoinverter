@@ -36,7 +36,7 @@ export function BitcoinConverter() {
   return (
     <div className="space-y-4">
       <Card className="py-2">
-        <Card.Content className="grid items-start gap-8 lg:grid-cols-[0.7fr_1.3fr]">
+        <Card.Content className="grid items-center gap-8 lg:grid-cols-[0.7fr_1.3fr]">
           <Form className="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
             <Controller
               control={control}
@@ -48,13 +48,15 @@ export function BitcoinConverter() {
                 ),
               }}
               render={({ field }) => (
-                <ValueField
-                  error={formState.errors.value?.message}
-                  label="Amount to convert"
-                  step={getAmountStep(formValue.unit ?? "EUR")}
-                  value={field.value}
-                  onChange={field.onChange}
-                />
+                <div className="[&_.label]:sr-only">
+                  <ValueField
+                    error={formState.errors.value?.message}
+                    label="Amount to convert"
+                    step={getAmountStep(formValue.unit ?? "EUR")}
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </div>
               )}
             />
             <Controller
