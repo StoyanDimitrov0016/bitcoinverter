@@ -2,21 +2,24 @@
 
 import { Suspense } from "react";
 
-import { useBitcoinPrices, usePriceRetry } from "../providers/bitcoin-prices-provider";
+import { useBitcoinPrices } from "../providers/bitcoin-prices-provider";
 
 import { SiteHeader } from "./site-header";
 
 export function PriceHeader() {
-  const retry = usePriceRetry();
-
   return (
-    <Suspense fallback={<SiteHeader prices={null} priceState="loading" onRetry={retry} />}>
+    <Suspense fallback={<SiteHeader price={{ status: "loading" }} />}>
       <ResolvedPriceHeader />
     </Suspense>
   );
 }
 
 function ResolvedPriceHeader() {
-  const { prices, priceState, retry } = useBitcoinPrices();
-  return <SiteHeader prices={prices} priceState={priceState} onRetry={retry} />;
+  const priceState = useBitcoinPrices();
+
+  if (priceState.status === "error") {
+    return <SiteHeader price={{ status: "error", retry: priceState.retry }} />;
+  }
+
+  return <SiteHeader price={{ status: "ready", prices: priceState.prices }} />;
 }
