@@ -46,9 +46,16 @@ export function formatAccumulationAmount(value: number, unit: HoldingUnit) {
 }
 
 export function formatImpactHorizon(months: number) {
-  if (months < 24) {
-    return `${months} months`;
+  if (months < MONTHS_PER_YEAR) {
+    return `${months}mo`;
   }
 
-  return `${formatNumber(months / MONTHS_PER_YEAR, 1)} years (${months} months)`;
+  const years = Math.floor(months / MONTHS_PER_YEAR);
+  const remainingMonths = months % MONTHS_PER_YEAR;
+
+  if (remainingMonths === 0) {
+    return `${years}y`;
+  }
+
+  return `${years}y ${remainingMonths}mo`;
 }

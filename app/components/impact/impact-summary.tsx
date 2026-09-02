@@ -11,30 +11,30 @@ import { BitcoinSymbol } from "../shared/currency-symbol";
 import { NumericSkeleton } from "../shared/numeric-skeleton";
 import { Result } from "../shared/result";
 import { UnavailableValue } from "../shared/unavailable-value";
-import { HoldingAtReferencePrice } from "./holding-at-reference-price";
+import { HoldingAtCurrentPrice } from "./holding-at-current-price";
+import { HoldingScarcityBadge } from "./holding-scarcity-badge";
 import { ImpactInfoDialog } from "./impact-info-dialog";
-import { MonthlyHoldingsDialog } from "./monthly-holdings";
 
 export function ImpactSummary() {
   const state = useCalculatorData();
 
   return (
-    <Card className="gap-2 overflow-hidden border-accent-soft bg-accent-soft py-3">
-      <Card.Header className="flex-row items-start justify-between gap-3">
+    <Card className="gap-2 overflow-hidden border-accent/30 bg-accent-soft py-3">
+      <Card.Header className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-2 gap-y-3 sm:grid-cols-[minmax(0,1fr)_auto_auto]">
         <Card.Title>
           What one year of contributions adds
-          <span className="ms-2 text-sm font-normal text-muted">at today's reference price</span>
+          <span className="ms-2 text-sm font-normal text-muted">at today's price</span>
         </Card.Title>
-        <div className="flex shrink-0 items-center gap-1">
-          <MonthlyHoldingsDialog />
-          <ImpactInfoDialog
-            ariaLabel="Explain the one-year accumulation result"
-            title="How this result is calculated"
-          >
-            <ImpactExplanation state={state} />
-            <ImpactBandGuide />
-          </ImpactInfoDialog>
+        <div className="col-start-1 row-start-2 justify-self-start sm:col-start-2 sm:row-start-1">
+          <HoldingScarcityBadge state={state} />
         </div>
+        <ImpactInfoDialog
+          ariaLabel="Explain the one-year accumulation result"
+          title="How this result is calculated"
+        >
+          <ImpactExplanation state={state} />
+          <ImpactBandGuide />
+        </ImpactInfoDialog>
       </Card.Header>
       <Card.Content>
         <ImpactValues state={state} />
@@ -57,15 +57,18 @@ function ImpactExplanation({ state }: ImpactExplanationProps) {
   return (
     <>
       <p>
-        You currently hold <HoldingAtReferencePrice currentBtc={results.currentBtc} input={input} />
-        .
+        You currently hold <HoldingAtCurrentPrice currentBtc={results.currentBtc} input={input} />.
       </p>
       <p>
-        Adding{" "}
-        <strong>{formatAccumulationAmount(input.contribution, input.contributionUnit)}</strong>{" "}
-        every month for 12 months would add <strong>{formatNumber(results.addedBtc)} BTC</strong>.
+        At today's Kraken price, 12 monthly contributions of{" "}
+        <strong>{formatAccumulationAmount(input.contribution, input.contributionUnit)}</strong> add{" "}
+        <strong>{formatNumber(results.addedBtc)} BTC</strong>.
       </p>
       <RelativeImpactExplanation prices={state.prices} results={results} />
+      <p>
+        The scarcity badge compares your holdings with the BTC available per person worldwide. It is
+        a theoretical ceiling, not a wallet ranking.
+      </p>
     </>
   );
 }
@@ -76,22 +79,21 @@ type RelativeImpactExplanationProps = {
 };
 
 function RelativeImpactExplanation({ prices, results }: RelativeImpactExplanationProps) {
-  const referencePrice = `${formatFiat(prices.EUR, "EUR")} / ${formatFiat(prices.USD, "USD")}`;
+  const currentPrices = `${formatFiat(prices.EUR, "EUR")} / ${formatFiat(prices.USD, "USD")}`;
 
   if (results.relativeImpact.status === "unavailable") {
     return (
       <p>
-        A relative percentage needs current BTC holdings above zero. The same reference price is
-        used for each monthly purchase: {referencePrice}.
+        A relative percentage needs current BTC holdings above zero. The same price is used for each
+        monthly purchase: {currentPrices}.
       </p>
     );
   }
 
   return (
     <p>
-      That equals a <strong>{formatNumber(results.relativeImpact.percent, 1)}% increase</strong> in
-      your current BTC holdings. The same reference price is used for each monthly purchase:{" "}
-      {referencePrice}.
+      That is a <strong>{formatNumber(results.relativeImpact.percent, 1)}% increase</strong> in your
+      current BTC holdings. The same price is used for each purchase: {currentPrices}.
     </p>
   );
 }
@@ -228,7 +230,7 @@ function ImpactScaleLayout({
         minValue={0}
         value={value}
       >
-        <Meter.Track className="relative h-2 overflow-visible! bg-linear-to-r from-danger via-warning to-success">
+        <Meter.Track className="relative h-2 overflow-visible! bg-linear-to-r from-meter-danger via-meter-warning to-meter-success">
           <Meter.Fill className="relative h-full bg-transparent! transition-[width] duration-500">
             {showMarker ? (
               <TbTriangleFilled

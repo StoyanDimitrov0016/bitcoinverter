@@ -34,7 +34,7 @@ export function AccumulationForm({
           aria-label="Bitcoin accumulation inputs"
           className="flex h-full flex-col justify-center gap-5"
         >
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
+          <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3">
             <Controller
               control={control}
               name="holding"
@@ -44,6 +44,7 @@ export function AccumulationForm({
                   label="Current holdings"
                   step={getAmountStep(holdingUnit)}
                   value={field.value}
+                  onBlur={field.onBlur}
                   onChange={field.onChange}
                 />
               )}
@@ -62,7 +63,7 @@ export function AccumulationForm({
               )}
             />
           </div>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
+          <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3">
             <Controller
               control={control}
               name="contribution"
@@ -72,6 +73,7 @@ export function AccumulationForm({
                   label="Monthly contribution"
                   step={getAmountStep(contributionUnit)}
                   value={field.value}
+                  onBlur={field.onBlur}
                   onChange={(value) => {
                     onContributionEdit();
                     field.onChange(value);

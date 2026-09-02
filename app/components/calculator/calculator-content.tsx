@@ -33,7 +33,7 @@ export function CalculatorContent() {
       contribution: "100",
       contributionUnit: "EUR",
     },
-    mode: "onChange",
+    mode: "onTouched",
   });
   const formValue = useWatch({ control });
   const input = parseAccumulationInput(formValue);

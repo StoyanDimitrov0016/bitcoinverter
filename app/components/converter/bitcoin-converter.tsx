@@ -28,7 +28,7 @@ export function BitcoinConverter() {
   const { control, formState } = useForm<ConverterFormValues, unknown, ConverterInput>({
     resolver: zodResolver(ConverterSchema),
     defaultValues: { value: "1", unit: "EUR" },
-    mode: "onChange",
+    mode: "onTouched",
   });
   const formValue = useWatch({ control });
   const input = parseConverterInput(formValue);
@@ -39,7 +39,7 @@ export function BitcoinConverter() {
         <Card.Content className="grid items-center gap-8 lg:grid-cols-[0.7fr_1.3fr]">
           <Form
             aria-label="Bitcoin conversion input"
-            className="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end"
+            className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3"
           >
             <Controller
               control={control}
@@ -51,6 +51,7 @@ export function BitcoinConverter() {
                     label="Amount to convert"
                     step={getAmountStep(formValue.unit ?? "EUR")}
                     value={field.value}
+                    onBlur={field.onBlur}
                     onChange={field.onChange}
                   />
                 </div>

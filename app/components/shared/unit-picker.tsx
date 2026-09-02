@@ -20,7 +20,7 @@ export function UnitPicker<TUnit extends string>({
       <p className={isLabelHidden ? "sr-only" : "text-sm font-medium text-foreground"}>{label}</p>
       <ToggleButtonGroup
         aria-label={label}
-        className="rounded-3xl border border-border"
+        className="border border-border"
         disallowEmptySelection
         selectedKeys={[value]}
         selectionMode="single"
@@ -33,11 +33,7 @@ export function UnitPicker<TUnit extends string>({
         }}
       >
         {values.map((item) => (
-          <ToggleButton
-            key={item}
-            className="font-mono [--toggle-button-fg-selected:var(--foreground)]"
-            id={item}
-          >
+          <ToggleButton key={item} className="px-2 font-mono" id={item}>
             {item === "SATS" ? "sats" : item}
           </ToggleButton>
         ))}

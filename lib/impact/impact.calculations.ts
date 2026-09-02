@@ -3,6 +3,9 @@ import type { AccumulationInput, FiatCurrency } from "../calculator/calculator.s
 import type { AccumulationResults } from "../calculator/calculator.types";
 import type { BitcoinPrices } from "../prices/price.schemas";
 import {
+  BITCOIN_MAX_SUPPLY,
+  ESTIMATED_LOST_BTC,
+  ESTIMATED_WORLD_POPULATION,
   IMPACT_BANDS,
   IMPACT_TARGETS,
   type GrowthMetric,
@@ -11,6 +14,16 @@ import {
 } from "./impact.constants";
 
 export type ChartPoint = { x: number; y: number };
+
+export function getGlobalScarcityPercent(holdings: number) {
+  if (holdings <= 0) {
+    return null;
+  }
+
+  const availableSupply = BITCOIN_MAX_SUPPLY - ESTIMATED_LOST_BTC;
+  const maximumPeers = availableSupply / holdings;
+  return Math.min(100, (maximumPeers / ESTIMATED_WORLD_POPULATION) * 100);
+}
 
 export type ImpactHorizonData =
   | {
@@ -76,17 +89,45 @@ export function getImpactHorizonData(
     target,
     months: Math.ceil((results.currentBtc * target) / 100 / results.monthlyBtc),
   }));
-  const startingValue = metric === "btc" ? results.currentBtc : 0;
-  const chartData = [
-    { x: 0, y: startingValue },
-    ...rows.map(({ target, months }) => ({
-      x: months,
-      y: metric === "btc" ? results.currentBtc + (results.currentBtc * target) / 100 : target,
-    })),
-  ];
+  const startingValue = getStartingValue(results, metric);
+  const targetPoints = rows.map(({ target, months }) => ({
+    x: months,
+    y: getTargetValue(results, metric, target),
+  }));
   const hundredPercentMonths = Math.ceil(results.currentBtc / results.monthlyBtc);
+  const yearEndPoint =
+    hundredPercentMonths > MONTHS_PER_YEAR
+      ? [{ x: MONTHS_PER_YEAR, y: getYearEndValue(results, metric) }]
+      : [];
+  const chartData = [{ x: 0, y: startingValue }, ...targetPoints, ...yearEndPoint].toSorted(
+    (left, right) => left.x - right.x
+  );
 
   return { status: "available", rows, chartData, hundredPercentMonths };
+}
+
+function getStartingValue(results: AccumulationResults, metric: GrowthMetric) {
+  if (metric === "btc") {
+    return results.currentBtc;
+  }
+
+  return 0;
+}
+
+function getTargetValue(results: AccumulationResults, metric: GrowthMetric, target: ImpactTarget) {
+  if (metric === "btc") {
+    return results.currentBtc + (results.currentBtc * target) / 100;
+  }
+
+  return target;
+}
+
+function getYearEndValue(results: AccumulationResults, metric: GrowthMetric) {
+  if (metric === "btc") {
+    return results.currentBtc + results.monthlyBtc * MONTHS_PER_YEAR;
+  }
+
+  return (results.monthlyBtc * MONTHS_PER_YEAR * 100) / results.currentBtc;
 }
 
 export function getPriceImpactData(
@@ -115,7 +156,7 @@ export function getPriceImpactData(
 
 function createPriceImpactChartData(
   rows: { target: ImpactTarget; price: number }[],
-  referencePrice: number
+  currentPrice: number
 ) {
   const positivePoints = rows
     .filter(({ price }) => price > 0)
@@ -128,7 +169,7 @@ function createPriceImpactChartData(
 
   return [
     { x: 0, y: 0 },
-    { x: referencePrice * 2, y: 0 },
+    { x: currentPrice * 2, y: 0 },
   ];
 }
 
