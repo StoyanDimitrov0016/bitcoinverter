@@ -17,9 +17,18 @@ type ImpactChartProps = {
   xValue: (value: number) => string;
   yLabel: string;
   yValue: (value: number) => string;
+  fillHeight?: boolean;
 };
 
-export function ImpactChart({ ariaLabel, data, xLabel, xValue, yLabel, yValue }: ImpactChartProps) {
+export function ImpactChart({
+  ariaLabel,
+  data,
+  xLabel,
+  xValue,
+  yLabel,
+  yValue,
+  fillHeight = false,
+}: ImpactChartProps) {
   const definition = defineChart({
     marks: [
       lineY(data, {
@@ -34,18 +43,28 @@ export function ImpactChart({ ariaLabel, data, xLabel, xValue, yLabel, yValue }:
         scale: scaleLinear,
         nice: true,
         grid: true,
-        axis: { label: xLabel, ticks: { format: xValue } },
+        axis: { ticks: { format: xValue } },
       },
       y: {
         scale: scaleLinear,
         nice: true,
         grid: true,
-        axis: { label: yLabel, ticks: { format: yValue } },
+        axis: { ticks: { format: yValue } },
       },
     },
+    margin: { top: 8, right: 12, bottom: 24, left: 64 },
     svgAnimation: false,
     tooltip,
   });
 
-  return <Chart ariaLabel={ariaLabel} definition={definition} height={260} initialWidth={560} />;
+  return (
+    <Chart
+      ariaLabel={`${ariaLabel}. Horizontal axis: ${xLabel}. Vertical axis: ${yLabel}.`}
+      className="min-w-0"
+      definition={definition}
+      height={fillHeight ? undefined : 280}
+      initialWidth={560}
+      style={fillHeight ? { height: "100%" } : undefined}
+    />
+  );
 }

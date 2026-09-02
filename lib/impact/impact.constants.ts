@@ -1,4 +1,8 @@
-export const IMPACT_TARGETS = [10, 25, 50, 75, 100] as const;
+export const IMPACT_TARGETS = [10, 25, 50, 100] as const;
+
+export const BITCOIN_MAX_SUPPLY = 21_000_000;
+export const ESTIMATED_LOST_BTC = 1_200_000;
+export const ESTIMATED_WORLD_POPULATION = 8_200_000_000;
 
 export const IMPACT_BANDS = [
   { label: "Negligible Impact", shortLabel: "Negligible", minimum: 0 },

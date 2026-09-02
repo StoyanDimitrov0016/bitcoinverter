@@ -21,7 +21,7 @@ export function GrowthMetricToggle({ ariaLabel, value, onChange }: GrowthMetricT
   return (
     <ToggleButtonGroup
       aria-label={ariaLabel}
-      className="rounded-3xl border border-border"
+      className="border border-border"
       disallowEmptySelection
       selectedKeys={[value]}
       selectionMode="single"
@@ -37,12 +37,12 @@ export function GrowthMetricToggle({ ariaLabel, value, onChange }: GrowthMetricT
         <ToggleButton
           key={metric.id}
           aria-label={metric.label}
-          className="min-w-9 px-2.5 [--toggle-button-fg-selected:var(--foreground)]"
+          className="min-w-9 px-2.5"
           id={metric.id}
         >
           {metric.id === "btc" ? (
             <span className="flex size-4 items-center justify-center text-xl">
-              <BitcoinSymbol />
+              <BitcoinSymbol isActive={value === "btc"} />
             </span>
           ) : (
             <TbPercentage aria-hidden="true" className="size-4" />
