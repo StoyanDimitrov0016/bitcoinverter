@@ -12,9 +12,14 @@ export function ImpactInfoDialog({ ariaLabel, title, children }: ImpactInfoDialo
     <Modal>
       <Modal.Trigger
         aria-label={ariaLabel}
-        className={buttonVariants({ isIconOnly: true, size: "sm", variant: "ghost" })}
+        className={buttonVariants({
+          className: "inline-flex shrink-0 items-center justify-center p-0 leading-none",
+          isIconOnly: true,
+          size: "sm",
+          variant: "ghost",
+        })}
       >
-        <InfoIcon aria-hidden="true" className="size-4" />
+        <InfoIcon aria-hidden="true" className="block size-4 shrink-0" />
       </Modal.Trigger>
       <Modal.Backdrop>
         <Modal.Container>
