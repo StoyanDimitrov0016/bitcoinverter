@@ -1,10 +1,10 @@
-import { Card } from "@heroui/react";
+"use client";
 
-import {
-  calculateImpactHorizon,
-  IMPACT_TARGETS,
-  type AccumulationResults,
-} from "@/lib/bitcoin-calculator.utils";
+import { Card, Tabs } from "@heroui/react";
+import { useState } from "react";
+
+import { calculateImpactHorizon, type AccumulationResults } from "@/lib/bitcoin-calculator.utils";
+import { getImpactHorizonData, type GrowthMetric } from "@/lib/impact-chart.utils";
 import {
   formatAccumulationAmount,
   formatFiat,
@@ -18,42 +18,83 @@ import { ImpactInfoDialog } from "./impact-info-dialog";
 import { HoldingAtReferencePrice } from "./holding-at-reference-price";
 import { NumericSkeleton } from "../shared/numeric-skeleton";
 import { ResultRow } from "../shared/result";
+import { ImpactChart } from "./impact-chart";
+import { ImpactTabs, ImpactViewTabList, type ImpactView } from "./impact-view-tabs";
+import { GrowthMetricToggle } from "./growth-metric-toggle";
+
+const formatPercent = (value: number) => `${formatNumber(value, 0)}%`;
+const formatBtc = (value: number) => `${formatNumber(value)} BTC`;
 
 export function ImpactHorizon() {
   const { input, isPriceLoading, prices, results } = useCalculatorData();
+  const [view, setView] = useState<ImpactView>("chart");
+  const [metric, setMetric] = useState<GrowthMetric>("btc");
+  const { rows: horizonRows, chartData } = getImpactHorizonData(results, metric);
+  const useYears = (chartData.at(-1)?.x ?? 0) > 24;
+  const displayedData = chartData.map((point) => ({
+    ...point,
+    x: useYears ? point.x / 12 : point.x,
+  }));
+  const formatTime = (value: number) =>
+    useYears ? `${formatNumber(value, 1)}y` : `${Math.round(value)}m`;
+
   return (
     <Card>
-      <Card.Header className="flex-row items-start justify-between gap-3">
-        <Card.Title>How long until you own more BTC</Card.Title>
-        <ImpactInfoDialog
-          ariaLabel="Explain the accumulation timeline"
-          title="How the timeline is calculated"
-        >
-          <ImpactHorizonExplanation input={input} prices={prices} results={results} />
-        </ImpactInfoDialog>
-      </Card.Header>
-      <Card.Content>
-        <dl className="space-y-1">
-          {IMPACT_TARGETS.map((target) => {
-            const months = results ? calculateImpactHorizon(results, target) : null;
-            return (
-              <ResultRow
-                key={target}
-                label={`${target}% more BTC`}
-                value={
-                  months === null && isPriceLoading ? (
-                    <>
-                      <NumericSkeleton /> months
-                    </>
-                  ) : (
-                    formatImpactHorizon(months)
-                  )
-                }
+      <ImpactTabs value={view} onChange={setView}>
+        <Card.Header className="flex-row items-start justify-between gap-3">
+          <div>
+            <Card.Title>How long until you own more BTC</Card.Title>
+            <Card.Description className="-mt-1 text-xs">
+              at today’s reference price
+            </Card.Description>
+          </div>
+          <div className="flex shrink-0 items-center gap-2">
+            {view === "chart" ? <GrowthMetricToggle value={metric} onChange={setMetric} /> : null}
+            <ImpactViewTabList />
+            <ImpactInfoDialog
+              ariaLabel="Explain the accumulation timeline"
+              title="How the timeline is calculated"
+            >
+              <ImpactHorizonExplanation input={input} prices={prices} results={results} />
+            </ImpactInfoDialog>
+          </div>
+        </Card.Header>
+        <Card.Content>
+          <Tabs.Panel className="m-0 p-0" id="chart">
+            {displayedData.length > 1 ? (
+              <ImpactChart
+                ariaLabel={`${metric === "btc" ? "Total BTC holdings" : "Percentage increase in BTC holdings"} over time`}
+                data={displayedData}
+                xLabel={useYears ? "Years" : "Months"}
+                xValue={formatTime}
+                yLabel={metric === "btc" ? "Total BTC holdings" : "Increase in holdings (%)"}
+                yValue={metric === "btc" ? formatBtc : formatPercent}
               />
-            );
-          })}
-        </dl>
-      </Card.Content>
+            ) : null}
+          </Tabs.Panel>
+          <Tabs.Panel className="m-0 p-0" id="table">
+            <dl className="space-y-1">
+              {horizonRows.map(({ target, months }) => {
+                return (
+                  <ResultRow
+                    key={target}
+                    label={`${target}% more BTC`}
+                    value={
+                      months === null && isPriceLoading ? (
+                        <>
+                          <NumericSkeleton /> months
+                        </>
+                      ) : (
+                        formatImpactHorizon(months)
+                      )
+                    }
+                  />
+                );
+              })}
+            </dl>
+          </Tabs.Panel>
+        </Card.Content>
+      </ImpactTabs>
     </Card>
   );
 }
@@ -83,7 +124,7 @@ function ImpactHorizonExplanation({ input, prices, results }: ImpactHorizonExpla
   return (
     <>
       <p>
-        This timeline uses today's Kraken reference price for every monthly purchase. You currently
+        This timeline uses today’s Kraken reference price for every monthly purchase. You currently
         hold <HoldingAtReferencePrice currentBtc={results.currentBtc} input={input} />.
       </p>
       <p>
@@ -93,7 +134,7 @@ function ImpactHorizonExplanation({ input, prices, results }: ImpactHorizonExpla
       </p>
       <p>
         For example, the 100% row means adding another {formatNumber(results.currentBtc)} BTC. At
-        today's reference price ({formatFiat(prices.EUR, "EUR")} / {formatFiat(prices.USD, "USD")}),
+        today’s reference price ({formatFiat(prices.EUR, "EUR")} / {formatFiat(prices.USD, "USD")}),
         that takes <strong>{formatImpactHorizon(calculateImpactHorizon(results, 100))}</strong>.
       </p>
     </>

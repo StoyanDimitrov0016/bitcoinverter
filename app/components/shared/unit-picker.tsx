@@ -33,7 +33,11 @@ export function UnitPicker<TUnit extends string>({
         }}
       >
         {values.map((item) => (
-          <ToggleButton key={item} className="font-mono" id={item}>
+          <ToggleButton
+            key={item}
+            className="font-mono [--toggle-button-fg-selected:var(--foreground)]"
+            id={item}
+          >
             {item === "SATS" ? "sats" : item}
           </ToggleButton>
         ))}

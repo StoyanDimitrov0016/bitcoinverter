@@ -14,7 +14,7 @@ export function ValueField({ label, value, step, error, onChange }: ValueFieldPr
   return (
     <TextField fullWidth isInvalid={!!error} name={label.toLowerCase().replaceAll(" ", "-")}>
       <Label>{label}</Label>
-      <div className="flex overflow-hidden rounded-field bg-field shadow-field focus-within:focus-field-ring">
+      <div className="flex items-center overflow-hidden rounded-field bg-field shadow-field focus-within:focus-field-ring">
         <Button
           isIconOnly
           aria-label={`Decrease ${label}`}
