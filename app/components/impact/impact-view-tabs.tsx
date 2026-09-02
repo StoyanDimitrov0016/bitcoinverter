@@ -1,6 +1,6 @@
 "use client";
 
-import { Tabs, Tooltip } from "@heroui/react";
+import { Tabs } from "@heroui/react";
 import type { ReactNode } from "react";
 import { TbChartLine, TbTable } from "react-icons/tb";
 
@@ -33,18 +33,17 @@ export function ImpactTabs({ children, value, onChange }: ImpactTabsProps) {
   );
 }
 
-export function ImpactViewTabList() {
+type ImpactViewTabListProps = { ariaLabel: string };
+
+export function ImpactViewTabList({ ariaLabel }: ImpactViewTabListProps) {
   return (
     <Tabs.ListContainer className="border border-border">
-      <Tabs.List aria-label="Calculation view" className="p-0.5">
+      <Tabs.List aria-label={ariaLabel} className="p-0.5">
         {VIEW_OPTIONS.map(({ id, label, icon: Icon }) => (
           <Tabs.Tab key={id} aria-label={label} className="min-w-9 px-2.5" id={id}>
-            <Tooltip delay={500}>
-              <span className="flex size-4 items-center justify-center">
-                <Icon aria-hidden="true" className="size-4" />
-              </span>
-              <Tooltip.Content>{label}</Tooltip.Content>
-            </Tooltip>
+            <span className="flex size-4 items-center justify-center">
+              <Icon aria-hidden="true" className="size-4" />
+            </span>
             <Tabs.Indicator />
           </Tabs.Tab>
         ))}
