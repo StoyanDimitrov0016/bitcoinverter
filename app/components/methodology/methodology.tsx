@@ -3,15 +3,15 @@ import { Accordion } from "@heroui/react";
 const METHODOLOGY_ITEMS = [
   {
     id: "calculation",
-    title: "How the calculation works",
+    title: "How this works",
     content:
-      "Your holdings and monthly contribution are converted to BTC using the current Kraken price. The monthly BTC amount is multiplied by 12, then compared with the BTC you own today.",
+      "Your holding and monthly contribution are converted to BTC at today's Kraken price. The monthly BTC amount is multiplied by 12 and compared with your current holdings.",
   },
   {
     id: "percentage",
-    title: "What the percentage means",
+    title: "What net increase means",
     content:
-      "The net increase shows how much additional Bitcoin one year of equal contributions would add relative to your current holdings. It measures BTC quantity, not portfolio value or investment return.",
+      "Net increase is the additional BTC from 12 equal monthly contributions, shown as a percentage of your current holdings. It measures BTC quantity, not portfolio value or investment return.",
   },
   {
     id: "assumptions",
@@ -21,9 +21,9 @@ const METHODOLOGY_ITEMS = [
   },
   {
     id: "impact",
-    title: "Impact and price levels",
+    title: "Impact analysis",
     content:
-      "Time estimates assume the same contribution continues indefinitely. Price levels are mathematical thresholds showing where the plan reaches each impact percentage; they are not price predictions.",
+      "Current-plan time estimates assume the same contribution continues. Monthly-plan amounts show what would reach each target in 12 months. These are mathematical scenarios, not predictions.",
   },
   {
     id: "privacy",
@@ -33,9 +33,8 @@ const METHODOLOGY_ITEMS = [
   },
   {
     id: "data-source",
-    title: "Data source",
-    content:
-      "BTC prices come from Kraken's free public market-data API and are cached for 60 seconds to reduce unnecessary requests.",
+    title: "Price data",
+    content: "BTC prices come from Kraken's public market-data API and are cached for 60 seconds.",
   },
 ] as const;
 
