@@ -1,12 +1,14 @@
 import Image from "next/image";
 
-export function BitcoinSymbol() {
+type BitcoinSymbolProps = { isActive?: boolean };
+
+export function BitcoinSymbol({ isActive = false }: BitcoinSymbolProps) {
   return (
     <Image
       aria-hidden="true"
       className="inline-block size-[0.8em] shrink-0"
       height={144}
-      src="/bitcoin.svg"
+      src={isActive ? "/bitcoin-black-background.svg" : "/bitcoin-orange-background.svg"}
       width={144}
       alt=""
     />
