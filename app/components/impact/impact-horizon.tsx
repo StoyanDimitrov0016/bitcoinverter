@@ -3,40 +3,45 @@
 import { Card, Tabs } from "@heroui/react";
 import { useState } from "react";
 
-import { calculateImpactHorizon, type AccumulationResults } from "@/lib/bitcoin-calculator.utils";
-import { getImpactHorizonData, type GrowthMetric } from "@/lib/impact-chart.utils";
+import { MONTHS_PER_YEAR } from "@/lib/calculator/calculator.constants";
+import { getImpactHorizonData } from "@/lib/impact/impact.calculations";
+import { IMPACT_TARGETS, type GrowthMetric } from "@/lib/impact/impact.constants";
 import {
   formatAccumulationAmount,
   formatFiat,
   formatImpactHorizon,
   formatNumber,
 } from "@/lib/number-format.utils";
-import type { AccumulationInput } from "@/lib/schemas/calculator.schemas";
-import type { BitcoinPrices } from "@/lib/schemas/price.schemas";
-import { useCalculatorData } from "../calculator/calculator-data-context";
-import { ImpactInfoDialog } from "./impact-info-dialog";
-import { HoldingAtReferencePrice } from "./holding-at-reference-price";
+import { useCalculatorData, type CalculatorData } from "../calculator/calculator-data-context";
 import { NumericSkeleton } from "../shared/numeric-skeleton";
 import { ResultRow } from "../shared/result";
-import { ImpactChart } from "./impact-chart";
-import { ImpactTabs, ImpactViewTabList, type ImpactView } from "./impact-view-tabs";
+import { UnavailableValue } from "../shared/unavailable-value";
 import { GrowthMetricToggle } from "./growth-metric-toggle";
+import { HoldingAtReferencePrice } from "./holding-at-reference-price";
+import { ImpactChart } from "./impact-chart";
+import { ImpactInfoDialog } from "./impact-info-dialog";
+import { ImpactTabs, ImpactViewTabList, type ImpactView } from "./impact-view-tabs";
 
-const formatPercent = (value: number) => `${formatNumber(value, 0)}%`;
-const formatBtc = (value: number) => `${formatNumber(value)} BTC`;
+const GROWTH_METRIC_CONFIG = {
+  btc: {
+    ariaLabel: "Total BTC holdings over time",
+    yLabel: "Total BTC holdings",
+    formatValue: (value: number) => `${formatNumber(value)} BTC`,
+  },
+  percent: {
+    ariaLabel: "Percentage increase in BTC holdings over time",
+    yLabel: "Increase in holdings (%)",
+    formatValue: (value: number) => `${formatNumber(value, 0)}%`,
+  },
+} satisfies Record<
+  GrowthMetric,
+  { ariaLabel: string; yLabel: string; formatValue: (value: number) => string }
+>;
 
 export function ImpactHorizon() {
-  const { input, isPriceLoading, prices, results } = useCalculatorData();
+  const state = useCalculatorData();
   const [view, setView] = useState<ImpactView>("chart");
   const [metric, setMetric] = useState<GrowthMetric>("btc");
-  const { rows: horizonRows, chartData } = getImpactHorizonData(results, metric);
-  const useYears = (chartData.at(-1)?.x ?? 0) > 24;
-  const displayedData = chartData.map((point) => ({
-    ...point,
-    x: useYears ? point.x / 12 : point.x,
-  }));
-  const formatTime = (value: number) =>
-    useYears ? `${formatNumber(value, 1)}y` : `${Math.round(value)}m`;
 
   return (
     <Card>
@@ -45,86 +50,137 @@ export function ImpactHorizon() {
           <div>
             <Card.Title>How long until you own more BTC</Card.Title>
             <Card.Description className="-mt-1 text-xs">
-              at today’s reference price
+              at today's reference price
             </Card.Description>
           </div>
           <div className="flex shrink-0 items-center gap-2">
-            {view === "chart" ? <GrowthMetricToggle value={metric} onChange={setMetric} /> : null}
-            <ImpactViewTabList />
+            {view === "chart" ? (
+              <GrowthMetricToggle
+                ariaLabel="Accumulation timeline metric"
+                value={metric}
+                onChange={setMetric}
+              />
+            ) : null}
+            <ImpactViewTabList ariaLabel="Accumulation timeline view" />
             <ImpactInfoDialog
               ariaLabel="Explain the accumulation timeline"
               title="How the timeline is calculated"
             >
-              <ImpactHorizonExplanation input={input} prices={prices} results={results} />
+              <ImpactHorizonExplanation state={state} />
             </ImpactInfoDialog>
           </div>
         </Card.Header>
         <Card.Content>
-          <Tabs.Panel className="m-0 p-0" id="chart">
-            {displayedData.length > 1 ? (
-              <ImpactChart
-                ariaLabel={`${metric === "btc" ? "Total BTC holdings" : "Percentage increase in BTC holdings"} over time`}
-                data={displayedData}
-                xLabel={useYears ? "Years" : "Months"}
-                xValue={formatTime}
-                yLabel={metric === "btc" ? "Total BTC holdings" : "Increase in holdings (%)"}
-                yValue={metric === "btc" ? formatBtc : formatPercent}
-              />
-            ) : null}
-          </Tabs.Panel>
-          <Tabs.Panel className="m-0 p-0" id="table">
-            <dl className="space-y-1">
-              {horizonRows.map(({ target, months }) => {
-                return (
-                  <ResultRow
-                    key={target}
-                    label={`${target}% more BTC`}
-                    value={
-                      months === null && isPriceLoading ? (
-                        <>
-                          <NumericSkeleton /> months
-                        </>
-                      ) : (
-                        formatImpactHorizon(months)
-                      )
-                    }
-                  />
-                );
-              })}
-            </dl>
-          </Tabs.Panel>
+          <ImpactHorizonPanels metric={metric} state={state} />
         </Card.Content>
       </ImpactTabs>
     </Card>
   );
 }
 
-type ImpactHorizonExplanationProps = {
-  input: AccumulationInput | null;
-  prices: BitcoinPrices | null;
-  results: AccumulationResults | null;
+type ImpactHorizonPanelsProps = {
+  metric: GrowthMetric;
+  state: CalculatorData;
 };
 
-function ImpactHorizonExplanation({ input, prices, results }: ImpactHorizonExplanationProps) {
-  if (results?.currentBtc === 0) {
-    return (
-      <p>
-        A relative timeline needs current BTC holdings above zero. Enter an existing holding to
-        compare it with future monthly contributions.
-      </p>
-    );
+function ImpactHorizonPanels({ metric, state }: ImpactHorizonPanelsProps) {
+  if (state.status !== "ready" || state.calculation.status !== "ready") {
+    return <UnavailableHorizonPanels isLoading={state.status === "loading"} />;
   }
 
-  if (!input || !prices || !results) {
+  const data = getImpactHorizonData(state.calculation.results, metric);
+  if (data.status === "unavailable") {
+    return <UnavailableHorizonPanels isLoading={false} />;
+  }
+
+  const useYears = data.hundredPercentMonths > MONTHS_PER_YEAR * 2;
+  const chartData = data.chartData.map((point) => ({
+    ...point,
+    x: useYears ? point.x / MONTHS_PER_YEAR : point.x,
+  }));
+  const metricConfig = GROWTH_METRIC_CONFIG[metric];
+  const formatTime = useYears
+    ? (value: number) => `${formatNumber(value, 1)}y`
+    : (value: number) => `${Math.round(value)}m`;
+
+  return (
+    <>
+      <Tabs.Panel className="m-0 p-0" id="chart">
+        <ImpactChart
+          ariaLabel={metricConfig.ariaLabel}
+          data={chartData}
+          xLabel={useYears ? "Years" : "Months"}
+          xValue={formatTime}
+          yLabel={metricConfig.yLabel}
+          yValue={metricConfig.formatValue}
+        />
+      </Tabs.Panel>
+      <Tabs.Panel className="m-0 p-0" id="table">
+        <dl className="space-y-1">
+          {data.rows.map(({ target, months }) => (
+            <ResultRow
+              key={target}
+              label={`${target}% more BTC`}
+              value={formatImpactHorizon(months)}
+            />
+          ))}
+        </dl>
+      </Tabs.Panel>
+    </>
+  );
+}
+
+type UnavailableHorizonPanelsProps = { isLoading: boolean };
+
+function UnavailableHorizonPanels({ isLoading }: UnavailableHorizonPanelsProps) {
+  return (
+    <>
+      <Tabs.Panel className="m-0 p-0" id="chart">
+        {null}
+      </Tabs.Panel>
+      <Tabs.Panel className="m-0 p-0" id="table">
+        <dl className="space-y-1">
+          {IMPACT_TARGETS.map((target) => (
+            <ResultRow
+              key={target}
+              label={`${target}% more BTC`}
+              value={isLoading ? <HorizonSkeleton /> : <UnavailableValue />}
+            />
+          ))}
+        </dl>
+      </Tabs.Panel>
+    </>
+  );
+}
+
+function HorizonSkeleton() {
+  return (
+    <>
+      <NumericSkeleton /> months
+    </>
+  );
+}
+
+type ImpactHorizonExplanationProps = { state: CalculatorData };
+
+function ImpactHorizonExplanation({ state }: ImpactHorizonExplanationProps) {
+  if (state.status !== "ready" || state.calculation.status !== "ready") {
     return (
       <p>Enter valid amounts and wait for the live BTC price to see a personalized timeline.</p>
     );
   }
 
+  const { input, results } = state.calculation;
+  const data = getImpactHorizonData(results, "btc");
+
+  if (data.status === "unavailable") {
+    return <p>{HORIZON_UNAVAILABLE_MESSAGES[data.reason]}</p>;
+  }
+
   return (
     <>
       <p>
-        This timeline uses today’s Kraken reference price for every monthly purchase. You currently
+        This timeline uses today's Kraken reference price for every monthly purchase. You currently
         hold <HoldingAtReferencePrice currentBtc={results.currentBtc} input={input} />.
       </p>
       <p>
@@ -134,9 +190,15 @@ function ImpactHorizonExplanation({ input, prices, results }: ImpactHorizonExpla
       </p>
       <p>
         For example, the 100% row means adding another {formatNumber(results.currentBtc)} BTC. At
-        today’s reference price ({formatFiat(prices.EUR, "EUR")} / {formatFiat(prices.USD, "USD")}),
-        that takes <strong>{formatImpactHorizon(calculateImpactHorizon(results, 100))}</strong>.
+        today's reference price ({formatFiat(state.prices.EUR, "EUR")} /{" "}
+        {formatFiat(state.prices.USD, "USD")}), that takes{" "}
+        <strong>{formatImpactHorizon(data.hundredPercentMonths)}</strong>.
       </p>
     </>
   );
 }
+
+const HORIZON_UNAVAILABLE_MESSAGES = {
+  "zero-current-holdings": "A relative timeline needs current BTC holdings above zero.",
+  "zero-contribution": "A relative timeline needs a monthly contribution above zero.",
+} as const;
