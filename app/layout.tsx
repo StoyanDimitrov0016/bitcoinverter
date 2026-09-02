@@ -1,13 +1,18 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SITE_CONFIG } from "@/lib/site-config";
+import { STATIC_THEME_COLORS } from "@/lib/theme/theme.constants";
 import "./globals.css";
 
 type RootLayoutProps = {
   children: React.ReactNode;
 };
 
-const geistSans = Geist({ subsets: ["latin"], variable: "--font-geist-sans", display: "swap" });
+const geistSans = Geist({
+  subsets: ["latin"],
+  variable: "--font-geist-sans",
+  display: "swap",
+});
 const geistMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-geist-mono",
@@ -38,16 +43,17 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f5f0e6" },
-    { media: "(prefers-color-scheme: dark)", color: "#17130f" },
+    { media: "(prefers-color-scheme: light)", color: STATIC_THEME_COLORS.lightBackground },
+    { media: "(prefers-color-scheme: dark)", color: STATIC_THEME_COLORS.darkBackground },
   ],
 };
 
 const themeInitScript = `try {
   var stored = localStorage.getItem("heroui-theme") || "system";
-  var resolved = stored === "system"
-    ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
-    : stored;
+  var resolved = stored;
+  if (stored === "system") {
+    resolved = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
   document.documentElement.classList.add(resolved);
   document.documentElement.setAttribute("data-theme", resolved);
 } catch {}`;
