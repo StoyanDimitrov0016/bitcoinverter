@@ -8,12 +8,18 @@ type ValueFieldProps = {
   value: string;
   step: number;
   error?: string;
+  onBlur?: () => void;
   onChange: (value: string) => void;
 };
 
-export function ValueField({ label, value, step, error, onChange }: ValueFieldProps) {
+export function ValueField({ label, value, step, error, onBlur, onChange }: ValueFieldProps) {
   return (
-    <TextField fullWidth isInvalid={!!error} name={label.toLowerCase().replaceAll(" ", "-")}>
+    <TextField
+      fullWidth
+      className="relative"
+      isInvalid={!!error}
+      name={label.toLowerCase().replaceAll(" ", "-")}
+    >
       <Label>{label}</Label>
       <div className="flex items-center overflow-hidden rounded-field bg-field shadow-field focus-within:focus-field-ring">
         <Button
@@ -25,9 +31,10 @@ export function ValueField({ label, value, step, error, onChange }: ValueFieldPr
           <TbMinus aria-hidden="true" className="size-4" />
         </Button>
         <Input
-          className="min-w-0 flex-1 rounded-none font-mono shadow-none focus:ring-0! focus-visible:ring-0!"
+          className="min-w-0 flex-1 rounded-none px-0 font-mono shadow-none focus:ring-0! focus-visible:ring-0!"
           inputMode="decimal"
           value={value}
+          onBlur={onBlur}
           onChange={(event) => onChange(event.target.value)}
         />
         <Button
@@ -39,7 +46,9 @@ export function ValueField({ label, value, step, error, onChange }: ValueFieldPr
           <TbPlus aria-hidden="true" className="size-4" />
         </Button>
       </div>
-      <FieldError>{error}</FieldError>
+      <FieldError className="absolute start-0 top-full mt-1 text-xs whitespace-nowrap">
+        {error}
+      </FieldError>
     </TextField>
   );
 }

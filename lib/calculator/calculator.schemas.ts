@@ -8,7 +8,7 @@ import {
 } from "./calculator.constants";
 
 const DECIMAL_AMOUNT_PATTERN = /^(?:\d+(?:[.,]\d*)?|[.,]\d+)$/;
-const INVALID_AMOUNT_MESSAGE = "Enter a valid, non-negative amount.";
+const INVALID_AMOUNT_MESSAGE = "Enter non-negative number";
 
 export const FiatCurrencySchema = z.enum(FIAT_CURRENCIES);
 export const HoldingUnitSchema = z.enum(HOLDING_UNITS);
@@ -19,7 +19,7 @@ export const DecimalAmountSchema = z
   .string()
   .regex(DECIMAL_AMOUNT_PATTERN, INVALID_AMOUNT_MESSAGE)
   .transform((value) => Number(value.replace(",", ".")))
-  .pipe(z.number().nonnegative());
+  .pipe(z.number().nonnegative(INVALID_AMOUNT_MESSAGE));
 
 export const AccumulationSchema = z.object({
   holding: DecimalAmountSchema,
