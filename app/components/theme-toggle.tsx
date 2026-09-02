@@ -1,6 +1,6 @@
 "use client";
 
-import { Switch, useTheme } from "@heroui/react";
+import { Button, useTheme } from "@heroui/react";
 import { FiMoon, FiSun } from "react-icons/fi";
 import { useSyncExternalStore } from "react";
 
@@ -18,25 +18,18 @@ export function ThemeToggle() {
   const isDark = isHydrated && resolvedTheme === "dark";
 
   return (
-    <Switch
+    <Button
+      isIconOnly
       aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
-      isSelected={isDark}
       size="sm"
-      onChange={(selected) => setTheme(selected ? "dark" : "light")}
+      variant="ghost"
+      onPress={() => setTheme(isDark ? "light" : "dark")}
     >
-      <Switch.Content>
-        <Switch.Control>
-          <Switch.Thumb>
-            <Switch.Icon>
-              {isDark ? (
-                <FiMoon aria-hidden="true" size={10} />
-              ) : (
-                <FiSun aria-hidden="true" size={10} />
-              )}
-            </Switch.Icon>
-          </Switch.Thumb>
-        </Switch.Control>
-      </Switch.Content>
-    </Switch>
+      {isDark ? (
+        <FiSun aria-hidden="true" className="size-4" />
+      ) : (
+        <FiMoon aria-hidden="true" className="size-4" />
+      )}
+    </Button>
   );
 }

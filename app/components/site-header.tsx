@@ -49,6 +49,7 @@ export function SiteHeader({ price }: SiteHeaderProps) {
 
         <div className="ms-auto flex shrink-0 items-center gap-1 sm:gap-2">
           <HeaderPrice price={price} />
+          <ThemeToggle />
           <Link
             aria-label="View BitCoinverter on GitHub (opens in a new tab)"
             className="grid size-7 shrink-0 place-items-center rounded-full text-foreground sm:size-8"
@@ -58,7 +59,6 @@ export function SiteHeader({ price }: SiteHeaderProps) {
           >
             <SiGithub aria-hidden="true" className="size-4 sm:size-5" />
           </Link>
-          <ThemeToggle />
         </div>
       </div>
     </header>
@@ -103,7 +103,7 @@ type LivePriceTickerProps = { prices: BitcoinPrices };
 
 function LivePriceTicker({ prices }: LivePriceTickerProps) {
   return (
-    <Chip className="w-24 justify-center px-0.5" color="accent" size="sm" variant="soft">
+    <Chip className="w-24 justify-center bg-surface px-0.5 text-accent" size="sm">
       <output aria-atomic="true" className="sr-only">
         Current Kraken Bitcoin prices: {formatFiat(prices.EUR, "EUR")} and{" "}
         {formatFiat(prices.USD, "USD")}
