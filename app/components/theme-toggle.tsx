@@ -2,10 +2,20 @@
 
 import { Switch, useTheme } from "@heroui/react";
 import { FiMoon, FiSun } from "react-icons/fi";
+import { useSyncExternalStore } from "react";
+
+const subscribeToHydration = () => () => {};
+const getClientHydrationSnapshot = () => true;
+const getServerHydrationSnapshot = () => false;
 
 export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
+  const isHydrated = useSyncExternalStore(
+    subscribeToHydration,
+    getClientHydrationSnapshot,
+    getServerHydrationSnapshot
+  );
+  const isDark = isHydrated && resolvedTheme === "dark";
 
   return (
     <Switch

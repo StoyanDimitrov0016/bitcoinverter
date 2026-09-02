@@ -1,5 +1,5 @@
 import { formatAccumulationAmount, formatNumber } from "@/lib/number-format.utils";
-import type { AccumulationInput } from "@/lib/schemas/calculator.schemas";
+import type { AccumulationInput } from "@/lib/calculator/calculator.schemas";
 
 type HoldingAtReferencePriceProps = {
   currentBtc: number;
@@ -12,7 +12,7 @@ export function HoldingAtReferencePrice({ currentBtc, input }: HoldingAtReferenc
       <strong>{formatAccumulationAmount(input.holding, input.holdingUnit)}</strong>
       {input.holdingUnit === "BTC" ? null : (
         <>
-          , equivalent to <strong>{formatNumber(currentBtc)} BTC</strong> at today’s reference price
+          , equivalent to <strong>{formatNumber(currentBtc)} BTC</strong> at today's reference price
         </>
       )}
     </>

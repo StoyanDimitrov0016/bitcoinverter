@@ -44,7 +44,7 @@ export function Methodology() {
     <Accordion variant="surface">
       {METHODOLOGY_ITEMS.map((item) => (
         <Accordion.Item key={item.id} id={item.id}>
-          <Accordion.Heading>
+          <Accordion.Heading level={3}>
             <Accordion.Trigger>
               {item.title}
               <Accordion.Indicator />

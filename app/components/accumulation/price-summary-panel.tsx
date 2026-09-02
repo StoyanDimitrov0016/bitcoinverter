@@ -1,4 +1,4 @@
-import type { AccumulationInput } from "@/lib/schemas/calculator.schemas";
+import type { AccumulationInput } from "@/lib/calculator/calculator.schemas";
 
 import { CalculatorDataBoundary } from "../calculator/calculator-data-boundary";
 import { ImpactSummary } from "../impact/impact-summary";

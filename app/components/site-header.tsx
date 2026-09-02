@@ -1,9 +1,8 @@
 import { Button, Chip, Link } from "@heroui/react";
 import { SiGithub } from "react-icons/si";
 
-import type { PriceState } from "@/app/providers/bitcoin-prices-provider";
 import { formatFiat } from "@/lib/number-format.utils";
-import type { BitcoinPrices } from "@/lib/schemas/price.schemas";
+import type { BitcoinPrices } from "@/lib/prices/price.schemas";
 
 import { BitcoinSymbol } from "./shared/currency-symbol";
 import { FiatSkeleton } from "./shared/numeric-skeleton";
@@ -16,16 +15,17 @@ const NAVIGATION_ITEMS = [
   { href: "#methodology", label: "Methodology" },
 ] as const;
 
-type SiteHeaderProps = {
-  prices: BitcoinPrices | null;
-  priceState: PriceState;
-  onRetry: () => void;
-};
+type HeaderPriceState =
+  | { status: "loading" }
+  | { status: "error"; retry: () => void }
+  | { status: "ready"; prices: BitcoinPrices };
 
-export function SiteHeader({ prices, priceState, onRetry }: SiteHeaderProps) {
+type SiteHeaderProps = { price: HeaderPriceState };
+
+export function SiteHeader({ price }: SiteHeaderProps) {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-surface/95 backdrop-blur">
-      <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-1 gap-y-3 px-4 py-3 sm:gap-x-4 sm:px-5">
+      <div className="layout-container flex flex-wrap items-center gap-x-1 gap-y-3 py-3 sm:gap-x-4">
         <Link
           className="flex shrink-0 items-center gap-1.5 text-sm font-semibold text-foreground sm:gap-3 sm:text-base"
           href="/"
@@ -48,48 +48,9 @@ export function SiteHeader({ prices, priceState, onRetry }: SiteHeaderProps) {
         </nav>
 
         <div className="ms-auto flex shrink-0 items-center gap-1 sm:gap-2">
-          {prices ? (
-            <Chip className="w-24 justify-center px-0.5" color="accent" size="sm" variant="soft">
-              <span aria-live="polite" className="sr-only">
-                {formatFiat(prices.EUR, "EUR")} | {formatFiat(prices.USD, "USD")}
-              </span>
-              <span aria-hidden="true" className="h-5 overflow-hidden font-mono font-medium">
-                <span className="price-ticker-track flex flex-col">
-                  <span className="flex h-5 items-center justify-center whitespace-nowrap">
-                    {formatFiat(prices.EUR, "EUR")}
-                  </span>
-                  <span className="flex h-5 items-center justify-center whitespace-nowrap">
-                    {formatFiat(prices.USD, "USD")}
-                  </span>
-                  <span className="flex h-5 items-center justify-center whitespace-nowrap">
-                    {formatFiat(prices.EUR, "EUR")}
-                  </span>
-                </span>
-              </span>
-            </Chip>
-          ) : (
-            <Chip
-              className="w-24 justify-center px-0.5"
-              color={priceState === "error" ? "danger" : "accent"}
-              size="sm"
-              variant="soft"
-            >
-              {priceState === "loading" ? (
-                <span className="flex items-center font-mono font-medium">
-                  <FiatSkeleton currency="EUR" />
-                </span>
-              ) : (
-                "Kraken unavailable"
-              )}
-            </Chip>
-          )}
-          {priceState === "error" && (
-            <Button size="sm" variant="secondary" onPress={onRetry}>
-              Retry
-            </Button>
-          )}
+          <HeaderPrice price={price} />
           <Link
-            aria-label="View BitCoinverter on GitHub"
+            aria-label="View BitCoinverter on GitHub (opens in a new tab)"
             className="grid size-7 shrink-0 place-items-center rounded-full text-foreground sm:size-8"
             href="https://github.com/StoyanDimitrov0016/BitCoinverter"
             rel="noopener noreferrer"
@@ -101,5 +62,65 @@ export function SiteHeader({ prices, priceState, onRetry }: SiteHeaderProps) {
         </div>
       </div>
     </header>
+  );
+}
+
+type HeaderPriceProps = { price: HeaderPriceState };
+
+function HeaderPrice({ price }: HeaderPriceProps) {
+  if (price.status === "loading") {
+    return (
+      <Chip className="w-24 justify-center px-0.5" color="accent" size="sm" variant="soft">
+        <span className="flex items-center font-mono font-medium">
+          <FiatSkeleton currency="EUR" />
+        </span>
+      </Chip>
+    );
+  }
+
+  if (price.status === "error") {
+    return (
+      <>
+        <Chip className="w-24 justify-center px-0.5" color="danger" size="sm" variant="soft">
+          Kraken unavailable
+        </Chip>
+        <Button
+          aria-label="Retry loading the Kraken price"
+          size="sm"
+          variant="secondary"
+          onPress={price.retry}
+        >
+          Retry price
+        </Button>
+      </>
+    );
+  }
+
+  return <LivePriceTicker prices={price.prices} />;
+}
+
+type LivePriceTickerProps = { prices: BitcoinPrices };
+
+function LivePriceTicker({ prices }: LivePriceTickerProps) {
+  return (
+    <Chip className="w-24 justify-center px-0.5" color="accent" size="sm" variant="soft">
+      <output aria-atomic="true" className="sr-only">
+        Current Kraken Bitcoin prices: {formatFiat(prices.EUR, "EUR")} and{" "}
+        {formatFiat(prices.USD, "USD")}
+      </output>
+      <span aria-hidden="true" className="h-5 overflow-hidden font-mono font-medium">
+        <span className="price-ticker-track flex flex-col">
+          <span className="flex h-5 items-center justify-center whitespace-nowrap">
+            {formatFiat(prices.EUR, "EUR")}
+          </span>
+          <span className="flex h-5 items-center justify-center whitespace-nowrap">
+            {formatFiat(prices.USD, "USD")}
+          </span>
+          <span className="flex h-5 items-center justify-center whitespace-nowrap">
+            {formatFiat(prices.EUR, "EUR")}
+          </span>
+        </span>
+      </span>
+    </Chip>
   );
 }

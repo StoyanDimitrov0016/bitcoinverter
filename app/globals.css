@@ -3,27 +3,82 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-@layer theme {
+@layer base {
+  :root {
+    --radius: 0.625rem;
+    --field-radius: 0.75rem;
+  }
+
   :root,
   [data-theme="light"] {
+    color-scheme: light;
     --background: oklch(0.9563 0.0143 84.58);
     --foreground: oklch(0.2228 0.0147 66.95);
+    --surface: oklch(0.985 0.008 84.58);
+    --surface-foreground: var(--foreground);
+    --surface-secondary: oklch(0.932 0.018 82);
+    --surface-secondary-foreground: var(--foreground);
+    --surface-tertiary: oklch(0.9 0.022 80);
+    --surface-tertiary-foreground: var(--foreground);
+    --overlay: oklch(0.99 0.006 84.58);
+    --overlay-foreground: var(--foreground);
+    --default: oklch(0.91 0.018 82);
+    --default-foreground: var(--foreground);
     --accent: oklch(0.7523 0.1663 62.59);
     --accent-foreground: oklch(0.1988 0.0322 70.17);
-    --accent-hover: oklch(0.6927 0.1546 61.25);
     --muted: oklch(0.507 0.02 67);
+    --field-background: var(--surface);
+    --field-foreground: var(--foreground);
+    --field-placeholder: var(--muted);
+    --field-border: oklch(0.82 0.028 78);
+    --segment: var(--surface);
+    --segment-foreground: var(--foreground);
+    --border: oklch(0.83 0.025 78);
+    --separator: oklch(0.87 0.021 80);
+    --focus: var(--accent);
+    --link: var(--foreground);
+    --backdrop: rgb(23 19 15 / 0.5);
     --accent-soft-foreground: oklch(0.52 0.13 40);
+    --surface-shadow:
+      0 2px 4px rgb(50 38 24 / 0.05), 0 1px 2px rgb(50 38 24 / 0.07), 0 0 1px rgb(50 38 24 / 0.08);
+    --overlay-shadow: 0 2px 8px rgb(50 38 24 / 0.08), 0 14px 28px rgb(50 38 24 / 0.12);
+    --field-shadow:
+      0 2px 4px rgb(50 38 24 / 0.04), 0 1px 2px rgb(50 38 24 / 0.06), 0 0 1px rgb(50 38 24 / 0.07);
   }
 
   .dark,
   [data-theme="dark"] {
+    color-scheme: dark;
     --background: oklch(0.1901 0.0102 67.15);
     --foreground: oklch(0.9478 0.016 82.79);
+    --surface: oklch(0.225 0.012 68);
+    --surface-foreground: var(--foreground);
+    --surface-secondary: oklch(0.265 0.014 68);
+    --surface-secondary-foreground: var(--foreground);
+    --surface-tertiary: oklch(0.3 0.016 68);
+    --surface-tertiary-foreground: var(--foreground);
+    --overlay: oklch(0.25 0.014 68);
+    --overlay-foreground: var(--foreground);
+    --default: oklch(0.285 0.016 68);
+    --default-foreground: var(--foreground);
     --accent: oklch(0.7523 0.1663 62.59);
     --accent-foreground: oklch(0.1988 0.0322 70.17);
-    --accent-hover: oklch(0.8056 0.1542 68.93);
     --muted: oklch(0.705 0.02 75);
+    --field-background: var(--surface-secondary);
+    --field-foreground: var(--foreground);
+    --field-placeholder: var(--muted);
+    --field-border: oklch(0.38 0.025 70);
+    --segment: oklch(0.36 0.02 70);
+    --segment-foreground: var(--foreground);
+    --border: oklch(0.34 0.021 70);
+    --separator: oklch(0.3 0.018 70);
+    --focus: var(--accent);
+    --link: var(--foreground);
+    --backdrop: rgb(8 6 4 / 0.65);
     --accent-soft-foreground: oklch(0.805 0.125 63.3);
+    --surface-shadow: 0 0 0 transparent inset;
+    --overlay-shadow: 0 0 0 1px rgb(255 244 225 / 0.12) inset;
+    --field-shadow: 0 0 0 transparent inset;
   }
 }
 
@@ -34,6 +89,17 @@
   --font-mono:
     var(--font-geist-mono), ui-monospace, "Cascadia Code", "Segoe UI Mono", "SFMono-Regular",
     Consolas, "Liberation Mono", Menlo, monospace;
+}
+
+@utility layout-container {
+  margin-inline: auto;
+  width: 100%;
+  max-width: var(--container-7xl);
+  padding-inline: calc(var(--spacing) * 4);
+
+  @media (width >= 40rem) {
+    padding-inline: calc(var(--spacing) * 5);
+  }
 }
 
 html {

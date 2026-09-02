@@ -2,29 +2,15 @@
 
 import { createContext, use, useState, type ReactNode } from "react";
 
-import {
-  BitcoinPricesSchema,
-  type BitcoinPrices,
-  type BitcoinPricesResult,
-} from "@/lib/schemas/price.schemas";
-
-export type PriceState = "loading" | "ready" | "error";
-
-async function requestBitcoinPrices(): Promise<BitcoinPrices> {
-  const response = await fetch("/api/prices", { cache: "no-store" });
-  const responseData: unknown = await response.json();
-  if (!response.ok) {
-    throw new Error("The price service returned an error response");
-  }
-  return BitcoinPricesSchema.parse(responseData);
-}
+import { fetchBitcoinPrices } from "@/lib/prices/price.client";
+import type { BitcoinPricesResult } from "@/lib/prices/price.schemas";
 
 async function createClientPricesPromise(): Promise<BitcoinPricesResult> {
   try {
-    const prices = await requestBitcoinPrices();
-    return { prices };
+    const prices = await fetchBitcoinPrices();
+    return { status: "ready", prices };
   } catch {
-    return { prices: null };
+    return { status: "error" };
   }
 }
 
@@ -49,26 +35,11 @@ export function BitcoinPricesProvider({ children, pricesPromise }: BitcoinPrices
   return <BitcoinPricesContext value={contextValue}>{children}</BitcoinPricesContext>;
 }
 
-export function usePriceRetry() {
-  const value = use(BitcoinPricesContext);
-  if (!value) {
-    throw new Error("usePriceRetry must be used within a BitcoinPricesProvider");
-  }
-  return value.retry;
-}
-
 export function useBitcoinPrices() {
-  const value = use(BitcoinPricesContext);
-  if (!value) {
+  const ctx = use(BitcoinPricesContext);
+  if (!ctx) {
     throw new Error("useBitcoinPrices must be used within a BitcoinPricesProvider");
   }
 
-  const result = use(value.pricesPromise);
-  const priceState: Exclude<PriceState, "loading"> = result.prices ? "ready" : "error";
-
-  return {
-    prices: result.prices,
-    priceState,
-    retry: value.retry,
-  };
+  return { ...use(ctx.pricesPromise), retry: ctx.retry };
 }

@@ -1,4 +1,4 @@
-import { Button, InfoIcon, Modal } from "@heroui/react";
+import { buttonVariants, InfoIcon, Modal } from "@heroui/react";
 import type { ReactNode } from "react";
 
 type ImpactInfoDialogProps = {
@@ -10,9 +10,12 @@ type ImpactInfoDialogProps = {
 export function ImpactInfoDialog({ ariaLabel, title, children }: ImpactInfoDialogProps) {
   return (
     <Modal>
-      <Button aria-label={ariaLabel} isIconOnly size="sm" variant="ghost">
+      <Modal.Trigger
+        aria-label={ariaLabel}
+        className={buttonVariants({ isIconOnly: true, size: "sm", variant: "ghost" })}
+      >
         <InfoIcon aria-hidden="true" className="size-4" />
-      </Button>
+      </Modal.Trigger>
       <Modal.Backdrop>
         <Modal.Container>
           <Modal.Dialog className="sm:max-w-lg">

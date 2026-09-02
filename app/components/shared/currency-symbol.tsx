@@ -6,7 +6,7 @@ export function BitcoinSymbol() {
       aria-hidden="true"
       className="inline-block size-[0.8em] shrink-0"
       height={144}
-      src="/bitcoin-symbol.svg"
+      src="/bitcoin.svg"
       width={144}
       alt=""
     />
@@ -20,7 +20,7 @@ export function ConverterBitcoinSymbol() {
         aria-hidden="true"
         className="inline-block size-4 shrink-0 dark:hidden"
         height={24}
-        src="/bitcoin-simple-svgrepo-com-dark.svg"
+        src="/bitcoin-black.svg"
         width={24}
         alt=""
       />
@@ -28,7 +28,7 @@ export function ConverterBitcoinSymbol() {
         aria-hidden="true"
         className="hidden size-4 shrink-0 dark:inline-block"
         height={24}
-        src="/bitcoin-simple-svgrepo-com-light.svg"
+        src="/bitcoin-white.svg"
         width={24}
         alt=""
       />
@@ -43,7 +43,7 @@ export function SatoshiSymbol() {
         aria-hidden="true"
         className="inline-block size-4 shrink-0 dark:hidden"
         height={24}
-        src="/satoshi-v2-svgrepo-com-dark.svg"
+        src="/satoshi-black.svg"
         width={24}
         alt=""
       />
@@ -51,7 +51,7 @@ export function SatoshiSymbol() {
         aria-hidden="true"
         className="hidden size-4 shrink-0 dark:inline-block"
         height={24}
-        src="/satoshi-v2-svgrepo-com-light.svg"
+        src="/satoshi-white.svg"
         width={24}
         alt=""
       />

@@ -1,12 +1,13 @@
 "use client";
 
-import { ToggleButton, ToggleButtonGroup, Tooltip } from "@heroui/react";
+import { ToggleButton, ToggleButtonGroup } from "@heroui/react";
 import { TbPercentage } from "react-icons/tb";
 
 import { BitcoinSymbol } from "../shared/currency-symbol";
-import type { GrowthMetric } from "@/lib/impact-chart.utils";
+import type { GrowthMetric } from "@/lib/impact/impact.constants";
 
 type GrowthMetricToggleProps = {
+  ariaLabel: string;
   value: GrowthMetric;
   onChange: (value: GrowthMetric) => void;
 };
@@ -16,10 +17,10 @@ const METRICS = [
   { id: "percent", label: "Percentage increase" },
 ] as const;
 
-export function GrowthMetricToggle({ value, onChange }: GrowthMetricToggleProps) {
+export function GrowthMetricToggle({ ariaLabel, value, onChange }: GrowthMetricToggleProps) {
   return (
     <ToggleButtonGroup
-      aria-label="Growth value"
+      aria-label={ariaLabel}
       className="rounded-3xl border border-border"
       disallowEmptySelection
       selectedKeys={[value]}
@@ -33,22 +34,20 @@ export function GrowthMetricToggle({ value, onChange }: GrowthMetricToggleProps)
       }}
     >
       {METRICS.map((metric) => (
-        <Tooltip key={metric.id} delay={500}>
-          <ToggleButton
-            aria-label={metric.label}
-            className="min-w-9 px-2.5 [--toggle-button-fg-selected:var(--foreground)]"
-            id={metric.id}
-          >
-            {metric.id === "btc" ? (
-              <span className="flex size-4 items-center justify-center text-xl">
-                <BitcoinSymbol />
-              </span>
-            ) : (
-              <TbPercentage aria-hidden="true" className="size-4" />
-            )}
-          </ToggleButton>
-          <Tooltip.Content>{metric.label}</Tooltip.Content>
-        </Tooltip>
+        <ToggleButton
+          key={metric.id}
+          aria-label={metric.label}
+          className="min-w-9 px-2.5 [--toggle-button-fg-selected:var(--foreground)]"
+          id={metric.id}
+        >
+          {metric.id === "btc" ? (
+            <span className="flex size-4 items-center justify-center text-xl">
+              <BitcoinSymbol />
+            </span>
+          ) : (
+            <TbPercentage aria-hidden="true" className="size-4" />
+          )}
+        </ToggleButton>
       ))}
     </ToggleButtonGroup>
   );

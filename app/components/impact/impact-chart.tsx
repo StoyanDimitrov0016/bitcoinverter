@@ -43,7 +43,7 @@ export function ImpactChart({ ariaLabel, data, xLabel, xValue, yLabel, yValue }:
         axis: { label: yLabel, ticks: { format: yValue } },
       },
     },
-    svgAnimation: true,
+    svgAnimation: false,
     tooltip,
   });
 

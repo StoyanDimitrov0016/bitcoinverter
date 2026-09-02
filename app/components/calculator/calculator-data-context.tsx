@@ -2,32 +2,29 @@
 
 import { createContext, use, type ReactNode } from "react";
 
-import type { AccumulationResults } from "@/lib/bitcoin-calculator.utils";
-import type { AccumulationInput } from "@/lib/schemas/calculator.schemas";
-import type { BitcoinPrices } from "@/lib/schemas/price.schemas";
+import type { AccumulationInput } from "@/lib/calculator/calculator.schemas";
+import type { AccumulationResults } from "@/lib/calculator/calculator.types";
+import type { BitcoinPrices } from "@/lib/prices/price.schemas";
 
-type CalculatorData = {
-  input: AccumulationInput | null;
-  isPriceLoading: boolean;
-  prices: BitcoinPrices | null;
-  results: AccumulationResults | null;
-};
+export type CalculatorData =
+  | { status: "loading" }
+  | { status: "price-error" }
+  | {
+      status: "ready";
+      prices: BitcoinPrices;
+      calculation:
+        | { status: "invalid-input" }
+        | { status: "ready"; input: AccumulationInput; results: AccumulationResults };
+    };
 
-type CalculatorDataProviderProps = CalculatorData & {
+type CalculatorDataProviderProps = {
   children: ReactNode;
+  value: CalculatorData;
 };
 
 const CalculatorDataContext = createContext<CalculatorData | null>(null);
 
-export function CalculatorDataProvider({
-  children,
-  input,
-  isPriceLoading,
-  prices,
-  results,
-}: CalculatorDataProviderProps) {
-  const value = { input, isPriceLoading, prices, results };
-
+export function CalculatorDataProvider({ children, value }: CalculatorDataProviderProps) {
   return <CalculatorDataContext value={value}>{children}</CalculatorDataContext>;
 }
 

@@ -1,6 +1,7 @@
 import { Button, FieldError, Input, Label, TextField } from "@heroui/react";
+import { TbMinus, TbPlus } from "react-icons/tb";
 
-import { adjustDecimalAmount } from "@/lib/bitcoin-calculator.utils";
+import { adjustDecimalAmount } from "@/lib/calculator/calculator.calculations";
 
 type ValueFieldProps = {
   label: string;
@@ -21,7 +22,7 @@ export function ValueField({ label, value, step, error, onChange }: ValueFieldPr
           variant="ghost"
           onPress={() => onChange(adjustDecimalAmount(value, step, -1))}
         >
-          −
+          <TbMinus aria-hidden="true" className="size-4" />
         </Button>
         <Input
           className="min-w-0 flex-1 rounded-none font-mono shadow-none focus:ring-0! focus-visible:ring-0!"
@@ -35,7 +36,7 @@ export function ValueField({ label, value, step, error, onChange }: ValueFieldPr
           variant="ghost"
           onPress={() => onChange(adjustDecimalAmount(value, step, 1))}
         >
-          +
+          <TbPlus aria-hidden="true" className="size-4" />
         </Button>
       </div>
       <FieldError>{error}</FieldError>
