@@ -1,5 +1,7 @@
 import { Accordion } from "@heroui/react";
 
+import { formatInteger } from "@/lib/number-format.utils";
+
 import {
   BITCOIN_SUPPLY_CAP,
   EFFECTIVE_BITCOIN_SUPPLY,
@@ -43,7 +45,7 @@ const METHODOLOGY_ITEMS = [
       <>
         The percentile converter calculates how many people could each hold at least your amount if
         the estimated effective supply were distributed that way, then divides that maximum by a{" "}
-        {WORLD_POPULATION.toLocaleString("en")} global population from the{" "}
+        {formatInteger(WORLD_POPULATION)} global population from the{" "}
         <a
           className="underline underline-offset-2"
           href={UN_POPULATION_REPORT_URL}
@@ -52,9 +54,9 @@ const METHODOLOGY_ITEMS = [
         >
           UN World Population Prospects 2024
         </a>
-        . The effective supply is {EFFECTIVE_BITCOIN_SUPPLY.toLocaleString("en")} BTC:
-        Bitcoin&apos;s {BITCOIN_SUPPLY_CAP.toLocaleString("en")} BTC cap minus a conservative{" "}
-        {ESTIMATED_LOST_BITCOIN.toLocaleString("en")} BTC loss estimate from the{" "}
+        . The effective supply is {formatInteger(EFFECTIVE_BITCOIN_SUPPLY)} BTC: Bitcoin&apos;s{" "}
+        {formatInteger(BITCOIN_SUPPLY_CAP)} BTC cap minus a conservative{" "}
+        {formatInteger(ESTIMATED_LOST_BITCOIN)} BTC loss estimate from the{" "}
         <a
           className="underline underline-offset-2"
           href={RIVER_CUSTODY_REPORT_URL}
@@ -64,7 +66,7 @@ const METHODOLOGY_ITEMS = [
           River Bitcoin Custody Report 2025
         </a>
         . No official lost-coin count exists: on-chain inactivity cannot prove that keys are lost.
-        The millionaire comparison uses approximately {USD_MILLIONAIRES.toLocaleString("en")} USD
+        The millionaire comparison uses approximately {formatInteger(USD_MILLIONAIRES)} USD
         millionaires reported in the{" "}
         <a
           className="underline underline-offset-2"

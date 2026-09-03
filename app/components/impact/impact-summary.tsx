@@ -4,7 +4,12 @@ import { TbTriangleFilled } from "react-icons/tb";
 import type { AccumulationResults } from "@/lib/calculator/calculator.types";
 import { getImpactBand, getImpactRange } from "@/lib/impact/impact.calculations";
 import { IMPACT_BANDS } from "@/lib/impact/impact.constants";
-import { formatAccumulationAmount, formatFiat, formatNumber } from "@/lib/number-format.utils";
+import {
+  formatAccumulationAmount,
+  formatFiat,
+  formatNumber,
+  formatPercent,
+} from "@/lib/number-format.utils";
 import type { BitcoinPrices } from "@/lib/prices/price.schemas";
 import { useCalculatorData, type CalculatorData } from "../calculator/calculator-data-context";
 import { BitcoinSymbol } from "../shared/currency-symbol";
@@ -92,7 +97,7 @@ function RelativeImpactExplanation({ prices, results }: RelativeImpactExplanatio
 
   return (
     <p>
-      That is a <strong>{formatNumber(results.relativeImpact.percent, 1)}% increase</strong> in your
+      That is a <strong>{formatPercent(results.relativeImpact.percent, 1)} increase</strong> in your
       current BTC holdings. The same price is used for each purchase: {currentPrices}.
     </p>
   );
@@ -156,7 +161,7 @@ function ImpactValues({ state }: ImpactValuesProps) {
   const { results } = state.calculation;
   const netIncrease =
     results.relativeImpact.status === "available" ? (
-      `${formatNumber(results.relativeImpact.percent, 1)}%`
+      formatPercent(results.relativeImpact.percent, 1)
     ) : (
       <UnavailableValue />
     );

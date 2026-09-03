@@ -15,7 +15,7 @@ import {
   type ConverterFormValues,
   type ConverterInput,
 } from "@/lib/calculator/calculator.schemas";
-import { formatBitcoin, formatFiat, formatNumber } from "@/lib/number-format.utils";
+import { formatBitcoin, formatFiat, formatInteger, formatPercent } from "@/lib/number-format.utils";
 import {
   bitcoinForPercentile,
   calculateGlobalPercentile,
@@ -107,7 +107,7 @@ function PercentileResult({ input, state }: PercentileResultProps) {
     >
       <p>
         This estimates the maximum number of people who could each hold at least your amount, then
-        compares that number with a global population of {formatNumber(WORLD_POPULATION, 0)}.
+        compares that number with a global population of {formatInteger(WORLD_POPULATION)}.
       </p>
       <p>
         Lost coins cannot be identified with certainty on-chain. Dormant coins may still be
@@ -161,7 +161,7 @@ function PercentileResult({ input, state }: PercentileResultProps) {
   const result = calculateGlobalPercentile(convertToBitcoin(input, state.prices));
 
   return (
-    <ResultShell info={info} primary={`Top ${formatPercentile(result.topPercentile)} of people`} />
+    <ResultShell info={info} primary={`Top ${formatPercent(result.topPercentile)} of people`} />
   );
 }
 
@@ -186,7 +186,7 @@ function ResultShell({ info, primary }: ResultShellProps) {
 
 function ScarcityStats() {
   const stats = [
-    { label: "Global population (UN, 2024)", value: formatNumber(WORLD_POPULATION, 0) },
+    { label: "Global population (UN, 2024)", value: formatInteger(WORLD_POPULATION) },
     {
       label: "Average per person",
       value: (
@@ -198,7 +198,7 @@ function ScarcityStats() {
     },
     {
       label: "USD millionaires (UBS report, 2025)",
-      value: `~${formatNumber(USD_MILLIONAIRES, 0)}`,
+      value: `~${formatInteger(USD_MILLIONAIRES)}`,
     },
     {
       label: "Average per millionaire",
@@ -255,7 +255,7 @@ function PercentileBenchmarks({ state }: PercentileBenchmarksProps) {
                   return (
                     <Table.Row key={percent} id={String(percent)}>
                       <Table.Cell className="font-mono tabular-nums">
-                        Top {formatPercentile(percent)}
+                        Top {formatPercent(percent)}
                       </Table.Cell>
                       <Table.Cell className="font-mono tabular-nums">
                         <span className="flex items-center gap-0.5">
@@ -270,7 +270,7 @@ function PercentileBenchmarks({ state }: PercentileBenchmarksProps) {
                         <BenchmarkFiatValue bitcoin={bitcoin} currency="EUR" state={state} />
                       </Table.Cell>
                       <Table.Cell className="font-mono tabular-nums">
-                        {formatNumber(WORLD_POPULATION * (percent / 100), 0)}
+                        {formatInteger(WORLD_POPULATION * (percent / 100))}
                       </Table.Cell>
                     </Table.Row>
                   );
@@ -300,8 +300,4 @@ function BenchmarkFiatValue({ bitcoin, currency, state }: BenchmarkFiatValueProp
   }
 
   return formatFiat(bitcoin * state.prices[currency], currency);
-}
-
-function formatPercentile(percent: number) {
-  return `${new Intl.NumberFormat("en", { maximumFractionDigits: 8 }).format(percent)}%`;
 }
