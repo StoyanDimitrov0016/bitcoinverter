@@ -1,11 +1,9 @@
+import { EFFECTIVE_BITCOIN_SUPPLY, WORLD_POPULATION } from "../bitcoin.constants";
 import { MONTHS_PER_YEAR } from "../calculator/calculator.constants";
 import type { AccumulationInput, FiatCurrency } from "../calculator/calculator.schemas";
 import type { AccumulationResults } from "../calculator/calculator.types";
 import type { BitcoinPrices } from "../prices/price.schemas";
 import {
-  BITCOIN_MAX_SUPPLY,
-  ESTIMATED_LOST_BTC,
-  ESTIMATED_WORLD_POPULATION,
   IMPACT_BANDS,
   IMPACT_TARGETS,
   type GrowthMetric,
@@ -20,9 +18,8 @@ export function getGlobalScarcityPercent(holdings: number) {
     return null;
   }
 
-  const availableSupply = BITCOIN_MAX_SUPPLY - ESTIMATED_LOST_BTC;
-  const maximumPeers = availableSupply / holdings;
-  return Math.min(100, (maximumPeers / ESTIMATED_WORLD_POPULATION) * 100);
+  const maximumPeers = EFFECTIVE_BITCOIN_SUPPLY / holdings;
+  return Math.min(100, (maximumPeers / WORLD_POPULATION) * 100);
 }
 
 export type ImpactHorizonData =

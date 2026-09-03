@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { EFFECTIVE_BITCOIN_SUPPLY, WORLD_POPULATION } from "../bitcoin.constants";
 import type { AccumulationResults } from "../calculator/calculator.types";
 import type { BitcoinPrices } from "../prices/price.schemas";
 import {
@@ -25,7 +26,9 @@ const RESULTS: AccumulationResults = {
 
 describe("global scarcity ceiling", () => {
   it("estimates the maximum share of people who could own as much BTC", () => {
-    expect(getGlobalScarcityPercent(0.4)).toBeCloseTo(0.6037, 3);
+    expect(getGlobalScarcityPercent(0.4)).toBeCloseTo(
+      (EFFECTIVE_BITCOIN_SUPPLY / 0.4 / WORLD_POPULATION) * 100
+    );
   });
 
   it("caps small holdings at the full population and rejects zero holdings", () => {
