@@ -54,7 +54,12 @@ export function ImpactChart({
     },
     margin: { top: 8, right: 12, bottom: 24, left: 64 },
     svgAnimation: false,
-    tooltip,
+    tooltip: {
+      use: tooltip,
+      format(point) {
+        return `${xLabel}: ${xValue(point.xValue)}\n${yLabel}: ${yValue(point.yValue)}`;
+      },
+    },
   });
 
   return (
