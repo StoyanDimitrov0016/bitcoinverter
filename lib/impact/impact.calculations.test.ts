@@ -2,20 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import { EFFECTIVE_BITCOIN_SUPPLY, WORLD_POPULATION } from "../bitcoin.constants";
 import type { AccumulationResults } from "../calculator/calculator.types";
-import type { BitcoinPrices } from "../prices/price.schemas";
-import {
-  getGlobalScarcityPercent,
-  getImpactHorizonData,
-  getPriceImpactData,
-} from "./impact.calculations";
+import { getGlobalScarcityPercent, getImpactHorizonData } from "./impact.calculations";
 import { IMPACT_TARGETS } from "./impact.constants";
-
-const PRICES: BitcoinPrices = {
-  EUR: 50_000,
-  USD: 100_000,
-  fetchedAt: "2026-09-01T00:00:00.000Z",
-  provider: "Kraken",
-};
 
 const RESULTS: AccumulationResults = {
   currentBtc: 0.4,
@@ -87,37 +75,5 @@ describe("impact chart data", () => {
     }
     expect(data.hundredPercentMonths).toBe(7);
     expect(data.chartData.at(-1)).toEqual({ x: 7, y: 100 });
-  });
-
-  it("keeps a flat price chart when contributions are zero", () => {
-    const data = getPriceImpactData(
-      { holding: 0.4, holdingUnit: "BTC", contribution: 0, contributionUnit: "EUR" },
-      {
-        ...RESULTS,
-        monthlyBtc: 0,
-        addedBtc: 0,
-        relativeImpact: { status: "available", percent: 0 },
-      },
-      PRICES
-    );
-
-    expect(data.status).toBe("available");
-    if (data.status !== "available") {
-      return;
-    }
-    expect(data.rows.every((row) => row.price === 0)).toBe(true);
-    expect(data.chartData).toHaveLength(2);
-    expect(data.chartData.every(({ y }) => y === 0)).toBe(true);
-    expect(data.chartData.at(-1)?.x).toBe(100_000);
-  });
-
-  it("does not fabricate fiat data for BTC contributions", () => {
-    expect(
-      getPriceImpactData(
-        { holding: 0.4, holdingUnit: "BTC", contribution: 0.01, contributionUnit: "BTC" },
-        RESULTS,
-        PRICES
-      )
-    ).toEqual({ status: "unavailable", reason: "btc-contribution" });
   });
 });

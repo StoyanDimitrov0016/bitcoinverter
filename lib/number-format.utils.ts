@@ -13,18 +13,6 @@ export function formatFiat(value: number, currency: FiatCurrency) {
   }).format(value);
 }
 
-export function formatChartFiat(value: number, currency: FiatCurrency) {
-  if (value < 1_000_000) {
-    return formatFiat(value, currency);
-  }
-  return new Intl.NumberFormat("en", {
-    style: "currency",
-    currency,
-    notation: "compact",
-    maximumFractionDigits: 1,
-  }).format(value);
-}
-
 export function formatRateFiat(value: number, currency: FiatCurrency) {
   return new Intl.NumberFormat("en", {
     style: "currency",
