@@ -1,7 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SITE_CONFIG } from "@/lib/site-config";
-import { STATIC_THEME_COLORS } from "@/lib/theme/theme.constants";
+import {
+  LEGACY_THEME_STORAGE_KEY,
+  STATIC_THEME_COLORS,
+  THEME_STORAGE_KEY,
+} from "@/lib/theme/theme.constants";
 import "./globals.css";
 
 type RootLayoutProps = {
@@ -49,7 +53,12 @@ export const viewport: Viewport = {
 };
 
 const themeInitScript = `try {
-  var stored = localStorage.getItem("heroui-theme") || "system";
+  var storageKey = ${JSON.stringify(THEME_STORAGE_KEY)};
+  var legacyStorageKey = ${JSON.stringify(LEGACY_THEME_STORAGE_KEY)};
+  var stored = localStorage.getItem(storageKey) || localStorage.getItem(legacyStorageKey) || "system";
+  if (stored !== "light" && stored !== "dark" && stored !== "system") stored = "system";
+  localStorage.setItem(storageKey, stored);
+  localStorage.removeItem(legacyStorageKey);
   var resolved = stored;
   if (stored === "system") {
     resolved = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
@@ -65,8 +74,10 @@ export default function RootLayout({ children }: RootLayoutProps) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       lang="en"
     >
-      <body className="flex min-h-full flex-col bg-background font-sans text-foreground">
+      <head>
         <script>{themeInitScript}</script>
+      </head>
+      <body className="flex min-h-full flex-col bg-background font-sans text-foreground">
         {children}
       </body>
     </html>

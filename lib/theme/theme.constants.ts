@@ -1,3 +1,6 @@
+export const THEME_STORAGE_KEY = "bitcoinverter-theme";
+export const LEGACY_THEME_STORAGE_KEY = "heroui-theme";
+
 /** Colors for renderers that cannot resolve the application's CSS custom properties. */
 export const STATIC_THEME_COLORS = {
   lightBackground: "#f5f0e6",
