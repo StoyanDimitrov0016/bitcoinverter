@@ -8,6 +8,7 @@ import { AccumulationForm } from "../accumulation/accumulation-form";
 import { PriceSummaryPanel } from "../accumulation/price-summary-panel";
 import { BitcoinConverterPanel } from "../converter/bitcoin-converter-panel";
 import { ImpactAnalysisPanel } from "../impact/impact-analysis-panel";
+import { PercentileConverterPanel } from "../percentile/percentile-converter-panel";
 import { SectionHeading } from "../section-heading";
 
 import { parseAccumulationInput } from "@/lib/calculator/calculator.calculations";
@@ -87,6 +88,15 @@ export function CalculatorContent() {
       >
         <SectionHeading id="converter-section-title" title="Bitcoin converter" />
         <BitcoinConverterPanel />
+      </section>
+
+      <section
+        aria-labelledby="percentile-section-title"
+        className="scroll-mt-32 space-y-3"
+        id="percentile"
+      >
+        <SectionHeading id="percentile-section-title" title="Bitcoin percentile" />
+        <PercentileConverterPanel />
       </section>
     </>
   );

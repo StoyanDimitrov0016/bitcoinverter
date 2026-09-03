@@ -12,6 +12,7 @@ const NAVIGATION_ITEMS = [
   { href: "#calculator", label: "Calculator" },
   { href: "#impact", label: "Impact" },
   { href: "#converter", label: "Converter" },
+  { href: "#percentile", label: "Percentile" },
   { href: "#methodology", label: "Methodology" },
 ] as const;
 
