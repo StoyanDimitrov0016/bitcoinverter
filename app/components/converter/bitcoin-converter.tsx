@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, Form } from "@heroui/react";
+import { useTranslations } from "next-intl";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import type { ReactNode } from "react";
 
@@ -24,6 +25,9 @@ import { ValueField } from "../shared/value-field";
 import { SatoshiRatesTable } from "./satoshi-rates-table";
 
 export function BitcoinConverter() {
+  const t = useTranslations("Converter");
+  const tCommon = useTranslations("Common");
+  const tValueField = useTranslations("ValueField");
   const calculatorState = useCalculatorData();
   const { control, formState } = useForm<ConverterFormValues, unknown, ConverterInput>({
     resolver: zodResolver(ConverterSchema),
@@ -38,7 +42,7 @@ export function BitcoinConverter() {
       <Card className="py-2">
         <Card.Content className="grid items-center gap-8 lg:grid-cols-[0.7fr_1.3fr]">
           <Form
-            aria-label="Bitcoin conversion input"
+            aria-label={t("formAriaLabel")}
             className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3"
           >
             <Controller
@@ -47,8 +51,8 @@ export function BitcoinConverter() {
               render={({ field }) => (
                 <div className="[&_.label]:sr-only">
                   <ValueField
-                    error={formState.errors.value?.message}
-                    label="Amount to convert"
+                    error={formState.errors.value ? tValueField("invalidAmount") : undefined}
+                    label={t("amountLabel")}
                     step={getAmountStep(formValue.unit ?? "EUR")}
                     value={field.value}
                     onBlur={field.onBlur}
@@ -63,7 +67,7 @@ export function BitcoinConverter() {
               render={({ field }) => (
                 <UnitPicker
                   isLabelHidden
-                  label="Unit"
+                  label={tCommon("unit")}
                   value={field.value}
                   values={CONVERTER_UNITS}
                   onChange={field.onChange}
@@ -85,6 +89,8 @@ type ConverterValuesProps = {
 };
 
 function ConverterValues({ input, state }: ConverterValuesProps) {
+  const t = useTranslations("Units");
+
   if (state.status === "loading") {
     return <LoadingConverterValues />;
   }
@@ -96,13 +102,15 @@ function ConverterValues({ input, state }: ConverterValuesProps) {
   const bitcoinValue = convertToBitcoin(input, state.prices);
   return (
     <ConversionGrid>
-      <Conversion label="Satoshis">
+      <Conversion label={t("satoshis")}>
         <SatoshiSymbol />
         {formatNumber(bitcoinValue * SATS_PER_BTC, 0)}
       </Conversion>
-      <Conversion label="Euro">{formatFiat(bitcoinValue * state.prices.EUR, "EUR")}</Conversion>
-      <Conversion label="USD">{formatFiat(bitcoinValue * state.prices.USD, "USD")}</Conversion>
-      <Conversion label="Bitcoin">
+      <Conversion label={t("euro")}>
+        {formatFiat(bitcoinValue * state.prices.EUR, "EUR")}
+      </Conversion>
+      <Conversion label={t("usd")}>{formatFiat(bitcoinValue * state.prices.USD, "USD")}</Conversion>
+      <Conversion label={t("bitcoin")}>
         <ConverterBitcoinSymbol />
         {formatNumber(bitcoinValue)}
       </Conversion>
@@ -111,19 +119,21 @@ function ConverterValues({ input, state }: ConverterValuesProps) {
 }
 
 function LoadingConverterValues() {
+  const t = useTranslations("Units");
+
   return (
     <ConversionGrid>
-      <Conversion label="Satoshis">
+      <Conversion label={t("satoshis")}>
         <SatoshiSymbol />
         <NumericSkeleton width="long" />
       </Conversion>
-      <Conversion label="Euro">
+      <Conversion label={t("euro")}>
         <FiatSkeleton currency="EUR" width="long" />
       </Conversion>
-      <Conversion label="USD">
+      <Conversion label={t("usd")}>
         <FiatSkeleton currency="USD" width="long" />
       </Conversion>
-      <Conversion label="Bitcoin">
+      <Conversion label={t("bitcoin")}>
         <ConverterBitcoinSymbol />
         <NumericSkeleton width="long" />
       </Conversion>
@@ -132,18 +142,20 @@ function LoadingConverterValues() {
 }
 
 function UnavailableConverterValues() {
+  const t = useTranslations("Units");
+
   return (
     <ConversionGrid>
-      <Conversion label="Satoshis">
+      <Conversion label={t("satoshis")}>
         <UnavailableValue />
       </Conversion>
-      <Conversion label="Euro">
+      <Conversion label={t("euro")}>
         <UnavailableValue />
       </Conversion>
-      <Conversion label="USD">
+      <Conversion label={t("usd")}>
         <UnavailableValue />
       </Conversion>
-      <Conversion label="Bitcoin">
+      <Conversion label={t("bitcoin")}>
         <UnavailableValue />
       </Conversion>
     </ConversionGrid>
