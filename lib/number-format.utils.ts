@@ -41,17 +41,27 @@ export function formatAccumulationAmount(value: number, unit: HoldingUnit) {
   return unit === "BTC" ? `${formatNumber(value)} BTC` : formatFiat(value, unit);
 }
 
-export function formatImpactHorizon(months: number) {
+type CompactTimeUnits = {
+  month: string;
+  year: string;
+};
+
+const DEFAULT_COMPACT_TIME_UNITS: CompactTimeUnits = { month: "mo", year: "y" };
+
+export function formatImpactHorizon(
+  months: number,
+  units: CompactTimeUnits = DEFAULT_COMPACT_TIME_UNITS
+) {
   if (months < MONTHS_PER_YEAR) {
-    return `${months}mo`;
+    return `${months}${units.month}`;
   }
 
   const years = Math.floor(months / MONTHS_PER_YEAR);
   const remainingMonths = months % MONTHS_PER_YEAR;
 
   if (remainingMonths === 0) {
-    return `${years}y`;
+    return `${years}${units.year}`;
   }
 
-  return `${years}y ${remainingMonths}mo`;
+  return `${years}${units.year} ${remainingMonths}${units.month}`;
 }

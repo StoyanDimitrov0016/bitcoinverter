@@ -4,6 +4,7 @@ import { defineChart, lineY } from "@tanstack/charts";
 import { Chart } from "@tanstack/charts/react";
 import { scaleLinear } from "@tanstack/charts/scales/linear";
 import { tooltip } from "@tanstack/charts/tooltip";
+import { useTranslations } from "next-intl";
 
 type ImpactChartPoint = {
   x: number;
@@ -29,6 +30,7 @@ export function ImpactChart({
   yValue,
   fillHeight = false,
 }: ImpactChartProps) {
+  const t = useTranslations("ImpactAnalysisPanel");
   const definition = defineChart({
     marks: [
       lineY(data, {
@@ -64,7 +66,7 @@ export function ImpactChart({
 
   return (
     <Chart
-      ariaLabel={`${ariaLabel}. Horizontal axis: ${xLabel}. Vertical axis: ${yLabel}.`}
+      ariaLabel={t("chartAxesAriaLabel", { ariaLabel, xLabel, yLabel })}
       className="min-w-0"
       definition={definition}
       height={fillHeight ? undefined : 280}

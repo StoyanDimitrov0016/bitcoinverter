@@ -1,6 +1,7 @@
 "use client";
 
 import { ToggleButton, ToggleButtonGroup } from "@heroui/react";
+import { useTranslations } from "next-intl";
 import { TbPercentage } from "react-icons/tb";
 
 import { BitcoinSymbol } from "../shared/currency-symbol";
@@ -13,11 +14,13 @@ type GrowthMetricToggleProps = {
 };
 
 const METRICS = [
-  { id: "btc", label: "BTC amount" },
-  { id: "percent", label: "Percentage increase" },
+  { id: "btc", labelKey: "btcAmount" },
+  { id: "percent", labelKey: "percentageIncrease" },
 ] as const;
 
 export function GrowthMetricToggle({ ariaLabel, value, onChange }: GrowthMetricToggleProps) {
+  const t = useTranslations("GrowthMetric");
+
   return (
     <ToggleButtonGroup
       aria-label={ariaLabel}
@@ -36,7 +39,7 @@ export function GrowthMetricToggle({ ariaLabel, value, onChange }: GrowthMetricT
       {METRICS.map((metric) => (
         <ToggleButton
           key={metric.id}
-          aria-label={metric.label}
+          aria-label={t(metric.labelKey)}
           className="min-w-9 px-2.5"
           id={metric.id}
         >

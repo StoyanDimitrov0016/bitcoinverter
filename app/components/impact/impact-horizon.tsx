@@ -1,6 +1,7 @@
 "use client";
 
 import { Card, ToggleButton, ToggleButtonGroup } from "@heroui/react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { TbPercentage, TbTable } from "react-icons/tb";
 
@@ -19,6 +20,7 @@ import { useCalculatorData, type CalculatorData } from "../calculator/calculator
 import { BitcoinSymbol } from "../shared/currency-symbol";
 import { NumericSkeleton } from "../shared/numeric-skeleton";
 import { ResultRow } from "../shared/result";
+import { renderNode, renderStrong } from "../shared/rich-text.utils";
 import { UnavailableValue } from "../shared/unavailable-value";
 import { GrowthMetricToggle } from "./growth-metric-toggle";
 import { HoldingAtCurrentPrice } from "./holding-at-current-price";
@@ -28,21 +30,25 @@ import { ImpactInfoDialog } from "./impact-info-dialog";
 type PlannerView = "chart" | "targets";
 type TargetTableView = "expected" | "required";
 
-const GROWTH_METRIC_CONFIG = {
-  btc: {
-    ariaLabel: "Total BTC holdings over time",
-    yLabel: "Total BTC holdings",
-    formatValue: (value: number) => `${formatNumber(value)} BTC`,
-  },
-  percent: {
-    ariaLabel: "Percentage increase in BTC holdings over time",
-    yLabel: "Increase in holdings (%)",
-    formatValue: (value: number) => formatPercent(value, 0),
-  },
-} satisfies Record<
-  GrowthMetric,
-  { ariaLabel: string; yLabel: string; formatValue: (value: number) => string }
->;
+function useGrowthMetricConfig() {
+  const t = useTranslations("ImpactAnalysisPanel");
+
+  return {
+    btc: {
+      ariaLabel: t("btcHoldingsOverTime"),
+      yLabel: t("totalBtcHoldings"),
+      formatValue: (value: number) => `${formatNumber(value)} BTC`,
+    },
+    percent: {
+      ariaLabel: t("percentIncreaseOverTime"),
+      yLabel: t("increaseInHoldings"),
+      formatValue: (value: number) => formatPercent(value, 0),
+    },
+  } satisfies Record<
+    GrowthMetric,
+    { ariaLabel: string; yLabel: string; formatValue: (value: number) => string }
+  >;
+}
 
 export function ImpactHorizon() {
   const state = useCalculatorData();
@@ -84,11 +90,15 @@ type MobilePlannerToggleProps = {
   onViewChange: (value: PlannerView) => void;
 };
 
-const MOBILE_PLANNER_MODES = [
-  { id: "btc", label: "BTC chart" },
-  { id: "percent", label: "Percentage chart" },
-  { id: "targets", label: "Targets" },
-] as const;
+function useMobilePlannerModes() {
+  const t = useTranslations("ImpactAnalysisPanel");
+
+  return [
+    { id: "btc", label: t("btcChart") },
+    { id: "percent", label: t("percentageChart") },
+    { id: "targets", label: t("targets") },
+  ] as const;
+}
 
 function MobilePlannerToggle({
   metric,
@@ -96,18 +106,20 @@ function MobilePlannerToggle({
   onMetricChange,
   onViewChange,
 }: MobilePlannerToggleProps) {
+  const t = useTranslations("ImpactAnalysisPanel");
+  const modes = useMobilePlannerModes();
   const value = view === "targets" ? "targets" : metric;
 
   return (
     <ToggleButtonGroup
-      aria-label="Impact analysis view"
+      aria-label={t("mobileViewAriaLabel")}
       className="w-full border border-border"
       disallowEmptySelection
       selectedKeys={[value]}
       selectionMode="single"
       size="sm"
       onSelectionChange={(keys) => {
-        const next = MOBILE_PLANNER_MODES.find((option) => keys.has(option.id));
+        const next = modes.find((option) => keys.has(option.id));
         if (!next) {
           return;
         }
@@ -120,7 +132,7 @@ function MobilePlannerToggle({
         }
       }}
     >
-      {MOBILE_PLANNER_MODES.map(({ id, label }) => (
+      {modes.map(({ id, label }) => (
         <ToggleButton key={id} aria-label={label} className="flex-1 gap-1.5 px-3" id={id}>
           <MobilePlannerModeIcon id={id} isActive={value === id} />
         </ToggleButton>
@@ -130,7 +142,7 @@ function MobilePlannerToggle({
 }
 
 type MobilePlannerModeIconProps = {
-  id: (typeof MOBILE_PLANNER_MODES)[number]["id"];
+  id: ReturnType<typeof useMobilePlannerModes>[number]["id"];
   isActive: boolean;
 };
 
@@ -167,6 +179,13 @@ function ImpactHorizonPanels({
   onMetricChange,
   onTableViewChange,
 }: ImpactHorizonPanelsProps) {
+  const t = useTranslations("ImpactAnalysisPanel");
+  const growthMetricConfig = useGrowthMetricConfig();
+  const compactTimeUnits = {
+    month: t("monthAbbreviation"),
+    year: t("yearAbbreviation"),
+  };
+
   if (state.status !== "ready" || state.calculation.status !== "ready") {
     return <UnavailableHorizonPanels isLoading={state.status === "loading"} view={view} />;
   }
@@ -181,15 +200,15 @@ function ImpactHorizonPanels({
     ...point,
     x: useYears ? point.x / MONTHS_PER_YEAR : point.x,
   }));
-  const metricConfig = GROWTH_METRIC_CONFIG[metric];
+  const metricConfig = growthMetricConfig[metric];
   const formatTime = useYears
-    ? (value: number) => `${formatNumber(value, 1)}y`
-    : (value: number) => `${formatInteger(value)}m`;
+    ? (value: number) => `${formatNumber(value, 1)}${compactTimeUnits.year}`
+    : (value: number) => `${formatInteger(value)}${compactTimeUnits.month}`;
 
   return (
     <div className="grid lg:grid-cols-[minmax(18rem,3fr)_minmax(0,7fr)] lg:items-stretch lg:gap-6">
       <section
-        aria-label="Growth targets"
+        aria-label={t("growthTargetsAriaLabel")}
         className={`${view === "targets" ? "visible" : "pointer-events-none invisible lg:pointer-events-auto lg:visible"} col-start-1 row-start-1 h-full lg:col-auto lg:row-auto lg:border-e lg:border-separator lg:pe-6`}
       >
         <ImpactTargetList
@@ -200,12 +219,12 @@ function ImpactHorizonPanels({
         />
       </section>
       <section
-        aria-label="Growth chart"
+        aria-label={t("growthChartAriaLabel")}
         className={`${view === "chart" ? "visible" : "pointer-events-none invisible lg:pointer-events-auto lg:visible"} col-start-1 row-start-1 impact-chart-frame lg:col-auto lg:row-auto`}
       >
         <div className="mb-3 hidden items-center justify-between gap-3 lg:flex">
           <GrowthMetricToggle
-            ariaLabel="Impact chart metric"
+            ariaLabel={t("chartMetricAriaLabel")}
             value={metric}
             onChange={onMetricChange}
           />
@@ -217,7 +236,7 @@ function ImpactHorizonPanels({
           <ImpactChart
             ariaLabel={metricConfig.ariaLabel}
             data={chartData}
-            xLabel={useYears ? "Years" : "Months"}
+            xLabel={useYears ? t("years") : t("months")}
             xValue={formatTime}
             yLabel={metricConfig.yLabel}
             yValue={metricConfig.formatValue}
@@ -241,10 +260,14 @@ type ImpactTargetListProps = {
   onTableViewChange: (value: TargetTableView) => void;
 };
 
-const TARGET_TABLE_VIEWS = [
-  { id: "expected", label: "Current plan" },
-  { id: "required", label: "Monthly plan" },
-] as const;
+function useTargetTableViews() {
+  const t = useTranslations("ImpactAnalysisPanel");
+
+  return [
+    { id: "expected", label: t("currentPlan") },
+    { id: "required", label: t("monthlyPlan") },
+  ] as const;
+}
 
 type TargetTableToggleProps = {
   value: TargetTableView;
@@ -252,22 +275,25 @@ type TargetTableToggleProps = {
 };
 
 function TargetTableToggle({ value, onChange }: TargetTableToggleProps) {
+  const t = useTranslations("ImpactAnalysisPanel");
+  const views = useTargetTableViews();
+
   return (
     <ToggleButtonGroup
-      aria-label="Target plan view"
+      aria-label={t("targetPlanViewAriaLabel")}
       className="w-full border border-border lg:w-auto"
       disallowEmptySelection
       selectedKeys={[value]}
       selectionMode="single"
       size="sm"
       onSelectionChange={(keys) => {
-        const next = TARGET_TABLE_VIEWS.find((option) => keys.has(option.id));
+        const next = views.find((option) => keys.has(option.id));
         if (next) {
           onChange(next.id);
         }
       }}
     >
-      {TARGET_TABLE_VIEWS.map(({ id, label }) => (
+      {views.map(({ id, label }) => (
         <ToggleButton key={id} className="flex-1 px-3 lg:flex-none" id={id}>
           {label}
         </ToggleButton>
@@ -277,6 +303,12 @@ function TargetTableToggle({ value, onChange }: TargetTableToggleProps) {
 }
 
 function ImpactTargetList({ data, state, tableView, onTableViewChange }: ImpactTargetListProps) {
+  const t = useTranslations("ImpactAnalysisPanel");
+  const compactTimeUnits = {
+    month: t("monthAbbreviation"),
+    year: t("yearAbbreviation"),
+  };
+
   if (state.calculation.status !== "ready") {
     return null;
   }
@@ -293,27 +325,33 @@ function ImpactTargetList({ data, state, tableView, onTableViewChange }: ImpactT
           const totalNeeded = getTotalNeeded(btcNeeded, input, state);
           const monthlyNeeded = totalNeeded / MONTHS_PER_YEAR;
 
-          let targetValue = formatImpactHorizon(months);
+          let targetValue = formatImpactHorizon(months, compactTimeUnits);
           if (tableView === "required") {
-            targetValue = `${formatAccumulationAmount(monthlyNeeded, input.contributionUnit)}/mo`;
+            targetValue = t("perMonth", {
+              value: formatAccumulationAmount(monthlyNeeded, input.contributionUnit),
+            });
           }
 
           return (
             <div key={target} className="impact-target-row">
               <div className="flex items-baseline justify-between gap-3">
-                <dt className="font-semibold text-foreground">+{target}%</dt>
+                <dt className="font-semibold text-foreground">{t("moreBtc", { target })}</dt>
                 <dd className="m-0 font-mono font-semibold text-foreground tabular-nums">
                   {targetValue}
                 </dd>
               </div>
               {tableView === "expected" ? (
                 <div className="mt-1 flex flex-wrap justify-between gap-x-3 text-xs text-muted">
-                  <span>{formatNumber(btcNeeded)} BTC needed</span>
-                  <span>{formatAccumulationAmount(totalNeeded, input.contributionUnit)} total</span>
+                  <span>{t("btcNeeded", { value: formatNumber(btcNeeded) })}</span>
+                  <span>
+                    {t("totalNeeded", {
+                      value: formatAccumulationAmount(totalNeeded, input.contributionUnit),
+                    })}
+                  </span>
                 </div>
               ) : (
                 <p className="mt-1 line-clamp-2 text-xs text-muted">
-                  Adds {formatNumber(btcNeeded)} BTC in 12 months at today's price.
+                  {t("addsInTwelveMonths", { value: formatNumber(btcNeeded) })}
                 </p>
               )}
             </div>
@@ -339,6 +377,8 @@ function getTotalNeeded(
 type UnavailableHorizonPanelsProps = { isLoading: boolean; view: PlannerView };
 
 function UnavailableHorizonPanels({ isLoading, view }: UnavailableHorizonPanelsProps) {
+  const t = useTranslations("ImpactAnalysisPanel");
+
   return (
     <div className="grid lg:grid-cols-[minmax(18rem,3fr)_minmax(0,7fr)] lg:gap-6">
       <div
@@ -348,7 +388,7 @@ function UnavailableHorizonPanels({ isLoading, view }: UnavailableHorizonPanelsP
           {IMPACT_TARGETS.map((target) => (
             <ResultRow
               key={target}
-              label={`${target}% more BTC`}
+              label={t("moreBtcRow", { target })}
               value={isLoading ? <HorizonSkeleton /> : <UnavailableValue />}
             />
           ))}
@@ -362,9 +402,11 @@ function UnavailableHorizonPanels({ isLoading, view }: UnavailableHorizonPanelsP
 }
 
 function HorizonSkeleton() {
+  const t = useTranslations("ImpactAnalysisPanel");
+
   return (
     <>
-      <NumericSkeleton /> months
+      <NumericSkeleton /> {t("monthsWord")}
     </>
   );
 }
@@ -372,53 +414,55 @@ function HorizonSkeleton() {
 type ImpactHorizonExplanationProps = { state: CalculatorData };
 
 function ImpactHorizonExplanation({ state }: ImpactHorizonExplanationProps) {
+  const t = useTranslations("ImpactAnalysisPanel");
+  const compactTimeUnits = {
+    month: t("monthAbbreviation"),
+    year: t("yearAbbreviation"),
+  };
+
   if (state.status !== "ready" || state.calculation.status !== "ready") {
-    return (
-      <p>Enter valid amounts and wait for the live BTC price to see a personalized timeline.</p>
-    );
+    return <p>{t("explanationEmpty")}</p>;
   }
 
   const { input, results } = state.calculation;
   const data = getImpactHorizonData(results, "btc");
 
   if (data.status === "unavailable") {
-    return <p>{HORIZON_UNAVAILABLE_MESSAGES[data.reason]}</p>;
+    return (
+      <p>
+        {t(data.reason === "zero-current-holdings" ? "zeroCurrentHoldings" : "zeroContribution")}
+      </p>
+    );
   }
 
   return (
     <>
       <p>
-        The analysis uses today's Kraken price for every purchase. You currently hold{" "}
-        <HoldingAtCurrentPrice currentBtc={results.currentBtc} input={input} />.
+        {t.rich("explanationHoldings", {
+          holding: renderNode(
+            <HoldingAtCurrentPrice currentBtc={results.currentBtc} input={input} />
+          ),
+        })}
       </p>
+      <p>{t("explanationCharts")}</p>
       <p>
-        The BTC chart shows total holdings; the percentage chart shows growth relative to your
-        current holdings. Both charts stop at the +100% target.
-      </p>
-      <p>
-        Current plan shows how long{" "}
-        <strong>{formatAccumulationAmount(input.contribution, input.contributionUnit)}</strong>{" "}
-        monthly contributions take to reach each target. The +100% target takes{" "}
-        <strong>{formatImpactHorizon(data.hundredPercentMonths)}</strong>. Monthly plan instead
-        shows the amount needed to reach each target within 12 months.
+        {t.rich("explanationPlans", {
+          contribution: formatAccumulationAmount(input.contribution, input.contributionUnit),
+          horizon: formatImpactHorizon(data.hundredPercentMonths, compactTimeUnits),
+          strong: renderStrong,
+        })}
       </p>
     </>
   );
 }
 
-const HORIZON_UNAVAILABLE_MESSAGES = {
-  "zero-current-holdings": "The analysis needs current BTC holdings above zero.",
-  "zero-contribution": "The analysis needs a monthly contribution above zero.",
-} as const;
-
 type ImpactHorizonInfoProps = { state: CalculatorData };
 
 function ImpactHorizonInfo({ state }: ImpactHorizonInfoProps) {
+  const t = useTranslations("ImpactAnalysisPanel");
+
   return (
-    <ImpactInfoDialog
-      ariaLabel="Explain the impact analysis calculations"
-      title="How the impact analysis is calculated"
-    >
+    <ImpactInfoDialog ariaLabel={t("infoAriaLabel")} title={t("infoTitle")}>
       <ImpactHorizonExplanation state={state} />
     </ImpactInfoDialog>
   );
