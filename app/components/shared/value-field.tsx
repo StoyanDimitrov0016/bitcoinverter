@@ -1,4 +1,5 @@
 import { Button, FieldError, Input, Label, TextField } from "@heroui/react";
+import { useTranslations } from "next-intl";
 import { TbMinus, TbPlus } from "react-icons/tb";
 
 import { adjustDecimalAmount } from "@/lib/calculator/calculator.calculations";
@@ -13,6 +14,8 @@ type ValueFieldProps = {
 };
 
 export function ValueField({ label, value, step, error, onBlur, onChange }: ValueFieldProps) {
+  const t = useTranslations("ValueField");
+
   return (
     <TextField
       fullWidth
@@ -24,7 +27,7 @@ export function ValueField({ label, value, step, error, onBlur, onChange }: Valu
       <div className="flex items-center overflow-hidden rounded-field bg-field shadow-field focus-within:focus-field-ring">
         <Button
           isIconOnly
-          aria-label={`Decrease ${label}`}
+          aria-label={t("decrease", { label })}
           variant="ghost"
           onPress={() => onChange(adjustDecimalAmount(value, step, -1))}
         >
@@ -39,7 +42,7 @@ export function ValueField({ label, value, step, error, onBlur, onChange }: Valu
         />
         <Button
           isIconOnly
-          aria-label={`Increase ${label}`}
+          aria-label={t("increase", { label })}
           variant="ghost"
           onPress={() => onChange(adjustDecimalAmount(value, step, 1))}
         >
