@@ -36,7 +36,12 @@ export function getImpactBand(percent: number): ImpactBand {
   return IMPACT_BANDS.findLast((impactBand) => percent >= impactBand.minimum) ?? IMPACT_BANDS[0];
 }
 
-export function getImpactRange(index: number) {
+export type ImpactRange =
+  | { type: "orMore"; minimum: number }
+  | { type: "under"; maximum: number }
+  | { type: "between"; minimum: number; maximum: number };
+
+export function getImpactRange(index: number): ImpactRange {
   const impactBand = IMPACT_BANDS[index];
   const nextImpactBand = IMPACT_BANDS[index + 1];
 
@@ -45,14 +50,14 @@ export function getImpactRange(index: number) {
   }
 
   if (!nextImpactBand) {
-    return `${impactBand.minimum}% or more`;
+    return { type: "orMore", minimum: impactBand.minimum };
   }
 
   if (impactBand.minimum === 0) {
-    return `Under ${nextImpactBand.minimum}%`;
+    return { type: "under", maximum: nextImpactBand.minimum };
   }
 
-  return `${impactBand.minimum}% to under ${nextImpactBand.minimum}%`;
+  return { type: "between", minimum: impactBand.minimum, maximum: nextImpactBand.minimum };
 }
 
 export function getImpactHorizonData(
