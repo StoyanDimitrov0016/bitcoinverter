@@ -5,23 +5,19 @@ export function formatNumber(value: number, maximumFractionDigits = 8) {
   return new Intl.NumberFormat("en", { maximumFractionDigits }).format(value);
 }
 
+export function formatInteger(value: number) {
+  return formatNumber(value, 0);
+}
+
+export function formatPercent(value: number, maximumFractionDigits = 8) {
+  return `${formatNumber(value, maximumFractionDigits)}%`;
+}
+
 export function formatFiat(value: number, currency: FiatCurrency) {
   return new Intl.NumberFormat("en", {
     style: "currency",
     currency,
     maximumFractionDigits: 2,
-  }).format(value);
-}
-
-export function formatChartFiat(value: number, currency: FiatCurrency) {
-  if (value < 1_000_000) {
-    return formatFiat(value, currency);
-  }
-  return new Intl.NumberFormat("en", {
-    style: "currency",
-    currency,
-    notation: "compact",
-    maximumFractionDigits: 1,
   }).format(value);
 }
 

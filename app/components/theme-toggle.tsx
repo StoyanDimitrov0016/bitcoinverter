@@ -1,15 +1,17 @@
 "use client";
 
-import { Button, useTheme } from "@heroui/react";
+import { Button } from "@heroui/react";
 import { FiMoon, FiSun } from "react-icons/fi";
 import { useSyncExternalStore } from "react";
+
+import { useAppTheme } from "@/lib/theme/use-app-theme";
 
 const subscribeToHydration = () => () => {};
 const getClientHydrationSnapshot = () => true;
 const getServerHydrationSnapshot = () => false;
 
 export function ThemeToggle() {
-  const { resolvedTheme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useAppTheme();
   const isHydrated = useSyncExternalStore(
     subscribeToHydration,
     getClientHydrationSnapshot,

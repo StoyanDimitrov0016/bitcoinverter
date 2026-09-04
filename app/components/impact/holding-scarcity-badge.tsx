@@ -2,7 +2,7 @@ import { Skeleton } from "@heroui/react";
 import { TbSparkles } from "react-icons/tb";
 
 import { getGlobalScarcityPercent } from "@/lib/impact/impact.calculations";
-import { formatNumber } from "@/lib/number-format.utils";
+import { formatPercent } from "@/lib/number-format.utils";
 import type { CalculatorData } from "../calculator/calculator-data-context";
 
 type HoldingScarcityBadgeProps = { state: CalculatorData };
@@ -30,23 +30,23 @@ export function HoldingScarcityBadge({ state }: HoldingScarcityBadgeProps) {
       title="Theoretical global scarcity ceiling, not an owner or wallet ranking"
     >
       <TbSparkles aria-hidden="true" className="size-3.5 text-accent-soft-foreground" />
-      <span className="font-medium">Top {formatScarcityPercent(currentPercent)}%</span>
+      <span className="font-medium">Top {formatScarcityPercent(currentPercent)}</span>
       <span aria-hidden="true" className="text-muted">
         →
       </span>
-      <span className="text-muted">{formatScarcityPercent(futurePercent)}% in 1y</span>
+      <span className="text-muted">{formatScarcityPercent(futurePercent)} in 1y</span>
     </div>
   );
 }
 
 function formatScarcityPercent(value: number) {
   if (value < 1) {
-    return formatNumber(value, 2);
+    return formatPercent(value, 2);
   }
 
   if (value < 10) {
-    return formatNumber(value, 1);
+    return formatPercent(value, 1);
   }
 
-  return formatNumber(value, 0);
+  return formatPercent(value, 0);
 }

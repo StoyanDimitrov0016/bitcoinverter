@@ -11,7 +11,9 @@ import { IMPACT_TARGETS, type GrowthMetric } from "@/lib/impact/impact.constants
 import {
   formatAccumulationAmount,
   formatImpactHorizon,
+  formatInteger,
   formatNumber,
+  formatPercent,
 } from "@/lib/number-format.utils";
 import { useCalculatorData, type CalculatorData } from "../calculator/calculator-data-context";
 import { BitcoinSymbol } from "../shared/currency-symbol";
@@ -35,7 +37,7 @@ const GROWTH_METRIC_CONFIG = {
   percent: {
     ariaLabel: "Percentage increase in BTC holdings over time",
     yLabel: "Increase in holdings (%)",
-    formatValue: (value: number) => `${formatNumber(value, 0)}%`,
+    formatValue: (value: number) => formatPercent(value, 0),
   },
 } satisfies Record<
   GrowthMetric,
@@ -182,7 +184,7 @@ function ImpactHorizonPanels({
   const metricConfig = GROWTH_METRIC_CONFIG[metric];
   const formatTime = useYears
     ? (value: number) => `${formatNumber(value, 1)}y`
-    : (value: number) => `${Math.round(value)}m`;
+    : (value: number) => `${formatInteger(value)}m`;
 
   return (
     <div className="grid lg:grid-cols-[minmax(18rem,3fr)_minmax(0,7fr)] lg:items-stretch lg:gap-6">

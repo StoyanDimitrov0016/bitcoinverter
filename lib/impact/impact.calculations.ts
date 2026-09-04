@@ -1,11 +1,7 @@
+import { EFFECTIVE_BITCOIN_SUPPLY, WORLD_POPULATION } from "../bitcoin.constants";
 import { MONTHS_PER_YEAR } from "../calculator/calculator.constants";
-import type { AccumulationInput, FiatCurrency } from "../calculator/calculator.schemas";
 import type { AccumulationResults } from "../calculator/calculator.types";
-import type { BitcoinPrices } from "../prices/price.schemas";
 import {
-  BITCOIN_MAX_SUPPLY,
-  ESTIMATED_LOST_BTC,
-  ESTIMATED_WORLD_POPULATION,
   IMPACT_BANDS,
   IMPACT_TARGETS,
   type GrowthMetric,
@@ -20,9 +16,8 @@ export function getGlobalScarcityPercent(holdings: number) {
     return null;
   }
 
-  const availableSupply = BITCOIN_MAX_SUPPLY - ESTIMATED_LOST_BTC;
-  const maximumPeers = availableSupply / holdings;
-  return Math.min(100, (maximumPeers / ESTIMATED_WORLD_POPULATION) * 100);
+  const maximumPeers = EFFECTIVE_BITCOIN_SUPPLY / holdings;
+  return Math.min(100, (maximumPeers / WORLD_POPULATION) * 100);
 }
 
 export type ImpactHorizonData =
@@ -35,19 +30,6 @@ export type ImpactHorizonData =
   | {
       status: "unavailable";
       reason: "zero-current-holdings" | "zero-contribution";
-    };
-
-export type PriceImpactData =
-  | {
-      status: "available";
-      currency: FiatCurrency;
-      rows: { target: ImpactTarget; price: number }[];
-      chartData: ChartPoint[];
-      hundredPercentPrice: number;
-    }
-  | {
-      status: "unavailable";
-      reason: "btc-contribution" | "zero-current-holdings";
     };
 
 export function getImpactBand(percent: number): ImpactBand {
@@ -128,63 +110,4 @@ function getYearEndValue(results: AccumulationResults, metric: GrowthMetric) {
   }
 
   return (results.monthlyBtc * MONTHS_PER_YEAR * 100) / results.currentBtc;
-}
-
-export function getPriceImpactData(
-  input: AccumulationInput,
-  results: AccumulationResults,
-  prices: BitcoinPrices
-): PriceImpactData {
-  if (input.contributionUnit === "BTC") {
-    return { status: "unavailable", reason: "btc-contribution" };
-  }
-
-  if (results.currentBtc === 0) {
-    return { status: "unavailable", reason: "zero-current-holdings" };
-  }
-
-  const currency = input.contributionUnit;
-  const rows = IMPACT_TARGETS.map((target) => ({
-    target,
-    price: (input.contribution * MONTHS_PER_YEAR) / ((results.currentBtc * target) / 100),
-  }));
-  const hundredPercentPrice = (input.contribution * MONTHS_PER_YEAR) / results.currentBtc;
-
-  const chartData = createPriceImpactChartData(rows, prices[currency]);
-  return { status: "available", currency, rows, chartData, hundredPercentPrice };
-}
-
-function createPriceImpactChartData(
-  rows: { target: ImpactTarget; price: number }[],
-  currentPrice: number
-) {
-  const positivePoints = rows
-    .filter(({ price }) => price > 0)
-    .toSorted((left, right) => left.price - right.price)
-    .map(({ price, target }) => ({ x: price, y: target }));
-
-  if (positivePoints.length > 0) {
-    return positivePoints;
-  }
-
-  return [
-    { x: 0, y: 0 },
-    { x: currentPrice * 2, y: 0 },
-  ];
-}
-
-export function getMonthlyGrowthValue(
-  month: number,
-  results: AccumulationResults,
-  metric: GrowthMetric
-) {
-  if (metric === "btc") {
-    return results.monthlyBtc * month;
-  }
-
-  if (results.relativeImpact.status === "unavailable") {
-    return 0;
-  }
-
-  return (results.relativeImpact.percent / MONTHS_PER_YEAR) * month;
 }
