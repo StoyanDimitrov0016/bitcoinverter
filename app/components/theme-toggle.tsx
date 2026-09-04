@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@heroui/react";
+import { useTranslations } from "next-intl";
 import { FiMoon, FiSun } from "react-icons/fi";
 import { useSyncExternalStore } from "react";
 
@@ -11,6 +12,7 @@ const getClientHydrationSnapshot = () => true;
 const getServerHydrationSnapshot = () => false;
 
 export function ThemeToggle() {
+  const t = useTranslations("ThemeToggle");
   const { resolvedTheme, setTheme } = useAppTheme();
   const isHydrated = useSyncExternalStore(
     subscribeToHydration,
@@ -22,7 +24,7 @@ export function ThemeToggle() {
   return (
     <Button
       isIconOnly
-      aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
+      aria-label={isDark ? t("switchToLight") : t("switchToDark")}
       size="sm"
       variant="ghost"
       onPress={() => setTheme(isDark ? "light" : "dark")}
