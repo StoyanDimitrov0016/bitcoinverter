@@ -1,0 +1,219 @@
+{
+  "Metadata": {
+    "title": "BitCoinverter | Калкулатор за натрупване на Bitcoin",
+    "description": "Удобен за поверителността калкулатор за Bitcoin, с който изследвате натрупване, влияние върху портфейла и конвертиране от фиатни валути в BTC по live курсове от Kraken."
+  },
+  "Layout": {
+    "skipToContent": "Прескочи към основното съдържание"
+  },
+  "NotFound": {
+    "title": "Страницата не е намерена",
+    "description": "Страницата, която търсите, не съществува или е преместена.",
+    "backHome": "Обратно към BitCoinverter"
+  },
+  "ErrorBoundary": {
+    "title": "Нещо се обърка",
+    "description": "Възникна неочаквана грешка. Можете да опитате отново.",
+    "retry": "Опитай отново"
+  },
+  "Common": {
+    "unavailable": "Няма данни",
+    "loadingValue": "Зареждане на стойност",
+    "unit": "Единица",
+    "topPercent": "Топ {percent}"
+  },
+  "Home": {
+    "heading": "Калкулатор за натрупване на Bitcoin",
+    "subheading": "Вижте как постоянните вноски се натрупват според актуалния курс на Kraken за BTC."
+  },
+  "Navigation": {
+    "ariaLabel": "Основна навигация",
+    "calculator": "Калкулатор",
+    "impact": "Влияние",
+    "converter": "Конвертор",
+    "percentile": "Процентил",
+    "methodology": "Методология"
+  },
+  "Sections": {
+    "calculator": "Калкулатор за натрупване",
+    "impact": "Анализ на влиянието",
+    "converter": "Конвертор за Bitcoin",
+    "percentile": "Процентил за Bitcoin",
+    "methodology": "Методология"
+  },
+  "SiteHeader": {
+    "githubAriaLabel": "Вижте BitCoinverter в GitHub (отваря се в нов раздел)",
+    "krakenUnavailable": "Kraken недостъпен",
+    "retryAriaLabel": "Опитайте отново да заредите цената от Kraken",
+    "retryLabel": "Нов опит",
+    "livePricesAnnouncement": "Текущи цени на Bitcoin от Kraken: {eur} и {usd}"
+  },
+  "ThemeToggle": {
+    "switchToLight": "Превключи към светла тема",
+    "switchToDark": "Превключи към тъмна тема"
+  },
+  "LocaleSwitcher": {
+    "label": "Език",
+    "locale": "{locale, select, en {Английски} bg {Български} other {Непознат}}"
+  },
+  "SiteFooter": {
+    "tagline": "Bitcoin е вторият най-ограничен актив. Първият е вашият живот.",
+    "badge": "Без вход, без съхранение, с отворен код",
+    "disclaimerStrong": "Калкулатор за количество, не финансов съвет.",
+    "disclaimer": "Резултатите описват опростен сценарий на натрупване и не прогнозират цени, не оценяват доходност и не препоръчват покупка на Bitcoin."
+  },
+  "AccumulationForm": {
+    "ariaLabel": "Входни данни за натрупване на Bitcoin",
+    "currentHoldings": "Текущи наличности",
+    "currentHoldingsUnit": "Единица за текущите наличности",
+    "monthlyContribution": "Месечна вноска",
+    "monthlyContributionUnit": "Единица за месечната вноска"
+  },
+  "ValueField": {
+    "decrease": "Намали {label}",
+    "increase": "Увеличи {label}",
+    "invalidAmount": "Въведете неотрицателно число"
+  },
+  "Units": {
+    "satoshis": "Сатоши",
+    "bitcoin": "Bitcoin",
+    "usd": "USD",
+    "euro": "Евро"
+  },
+  "Converter": {
+    "formAriaLabel": "Входни данни за конвертиране на Bitcoin",
+    "amountLabel": "Сума за конвертиране"
+  },
+  "SatoshiRatesTable": {
+    "tableAriaLabel": "Често използвани суми в сатоши и техните live еквиваленти в Bitcoin, щатски долари и евро"
+  },
+  "PercentileConverter": {
+    "formAriaLabel": "Входни данни за глобален процентил на Bitcoin",
+    "amountLabel": "Сума за сравнение",
+    "resultLabel": "Вашият приблизителен глобален процентил",
+    "topOfPeople": "Топ {percent} от хората",
+    "infoAriaLabel": "Обяснение на оценката на процентила за Bitcoin",
+    "infoTitle": "Как се изчислява този процентил",
+    "explanation1": "Това изчислява максималния брой хора, които биха могли да притежават поне вашата сума, след което сравнява това число с общо население от {population}.",
+    "explanation2": "Изгубените монети не могат да бъдат идентифицирани със сигурност в блокчейна. Неактивните монети все още може да са контролирани, така че това е предположение, а не официално число.",
+    "explanation3": "Това е горна граница, базирана на оскъдност, а не наблюдавана класация на богатството. Реалното притежание е неравномерно, адресите не са хора, а доставчиците на попечителски услуги обединяват средства на много клиенти.",
+    "sources": "Източник: <river>River Bitcoin Custody Report 2025</river>, <un>UN World Population Prospects 2024</un> и <ubs>UBS Global Wealth Report 2025</ubs>.",
+    "globalPopulation": "Световно население (ООН, 2024)",
+    "averagePerPerson": "Средно на човек",
+    "usdMillionaires": "Милионери в щатски долари (доклад на UBS, 2025)",
+    "averagePerMillionaire": "Средно на милионер",
+    "benchmarksAriaLabel": "Bitcoin, необходим за избрани глобални процентили, базирани на оскъдност",
+    "globalPercentileColumn": "Глобален процентил",
+    "totalPeopleColumn": "Общо хора"
+  },
+  "GrowthMetric": {
+    "btcAmount": "Сума в BTC",
+    "percentageIncrease": "Процентно увеличение"
+  },
+  "ImpactBands": {
+    "negligible": { "label": "Незначително влияние", "shortLabel": "Незначително" },
+    "low": { "label": "Ниско влияние", "shortLabel": "Ниско" },
+    "moderate": { "label": "Умерено влияние", "shortLabel": "Умерено" },
+    "meaningful": { "label": "Осезаемо влияние", "shortLabel": "Осезаемо" },
+    "high": { "label": "Високо влияние", "shortLabel": "Високо" },
+    "extreme": { "label": "Изключително влияние", "shortLabel": "Изключително" }
+  },
+  "ImpactRange": {
+    "orMore": "{minimum}% или повече",
+    "under": "Под {maximum}%",
+    "between": "{minimum}% до под {maximum}%"
+  },
+  "HoldingAtCurrentPrice": {
+    "equivalent": ", равностойно на <strong>{btc} BTC</strong> по днешната цена"
+  },
+  "HoldingScarcityBadge": {
+    "title": "Теоретичен таван на глобалната оскъдност, не класация на притежатели или портфейли",
+    "inOneYear": "{percent} след 1г",
+    "loadingAriaLabel": "Зареждане на оценка за оскъдност"
+  },
+  "ImpactAnalysisPanel": {
+    "mobileViewAriaLabel": "Изглед на анализа на влиянието",
+    "btcChart": "Графика в BTC",
+    "percentageChart": "Графика в проценти",
+    "targets": "Цели",
+    "growthTargetsAriaLabel": "Цели за растеж",
+    "growthChartAriaLabel": "Графика на растежа",
+    "chartMetricAriaLabel": "Показател на графиката за влияние",
+    "btcHoldingsOverTime": "Общи наличности в BTC във времето",
+    "totalBtcHoldings": "Общи наличности в BTC",
+    "percentIncreaseOverTime": "Процентно увеличение на наличностите в BTC във времето",
+    "increaseInHoldings": "Увеличение на наличностите (%)",
+    "years": "Години",
+    "months": "Месеци",
+    "yearAbbreviation": "г",
+    "monthAbbreviation": "мес",
+    "chartAxesAriaLabel": "{ariaLabel}. Хоризонтална ос: {xLabel}. Вертикална ос: {yLabel}.",
+    "targetPlanViewAriaLabel": "Изглед на плана за целите",
+    "currentPlan": "Текущ план",
+    "monthlyPlan": "Месечен план",
+    "perMonth": "{value}/мес",
+    "moreBtc": "+{target}%",
+    "btcNeeded": "нужни {value} BTC",
+    "totalNeeded": "{value} общо",
+    "addsInTwelveMonths": "Добавя {value} BTC за 12 месеца по днешната цена.",
+    "moreBtcRow": "{target}% повече BTC",
+    "monthsWord": "месеца",
+    "infoAriaLabel": "Обяснение на изчисленията за анализа на влиянието",
+    "infoTitle": "Как се изчислява анализът на влиянието",
+    "explanationEmpty": "Въведете валидни суми и изчакайте живата цена на BTC, за да видите персонализирана времева линия.",
+    "explanationHoldings": "Анализът използва днешната цена на Kraken за всяка покупка. В момента притежавате <holding>текущите си наличности</holding>.",
+    "explanationCharts": "Графиката в BTC показва общите наличности; графиката в проценти показва растежа спрямо текущите ви наличности. И двете графики спират при целта от +100%.",
+    "explanationPlans": "Текущият план показва колко време отнемат месечни вноски от <strong>{contribution}</strong>, за да достигнат всяка цел. Целта от +100% отнема <strong>{horizon}</strong>. Месечният план вместо това показва сумата, необходима за достигане на всяка цел в рамките на 12 месеца.",
+    "zeroCurrentHoldings": "Анализът изисква текущи наличности в BTC над нула.",
+    "zeroContribution": "Анализът изисква месечна вноска над нула."
+  },
+  "ImpactSummary": {
+    "title": "Какво добавя една година вноски",
+    "atTodaysPrice": "по днешната цена",
+    "infoAriaLabel": "Обяснение на резултата за едногодишно натрупване",
+    "infoTitle": "Как се изчислява този резултат",
+    "explanationEmpty": "Въведете валидни суми и изчакайте живата цена на BTC, за да видите персонализиран пример.",
+    "explanationHoldings": "В момента притежавате <holding>текущите си наличности</holding>.",
+    "explanationContributions": "По днешната цена на Kraken 12 месечни вноски от <strong>{contribution}</strong> добавят <strong>{added} BTC</strong>.",
+    "relativeUnavailable": "За относителен процент са нужни текущи наличности в BTC над нула. За всяка месечна покупка се използва една и съща цена: {prices}.",
+    "relativeAvailable": "Това е <strong>увеличение от {percent}</strong> на текущите ви наличности в BTC. За всяка покупка се използва една и съща цена: {prices}.",
+    "scarcityExplanation": "Значката за оскъдност сравнява вашите наличности с наличния BTC на човек в световен мащаб. Това е теоретичен таван, а не класация на портфейли.",
+    "bandGuideDescription": "<strong>Процент на влияние</strong> е добавеният BTC за 12 месеца, разделен на текущите ви наличности в BTC, умножен по 100.",
+    "bitcoinAdded": "Добавен Bitcoin",
+    "netIncrease": "Нетно увеличение",
+    "impactScale": "Скала на влияние",
+    "impactUnavailable": "Влиянието не е налично",
+    "impactLevelAriaLabel": "Ниво на влияние от натрупването",
+    "loadingImpactStatusAriaLabel": "Зареждане на статус на влиянието"
+  },
+  "Methodology": {
+    "calculation": {
+      "title": "Как работи това",
+      "content": "Вашите наличности и месечната вноска се конвертират в BTC по днешната цена на Kraken. Месечната сума в BTC се умножава по 12 и се сравнява с текущите ви наличности."
+    },
+    "percentage": {
+      "title": "Какво означава нетното увеличение",
+      "content": "Нетното увеличение е допълнителният BTC от 12 равни месечни вноски, показан като процент от текущите ви наличности. То измерва количеството BTC, а не стойността на портфейла или доходността от инвестицията."
+    },
+    "assumptions": {
+      "title": "Допускания",
+      "content": "Текущата цена остава фиксирана за всяка покупка. Сумите на вноските остават равни. Такси, спредове, данъци, инфлация и бъдещи промени в цената на Bitcoin са изключени."
+    },
+    "impact": {
+      "title": "Анализ на влиянието",
+      "content": "Оценките на времето за текущия план приемат, че същата вноска продължава. Сумите за месечния план показват какво би достигнало всяка цел за 12 месеца. Това са математически сценарии, а не прогнози."
+    },
+    "percentileEstimate": {
+      "title": "Оценка на процентила за Bitcoin",
+      "content": "Конверторът за процентил изчислява колко хора биха могли да притежават поне вашата сума, ако оценяваният ефективен запас беше разпределен по този начин, след което разделя този максимум на общо население от {population} по данни от <un>UN World Population Prospects 2024</un>. Ефективният запас е {effectiveSupply} BTC: таванът на Bitcoin от {supplyCap} BTC минус консервативна оценка за загуба от {lostBitcoin} BTC по <river>River Bitcoin Custody Report 2025</river>. Не съществува официален брой изгубени монети: неактивността в блокчейна не може да докаже, че ключовете са изгубени. Сравнението с милионерите използва приблизително {millionaires} милионери в щатски долари, отчетени в <ubs>UBS Global Wealth Report 2025</ubs>. Това са средни стойности и горни граници, базирани на оскъдност, а не наблюдавани класации на притежание; адресите не са хора, притежанието е неравномерно, а доставчиците на попечителски услуги обединяват средства на клиенти."
+    },
+    "privacy": {
+      "title": "Поверителност",
+      "content": "Не се изисква акаунт. Финансовите входни данни се съхраняват само в текущата сесия на браузъра и не се запазват трайно, нито се използват за събиране на данни за портфейла."
+    },
+    "dataSource": {
+      "title": "Източник на цените",
+      "content": "Цените на BTC идват от публичното API за пазарни данни на Kraken и се кешират за 60 секунди."
+    }
+  }
+}
