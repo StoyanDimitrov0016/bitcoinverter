@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 import type { FiatCurrency } from "@/lib/calculator/calculator.schemas";
 
 const WIDTH_CLASSES = {
@@ -11,8 +13,10 @@ type NumericSkeletonProps = {
 };
 
 export function NumericSkeleton({ width = "medium" }: NumericSkeletonProps) {
+  const t = useTranslations("Common");
+
   return (
-    <span aria-label="Loading value" className="inline-flex items-center">
+    <span aria-label={t("loadingValue")} className="inline-flex items-center">
       <span
         aria-hidden="true"
         className={`${WIDTH_CLASSES[width]} inline-block h-[0.8em] animate-pulse rounded-sm bg-muted/20`}

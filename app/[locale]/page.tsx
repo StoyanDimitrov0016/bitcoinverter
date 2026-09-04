@@ -1,10 +1,13 @@
-import { CalculatorContent } from "./components/calculator/calculator-content";
-import { Methodology } from "./components/methodology/methodology";
-import { PriceHeader } from "./components/price-header";
-import { SiteFooter } from "./components/site-footer";
-import { SectionHeading } from "./components/section-heading";
-import { BitcoinPricesProvider } from "./providers/bitcoin-prices-provider";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { CalculatorContent } from "@/app/components/calculator/calculator-content";
+import { Methodology } from "@/app/components/methodology/methodology";
+import { PriceHeader } from "@/app/components/price-header";
+import { SiteFooter } from "@/app/components/site-footer";
+import { SectionHeading } from "@/app/components/section-heading";
+import { BitcoinPricesProvider } from "@/app/providers/bitcoin-prices-provider";
+
+import { requireLocale } from "@/i18n/require-locale";
 import type { BitcoinPricesResult } from "@/lib/prices/price.schemas";
 import { priceService } from "@/lib/prices/price.service";
 
@@ -17,7 +20,19 @@ async function getBitcoinPricesResult(): Promise<BitcoinPricesResult> {
   }
 }
 
-export default function Home() {
+type HomeProps = {
+  params: Promise<{ locale: string }>;
+};
+
+export default async function Home({ params }: HomeProps) {
+  const locale = requireLocale((await params).locale);
+  setRequestLocale(locale);
+
+  const [t, tLayout, tSections] = await Promise.all([
+    getTranslations("Home"),
+    getTranslations("Layout"),
+    getTranslations("Sections"),
+  ]);
   const pricesPromise = getBitcoinPricesResult();
 
   return (
@@ -27,7 +42,7 @@ export default function Home() {
           className="fixed start-2 top-2 z-[60] -translate-y-16 rounded-lg bg-accent px-4 py-2 text-accent-foreground transition-transform focus:translate-y-0"
           href="#main-content"
         >
-          Skip to main content
+          {tLayout("skipToContent")}
         </a>
         <PriceHeader />
         <main
@@ -37,11 +52,9 @@ export default function Home() {
         >
           <div className="sr-only">
             <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-              Bitcoin accumulation calculator
+              {t("heading")}
             </h1>
-            <p className="text-muted">
-              See how steady contributions compound, priced against Kraken's live BTC rate.
-            </p>
+            <p className="text-muted">{t("subheading")}</p>
           </div>
           <CalculatorContent />
           <section
@@ -49,7 +62,7 @@ export default function Home() {
             className="scroll-mt-32 space-y-3"
             id="methodology"
           >
-            <SectionHeading id="methodology-section-title" title="Methodology" />
+            <SectionHeading id="methodology-section-title" title={tSections("methodology")} />
             <Methodology />
           </section>
         </main>

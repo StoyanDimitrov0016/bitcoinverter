@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
 import { useRef } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
@@ -21,6 +22,7 @@ import {
 } from "@/lib/calculator/calculator.schemas";
 
 export function CalculatorContent() {
+  const t = useTranslations("Sections");
   const hasEditedContributionRef = useRef(false);
   const { control, formState, setValue } = useForm<
     AccumulationFormValues,
@@ -60,7 +62,7 @@ export function CalculatorContent() {
         className="scroll-mt-32 space-y-3"
         id="calculator"
       >
-        <SectionHeading id="calculator-section-title" title="Accumulation calculator" />
+        <SectionHeading id="calculator-section-title" title={t("calculator")} />
         <div className="grid gap-4 lg:grid-cols-2">
           <AccumulationForm
             control={control}
@@ -77,7 +79,7 @@ export function CalculatorContent() {
         className="scroll-mt-32 space-y-3"
         id="impact"
       >
-        <SectionHeading id="impact-section-title" title="Impact analysis" />
+        <SectionHeading id="impact-section-title" title={t("impact")} />
         <ImpactAnalysisPanel input={input} />
       </section>
 
@@ -86,7 +88,7 @@ export function CalculatorContent() {
         className="scroll-mt-32 space-y-3"
         id="converter"
       >
-        <SectionHeading id="converter-section-title" title="Bitcoin converter" />
+        <SectionHeading id="converter-section-title" title={t("converter")} />
         <BitcoinConverterPanel />
       </section>
 
@@ -95,7 +97,7 @@ export function CalculatorContent() {
         className="scroll-mt-32 space-y-3"
         id="percentile"
       >
-        <SectionHeading id="percentile-section-title" title="Bitcoin percentile" />
+        <SectionHeading id="percentile-section-title" title={t("percentile")} />
         <PercentileConverterPanel />
       </section>
     </>

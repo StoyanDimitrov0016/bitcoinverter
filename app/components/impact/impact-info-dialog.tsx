@@ -12,6 +12,7 @@ export function ImpactInfoDialog({ ariaLabel, title, children }: ImpactInfoDialo
     <Modal>
       <Modal.Trigger
         aria-label={ariaLabel}
+        tabIndex={0}
         className={buttonVariants({
           className: "inline-flex shrink-0 items-center justify-center p-0 leading-none",
           isIconOnly: true,

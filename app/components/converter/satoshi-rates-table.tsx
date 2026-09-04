@@ -1,4 +1,5 @@
 import { Card, Table } from "@heroui/react";
+import { useTranslations } from "next-intl";
 
 import { SATS_PER_BTC } from "@/lib/calculator/calculator.constants";
 import type { FiatCurrency } from "@/lib/calculator/calculator.schemas";
@@ -14,19 +15,21 @@ const SATOSHI_AMOUNTS = [
 
 export function SatoshiRatesTable() {
   const state = useCalculatorData();
+  const t = useTranslations("SatoshiRatesTable");
+  const tUnits = useTranslations("Units");
   return (
     <Card className="pb-2">
       <Card.Content>
         <Table variant="secondary">
           <Table.ScrollContainer>
-            <Table.Content aria-label="Common satoshi amounts and their live Bitcoin, USD, and euro equivalents">
+            <Table.Content aria-label={t("tableAriaLabel")}>
               <Table.Header>
                 <Table.Column isRowHeader id="satoshis">
-                  Satoshis
+                  {tUnits("satoshis")}
                 </Table.Column>
-                <Table.Column id="bitcoin">Bitcoin</Table.Column>
-                <Table.Column id="usd">USD</Table.Column>
-                <Table.Column id="euro">Euro</Table.Column>
+                <Table.Column id="bitcoin">{tUnits("bitcoin")}</Table.Column>
+                <Table.Column id="usd">{tUnits("usd")}</Table.Column>
+                <Table.Column id="euro">{tUnits("euro")}</Table.Column>
               </Table.Header>
               <Table.Body>
                 {SATOSHI_AMOUNTS.map((satoshis) => {

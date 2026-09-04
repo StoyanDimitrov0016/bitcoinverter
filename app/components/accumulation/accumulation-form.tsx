@@ -1,4 +1,5 @@
 import { Card, Form } from "@heroui/react";
+import { useTranslations } from "next-intl";
 import { Controller, type Control, type FieldErrors, useWatch } from "react-hook-form";
 
 import { getAmountStep } from "@/lib/calculator/calculator.calculations";
@@ -25,23 +26,22 @@ export function AccumulationForm({
   onContributionEdit,
   onContributionUnitChange,
 }: AccumulationFormProps) {
+  const t = useTranslations("AccumulationForm");
+  const tValueField = useTranslations("ValueField");
   const holdingUnit = useWatch({ control, name: "holdingUnit" });
   const contributionUnit = useWatch({ control, name: "contributionUnit" });
   return (
     <Card className="py-3">
       <Card.Content className="h-full">
-        <Form
-          aria-label="Bitcoin accumulation inputs"
-          className="flex h-full flex-col justify-center gap-5"
-        >
+        <Form aria-label={t("ariaLabel")} className="flex h-full flex-col justify-center gap-5">
           <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3">
             <Controller
               control={control}
               name="holding"
               render={({ field }) => (
                 <ValueField
-                  error={errors.holding?.message}
-                  label="Current holdings"
+                  error={errors.holding ? tValueField("invalidAmount") : undefined}
+                  label={t("currentHoldings")}
                   step={getAmountStep(holdingUnit)}
                   value={field.value}
                   onBlur={field.onBlur}
@@ -55,7 +55,7 @@ export function AccumulationForm({
               render={({ field }) => (
                 <UnitPicker
                   isLabelHidden
-                  label="Current holdings unit"
+                  label={t("currentHoldingsUnit")}
                   value={field.value}
                   values={HOLDING_UNITS}
                   onChange={field.onChange}
@@ -69,8 +69,8 @@ export function AccumulationForm({
               name="contribution"
               render={({ field }) => (
                 <ValueField
-                  error={errors.contribution?.message}
-                  label="Monthly contribution"
+                  error={errors.contribution ? tValueField("invalidAmount") : undefined}
+                  label={t("monthlyContribution")}
                   step={getAmountStep(contributionUnit)}
                   value={field.value}
                   onBlur={field.onBlur}
@@ -87,7 +87,7 @@ export function AccumulationForm({
               render={({ field }) => (
                 <UnitPicker
                   isLabelHidden
-                  label="Monthly contribution unit"
+                  label={t("monthlyContributionUnit")}
                   value={field.value}
                   values={HOLDING_UNITS}
                   onChange={onContributionUnitChange}

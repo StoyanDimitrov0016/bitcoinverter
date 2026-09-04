@@ -1,0 +1,219 @@
+{
+  "Metadata": {
+    "title": "BitCoinverter | Bitcoin Accumulation Calculator",
+    "description": "A privacy-friendly Bitcoin calculator for exploring accumulation, portfolio impact, and fiat-to-BTC conversions with live Kraken prices."
+  },
+  "Layout": {
+    "skipToContent": "Skip to main content"
+  },
+  "NotFound": {
+    "title": "Page not found",
+    "description": "The page you're looking for doesn't exist or has moved.",
+    "backHome": "Back to BitCoinverter"
+  },
+  "ErrorBoundary": {
+    "title": "Something went wrong",
+    "description": "An unexpected error occurred. You can try again.",
+    "retry": "Try again"
+  },
+  "Common": {
+    "unavailable": "Unavailable",
+    "loadingValue": "Loading value",
+    "unit": "Unit",
+    "topPercent": "Top {percent}"
+  },
+  "Home": {
+    "heading": "Bitcoin accumulation calculator",
+    "subheading": "See how steady contributions compound, priced against Kraken's live BTC rate."
+  },
+  "Navigation": {
+    "ariaLabel": "Primary navigation",
+    "calculator": "Calculator",
+    "impact": "Impact",
+    "converter": "Converter",
+    "percentile": "Percentile",
+    "methodology": "Methodology"
+  },
+  "Sections": {
+    "calculator": "Accumulation calculator",
+    "impact": "Impact analysis",
+    "converter": "Bitcoin converter",
+    "percentile": "Bitcoin percentile",
+    "methodology": "Methodology"
+  },
+  "SiteHeader": {
+    "githubAriaLabel": "View BitCoinverter on GitHub (opens in a new tab)",
+    "krakenUnavailable": "Kraken unavailable",
+    "retryAriaLabel": "Retry loading the Kraken price",
+    "retryLabel": "Retry price",
+    "livePricesAnnouncement": "Current Kraken Bitcoin prices: {eur} and {usd}"
+  },
+  "ThemeToggle": {
+    "switchToLight": "Switch to light theme",
+    "switchToDark": "Switch to dark theme"
+  },
+  "LocaleSwitcher": {
+    "label": "Language",
+    "locale": "{locale, select, en {English} bg {Bulgarian} other {Unknown}}"
+  },
+  "SiteFooter": {
+    "tagline": "Bitcoin is the second most limited asset. The first one is your life.",
+    "badge": "No login, no storage, open source",
+    "disclaimerStrong": "A quantity calculator, not financial advice.",
+    "disclaimer": "Results describe a simplified accumulation scenario and do not forecast prices, estimate returns, or recommend buying Bitcoin."
+  },
+  "AccumulationForm": {
+    "ariaLabel": "Bitcoin accumulation inputs",
+    "currentHoldings": "Current holdings",
+    "currentHoldingsUnit": "Current holdings unit",
+    "monthlyContribution": "Monthly contribution",
+    "monthlyContributionUnit": "Monthly contribution unit"
+  },
+  "ValueField": {
+    "decrease": "Decrease {label}",
+    "increase": "Increase {label}",
+    "invalidAmount": "Enter non-negative number"
+  },
+  "Units": {
+    "satoshis": "Satoshis",
+    "bitcoin": "Bitcoin",
+    "usd": "USD",
+    "euro": "Euro"
+  },
+  "Converter": {
+    "formAriaLabel": "Bitcoin conversion input",
+    "amountLabel": "Amount to convert"
+  },
+  "SatoshiRatesTable": {
+    "tableAriaLabel": "Common satoshi amounts and their live Bitcoin, USD, and euro equivalents"
+  },
+  "PercentileConverter": {
+    "formAriaLabel": "Bitcoin global percentile input",
+    "amountLabel": "Amount to compare",
+    "resultLabel": "Your estimated global percentile",
+    "topOfPeople": "Top {percent} of people",
+    "infoAriaLabel": "Explain the Bitcoin percentile estimate",
+    "infoTitle": "How this percentile is estimated",
+    "explanation1": "This estimates the maximum number of people who could each hold at least your amount, then compares that number with a global population of {population}.",
+    "explanation2": "Lost coins cannot be identified with certainty on-chain. Dormant coins may still be controlled, so this is an assumption—not an official count.",
+    "explanation3": "This is a scarcity-based upper bound, not an observed wealth ranking. Real ownership is uneven, addresses are not people, and custodians pool funds for many customers.",
+    "sources": "Source: <river>River Bitcoin Custody Report 2025</river>, <un>UN World Population Prospects 2024</un>, and <ubs>UBS Global Wealth Report 2025</ubs>.",
+    "globalPopulation": "Global population (UN, 2024)",
+    "averagePerPerson": "Average per person",
+    "usdMillionaires": "USD millionaires (UBS report, 2025)",
+    "averagePerMillionaire": "Average per millionaire",
+    "benchmarksAriaLabel": "Bitcoin required for selected scarcity-based global percentiles",
+    "globalPercentileColumn": "Global percentile",
+    "totalPeopleColumn": "Total people"
+  },
+  "GrowthMetric": {
+    "btcAmount": "BTC amount",
+    "percentageIncrease": "Percentage increase"
+  },
+  "ImpactBands": {
+    "negligible": { "label": "Negligible Impact", "shortLabel": "Negligible" },
+    "low": { "label": "Low Impact", "shortLabel": "Low" },
+    "moderate": { "label": "Moderate Impact", "shortLabel": "Moderate" },
+    "meaningful": { "label": "Meaningful Impact", "shortLabel": "Meaningful" },
+    "high": { "label": "High Impact", "shortLabel": "High" },
+    "extreme": { "label": "Extreme Impact", "shortLabel": "Extreme" }
+  },
+  "ImpactRange": {
+    "orMore": "{minimum}% or more",
+    "under": "Under {maximum}%",
+    "between": "{minimum}% to under {maximum}%"
+  },
+  "HoldingAtCurrentPrice": {
+    "equivalent": ", equivalent to <strong>{btc} BTC</strong> at today's price"
+  },
+  "HoldingScarcityBadge": {
+    "title": "Theoretical global scarcity ceiling, not an owner or wallet ranking",
+    "inOneYear": "{percent} in 1y",
+    "loadingAriaLabel": "Loading scarcity estimate"
+  },
+  "ImpactAnalysisPanel": {
+    "mobileViewAriaLabel": "Impact analysis view",
+    "btcChart": "BTC chart",
+    "percentageChart": "Percentage chart",
+    "targets": "Targets",
+    "growthTargetsAriaLabel": "Growth targets",
+    "growthChartAriaLabel": "Growth chart",
+    "chartMetricAriaLabel": "Impact chart metric",
+    "btcHoldingsOverTime": "Total BTC holdings over time",
+    "totalBtcHoldings": "Total BTC holdings",
+    "percentIncreaseOverTime": "Percentage increase in BTC holdings over time",
+    "increaseInHoldings": "Increase in holdings (%)",
+    "years": "Years",
+    "months": "Months",
+    "yearAbbreviation": "y",
+    "monthAbbreviation": "mo",
+    "chartAxesAriaLabel": "{ariaLabel}. Horizontal axis: {xLabel}. Vertical axis: {yLabel}.",
+    "targetPlanViewAriaLabel": "Target plan view",
+    "currentPlan": "Current plan",
+    "monthlyPlan": "Monthly plan",
+    "perMonth": "{value}/mo",
+    "moreBtc": "+{target}%",
+    "btcNeeded": "{value} BTC needed",
+    "totalNeeded": "{value} total",
+    "addsInTwelveMonths": "Adds {value} BTC in 12 months at today's price.",
+    "moreBtcRow": "{target}% more BTC",
+    "monthsWord": "months",
+    "infoAriaLabel": "Explain the impact analysis calculations",
+    "infoTitle": "How the impact analysis is calculated",
+    "explanationEmpty": "Enter valid amounts and wait for the live BTC price to see a personalized timeline.",
+    "explanationHoldings": "The analysis uses today's Kraken price for every purchase. You currently hold <holding>your current holdings</holding>.",
+    "explanationCharts": "The BTC chart shows total holdings; the percentage chart shows growth relative to your current holdings. Both charts stop at the +100% target.",
+    "explanationPlans": "Current plan shows how long <strong>{contribution}</strong> monthly contributions take to reach each target. The +100% target takes <strong>{horizon}</strong>. Monthly plan instead shows the amount needed to reach each target within 12 months.",
+    "zeroCurrentHoldings": "The analysis needs current BTC holdings above zero.",
+    "zeroContribution": "The analysis needs a monthly contribution above zero."
+  },
+  "ImpactSummary": {
+    "title": "What one year of contributions adds",
+    "atTodaysPrice": "at today's price",
+    "infoAriaLabel": "Explain the one-year accumulation result",
+    "infoTitle": "How this result is calculated",
+    "explanationEmpty": "Enter valid amounts and wait for the live BTC price to see a personalized example.",
+    "explanationHoldings": "You currently hold <holding>your current holdings</holding>.",
+    "explanationContributions": "At today's Kraken price, 12 monthly contributions of <strong>{contribution}</strong> add <strong>{added} BTC</strong>.",
+    "relativeUnavailable": "A relative percentage needs current BTC holdings above zero. The same price is used for each monthly purchase: {prices}.",
+    "relativeAvailable": "That is a <strong>{percent} increase</strong> in your current BTC holdings. The same price is used for each purchase: {prices}.",
+    "scarcityExplanation": "The scarcity badge compares your holdings with the BTC available per person worldwide. It is a theoretical ceiling, not a wallet ranking.",
+    "bandGuideDescription": "<strong>Impact percentage</strong> is the BTC added over 12 months divided by your current BTC holdings, multiplied by 100.",
+    "bitcoinAdded": "Bitcoin added",
+    "netIncrease": "Net increase",
+    "impactScale": "Impact scale",
+    "impactUnavailable": "Impact unavailable",
+    "impactLevelAriaLabel": "Accumulation impact level",
+    "loadingImpactStatusAriaLabel": "Loading impact status"
+  },
+  "Methodology": {
+    "calculation": {
+      "title": "How this works",
+      "content": "Your holding and monthly contribution are converted to BTC at today's Kraken price. The monthly BTC amount is multiplied by 12 and compared with your current holdings."
+    },
+    "percentage": {
+      "title": "What net increase means",
+      "content": "Net increase is the additional BTC from 12 equal monthly contributions, shown as a percentage of your current holdings. It measures BTC quantity, not portfolio value or investment return."
+    },
+    "assumptions": {
+      "title": "Assumptions",
+      "content": "The current price stays fixed for every purchase. Contribution amounts remain equal. Fees, spreads, taxes, inflation, and future Bitcoin price changes are excluded."
+    },
+    "impact": {
+      "title": "Impact analysis",
+      "content": "Current-plan time estimates assume the same contribution continues. Monthly-plan amounts show what would reach each target in 12 months. These are mathematical scenarios, not predictions."
+    },
+    "percentileEstimate": {
+      "title": "Bitcoin percentile estimate",
+      "content": "The percentile converter calculates how many people could each hold at least your amount if the estimated effective supply were distributed that way, then divides that maximum by a {population} global population from the <un>UN World Population Prospects 2024</un>. The effective supply is {effectiveSupply} BTC: Bitcoin's {supplyCap} BTC cap minus a conservative {lostBitcoin} BTC loss estimate from the <river>River Bitcoin Custody Report 2025</river>. No official lost-coin count exists: on-chain inactivity cannot prove that keys are lost. The millionaire comparison uses approximately {millionaires} USD millionaires reported in the <ubs>UBS Global Wealth Report 2025</ubs>. These are scarcity-based averages and upper bounds, not observed ownership rankings; addresses are not people, ownership is uneven, and custodians pool customer funds."
+    },
+    "privacy": {
+      "title": "Privacy",
+      "content": "No account is required. Financial inputs are kept only in the current browser session and are not persisted or used to collect portfolio metrics."
+    },
+    "dataSource": {
+      "title": "Price data",
+      "content": "BTC prices come from Kraken's public market-data API and are cached for 60 seconds."
+    }
+  }
+}

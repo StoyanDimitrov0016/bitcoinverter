@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, Form, Table } from "@heroui/react";
+import { useTranslations } from "next-intl";
 import { Controller, useForm, useWatch } from "react-hook-form";
 
 import {
@@ -23,9 +24,6 @@ import {
 import {
   EFFECTIVE_BITCOIN_SUPPLY,
   PERCENTILE_TARGETS,
-  RIVER_CUSTODY_REPORT_URL,
-  UN_POPULATION_REPORT_URL,
-  UBS_WEALTH_REPORT_URL,
   USD_MILLIONAIRES,
   WORLD_POPULATION,
 } from "@/lib/percentile/percentile.constants";
@@ -33,11 +31,15 @@ import { useCalculatorData, type CalculatorData } from "../calculator/calculator
 import { ImpactInfoDialog } from "../impact/impact-info-dialog";
 import { ConverterBitcoinSymbol } from "../shared/currency-symbol";
 import { FiatSkeleton, NumericSkeleton } from "../shared/numeric-skeleton";
+import { riverReportLink, unReportLink, ubsReportLink } from "../shared/report-links";
 import { UnavailableValue } from "../shared/unavailable-value";
 import { UnitPicker } from "../shared/unit-picker";
 import { ValueField } from "../shared/value-field";
 
 export function PercentileConverter() {
+  const t = useTranslations("PercentileConverter");
+  const tCommon = useTranslations("Common");
+  const tValueField = useTranslations("ValueField");
   const state = useCalculatorData();
   const { control, formState } = useForm<ConverterFormValues, unknown, ConverterInput>({
     resolver: zodResolver(ConverterSchema),
@@ -52,7 +54,7 @@ export function PercentileConverter() {
       <Card className="py-2">
         <Card.Content className="grid items-center gap-8 lg:grid-cols-[0.7fr_1.3fr]">
           <Form
-            aria-label="Bitcoin global percentile input"
+            aria-label={t("formAriaLabel")}
             className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3"
           >
             <Controller
@@ -61,8 +63,8 @@ export function PercentileConverter() {
               render={({ field }) => (
                 <div className="[&_.label]:sr-only">
                   <ValueField
-                    error={formState.errors.value?.message}
-                    label="Amount to compare"
+                    error={formState.errors.value ? tValueField("invalidAmount") : undefined}
+                    label={t("amountLabel")}
                     step={getAmountStep(formValue.unit ?? "BTC")}
                     value={field.value}
                     onBlur={field.onBlur}
@@ -77,7 +79,7 @@ export function PercentileConverter() {
               render={({ field }) => (
                 <UnitPicker
                   isLabelHidden
-                  label="Unit"
+                  label={tCommon("unit")}
                   value={field.value}
                   values={CONVERTER_UNITS}
                   onChange={field.onChange}
@@ -100,52 +102,19 @@ type PercentileResultProps = {
 };
 
 function PercentileResult({ input, state }: PercentileResultProps) {
+  const t = useTranslations("PercentileConverter");
+
   const info = (
-    <ImpactInfoDialog
-      ariaLabel="Explain the Bitcoin percentile estimate"
-      title="How this percentile is estimated"
-    >
+    <ImpactInfoDialog ariaLabel={t("infoAriaLabel")} title={t("infoTitle")}>
+      <p>{t("explanation1", { population: formatInteger(WORLD_POPULATION) })}</p>
+      <p>{t("explanation2")}</p>
+      <p>{t("explanation3")}</p>
       <p>
-        This estimates the maximum number of people who could each hold at least your amount, then
-        compares that number with a global population of {formatInteger(WORLD_POPULATION)}.
-      </p>
-      <p>
-        Lost coins cannot be identified with certainty on-chain. Dormant coins may still be
-        controlled, so this is an assumption—not an official count.
-      </p>
-      <p>
-        This is a scarcity-based upper bound, not an observed wealth ranking. Real ownership is
-        uneven, addresses are not people, and custodians pool funds for many customers.
-      </p>
-      <p>
-        Source:{" "}
-        <a
-          className="underline underline-offset-2"
-          href={RIVER_CUSTODY_REPORT_URL}
-          rel="noreferrer"
-          target="_blank"
-        >
-          River Bitcoin Custody Report 2025
-        </a>
-        ,{" "}
-        <a
-          className="underline underline-offset-2"
-          href={UN_POPULATION_REPORT_URL}
-          rel="noreferrer"
-          target="_blank"
-        >
-          UN World Population Prospects 2024
-        </a>
-        , and{" "}
-        <a
-          className="underline underline-offset-2"
-          href={UBS_WEALTH_REPORT_URL}
-          rel="noreferrer"
-          target="_blank"
-        >
-          UBS Global Wealth Report 2025
-        </a>
-        .
+        {t.rich("sources", {
+          river: riverReportLink,
+          un: unReportLink,
+          ubs: ubsReportLink,
+        })}
       </p>
     </ImpactInfoDialog>
   );
@@ -161,7 +130,10 @@ function PercentileResult({ input, state }: PercentileResultProps) {
   const result = calculateGlobalPercentile(convertToBitcoin(input, state.prices));
 
   return (
-    <ResultShell info={info} primary={`Top ${formatPercent(result.topPercentile)} of people`} />
+    <ResultShell
+      info={info}
+      primary={t("topOfPeople", { percent: formatPercent(result.topPercentile) })}
+    />
   );
 }
 
@@ -171,10 +143,12 @@ type ResultShellProps = {
 };
 
 function ResultShell({ info, primary }: ResultShellProps) {
+  const t = useTranslations("PercentileConverter");
+
   return (
     <div className="rounded-xl bg-surface-secondary p-4">
       <div className="flex items-center gap-1">
-        <p className="text-sm text-muted">Your estimated global percentile</p>
+        <p className="text-sm text-muted">{t("resultLabel")}</p>
         {info}
       </div>
       <p className="mt-1 font-mono text-xl font-semibold break-all text-foreground tabular-nums">
@@ -185,10 +159,12 @@ function ResultShell({ info, primary }: ResultShellProps) {
 }
 
 function ScarcityStats() {
+  const t = useTranslations("PercentileConverter");
+
   const stats = [
-    { label: "Global population (UN, 2024)", value: formatInteger(WORLD_POPULATION) },
+    { label: t("globalPopulation"), value: formatInteger(WORLD_POPULATION) },
     {
-      label: "Average per person",
+      label: t("averagePerPerson"),
       value: (
         <>
           <ConverterBitcoinSymbol />
@@ -197,11 +173,11 @@ function ScarcityStats() {
       ),
     },
     {
-      label: "USD millionaires (UBS report, 2025)",
+      label: t("usdMillionaires"),
       value: `~${formatInteger(USD_MILLIONAIRES)}`,
     },
     {
-      label: "Average per millionaire",
+      label: t("averagePerMillionaire"),
       value: (
         <>
           <ConverterBitcoinSymbol />
@@ -234,20 +210,24 @@ type PercentileBenchmarksProps = {
 };
 
 function PercentileBenchmarks({ state }: PercentileBenchmarksProps) {
+  const t = useTranslations("PercentileConverter");
+  const tCommon = useTranslations("Common");
+  const tUnits = useTranslations("Units");
+
   return (
     <Card className="pb-2">
       <Card.Content>
         <Table variant="secondary">
           <Table.ScrollContainer>
-            <Table.Content aria-label="Bitcoin required for selected scarcity-based global percentiles">
+            <Table.Content aria-label={t("benchmarksAriaLabel")}>
               <Table.Header>
                 <Table.Column isRowHeader id="percentile">
-                  Global percentile
+                  {t("globalPercentileColumn")}
                 </Table.Column>
-                <Table.Column id="bitcoin">Bitcoin</Table.Column>
-                <Table.Column id="usd">USD</Table.Column>
-                <Table.Column id="euro">Euro</Table.Column>
-                <Table.Column id="people">Total people</Table.Column>
+                <Table.Column id="bitcoin">{tUnits("bitcoin")}</Table.Column>
+                <Table.Column id="usd">{tUnits("usd")}</Table.Column>
+                <Table.Column id="euro">{tUnits("euro")}</Table.Column>
+                <Table.Column id="people">{t("totalPeopleColumn")}</Table.Column>
               </Table.Header>
               <Table.Body>
                 {PERCENTILE_TARGETS.map((percent) => {
@@ -255,7 +235,7 @@ function PercentileBenchmarks({ state }: PercentileBenchmarksProps) {
                   return (
                     <Table.Row key={percent} id={String(percent)}>
                       <Table.Cell className="font-mono tabular-nums">
-                        Top {formatPercent(percent)}
+                        {tCommon("topPercent", { percent: formatPercent(percent) })}
                       </Table.Cell>
                       <Table.Cell className="font-mono tabular-nums">
                         <span className="flex items-center gap-0.5">
