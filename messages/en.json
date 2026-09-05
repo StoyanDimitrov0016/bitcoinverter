@@ -151,11 +151,14 @@
     "targetPlanViewAriaLabel": "Target plan view",
     "currentPlan": "Current plan",
     "monthlyPlan": "Monthly plan",
+    "priceLevels": "Price levels",
     "perMonth": "{value}/mo",
     "moreBtc": "+{target}%",
     "btcNeeded": "{value} BTC needed",
     "totalNeeded": "{value} total",
     "addsInTwelveMonths": "Adds {value} BTC in 12 months at today's price.",
+    "priceLevelInTwelveMonths": "At this BTC price, 12 months of contributions add {value} BTC.",
+    "priceLevelsRequireFiat": "Available when the monthly contribution is entered in EUR or USD.",
     "moreBtcRow": "{target}% more BTC",
     "monthsWord": "months",
     "infoAriaLabel": "Explain the impact analysis calculations",
@@ -164,6 +167,8 @@
     "explanationHoldings": "The analysis uses today's Kraken price for every purchase. You currently hold <holding>your current holdings</holding>.",
     "explanationCharts": "The BTC chart shows total holdings; the percentage chart shows growth relative to your current holdings. Both charts stop at the +100% target.",
     "explanationPlans": "Current plan shows how long <strong>{contribution}</strong> monthly contributions take to reach each target. The +100% target takes <strong>{horizon}</strong>. Monthly plan instead shows the amount needed to reach each target within 12 months.",
+    "explanationPriceLevels": "Price levels shows the BTC price at which 12 months of the same fiat contribution would reach each target. These are mathematical scenarios, not forecasts.",
+    "explanationPriceLevelsUnavailable": "Price levels is unavailable for BTC-denominated contributions because the BTC amount does not change with price.",
     "zeroCurrentHoldings": "The analysis needs current BTC holdings above zero.",
     "zeroContribution": "The analysis needs a monthly contribution above zero."
   },
@@ -201,7 +206,7 @@
     },
     "impact": {
       "title": "Impact analysis",
-      "content": "Current-plan time estimates assume the same contribution continues. Monthly-plan amounts show what would reach each target in 12 months. These are mathematical scenarios, not predictions."
+      "content": "Current-plan time estimates assume the same contribution continues. Monthly-plan amounts show what would reach each target in 12 months. Price levels show the BTC price where the same fiat contribution would reach each target in 12 months. These are mathematical scenarios, not predictions."
     },
     "percentileEstimate": {
       "title": "Bitcoin percentile estimate",

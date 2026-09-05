@@ -7,10 +7,11 @@ import { TbPercentage, TbTable } from "react-icons/tb";
 
 import { MONTHS_PER_YEAR } from "@/lib/calculator/calculator.constants";
 import type { AccumulationInput } from "@/lib/calculator/calculator.schemas";
-import { getImpactHorizonData } from "@/lib/impact/impact.calculations";
+import { getImpactHorizonData, getPriceImpactLevel } from "@/lib/impact/impact.calculations";
 import { IMPACT_TARGETS, type GrowthMetric } from "@/lib/impact/impact.constants";
 import {
   formatAccumulationAmount,
+  formatFiat,
   formatImpactHorizon,
   formatInteger,
   formatNumber,
@@ -28,7 +29,7 @@ import { ImpactChart } from "./impact-chart";
 import { ImpactInfoDialog } from "./impact-info-dialog";
 
 type PlannerView = "chart" | "targets";
-type TargetTableView = "expected" | "required";
+type TargetTableView = "expected" | "required" | "price";
 
 function useGrowthMetricConfig() {
   const t = useTranslations("ImpactAnalysisPanel");
@@ -266,6 +267,7 @@ function useTargetTableViews() {
   return [
     { id: "expected", label: t("currentPlan") },
     { id: "required", label: t("monthlyPlan") },
+    { id: "price", label: t("priceLevels") },
   ] as const;
 }
 
@@ -325,11 +327,53 @@ function ImpactTargetList({ data, state, tableView, onTableViewChange }: ImpactT
           const totalNeeded = getTotalNeeded(btcNeeded, input, state);
           const monthlyNeeded = totalNeeded / MONTHS_PER_YEAR;
 
-          let targetValue = formatImpactHorizon(months, compactTimeUnits);
+          let targetValue: React.ReactNode = formatImpactHorizon(months, compactTimeUnits);
           if (tableView === "required") {
             targetValue = t("perMonth", {
               value: formatAccumulationAmount(monthlyNeeded, input.contributionUnit),
             });
+          } else if (tableView === "price") {
+            if (input.contributionUnit === "BTC") {
+              targetValue = <UnavailableValue />;
+            } else {
+              const priceLevel = getPriceImpactLevel(
+                input.contribution,
+                results.currentBtc,
+                target
+              );
+              targetValue =
+                priceLevel === null ? (
+                  <UnavailableValue />
+                ) : (
+                  formatFiat(priceLevel, input.contributionUnit)
+                );
+            }
+          }
+
+          let targetDescription: React.ReactNode = (
+            <div className="mt-1 flex flex-wrap justify-between gap-x-3 text-xs text-muted">
+              <span>{t("btcNeeded", { value: formatNumber(btcNeeded) })}</span>
+              <span>
+                {t("totalNeeded", {
+                  value: formatAccumulationAmount(totalNeeded, input.contributionUnit),
+                })}
+              </span>
+            </div>
+          );
+          if (tableView === "required") {
+            targetDescription = (
+              <p className="mt-1 line-clamp-2 text-xs text-muted">
+                {t("addsInTwelveMonths", { value: formatNumber(btcNeeded) })}
+              </p>
+            );
+          } else if (tableView === "price") {
+            targetDescription = (
+              <p className="mt-1 line-clamp-2 text-xs text-muted">
+                {input.contributionUnit === "BTC"
+                  ? t("priceLevelsRequireFiat")
+                  : t("priceLevelInTwelveMonths", { value: formatNumber(btcNeeded) })}
+              </p>
+            );
           }
 
           return (
@@ -340,20 +384,7 @@ function ImpactTargetList({ data, state, tableView, onTableViewChange }: ImpactT
                   {targetValue}
                 </dd>
               </div>
-              {tableView === "expected" ? (
-                <div className="mt-1 flex flex-wrap justify-between gap-x-3 text-xs text-muted">
-                  <span>{t("btcNeeded", { value: formatNumber(btcNeeded) })}</span>
-                  <span>
-                    {t("totalNeeded", {
-                      value: formatAccumulationAmount(totalNeeded, input.contributionUnit),
-                    })}
-                  </span>
-                </div>
-              ) : (
-                <p className="mt-1 line-clamp-2 text-xs text-muted">
-                  {t("addsInTwelveMonths", { value: formatNumber(btcNeeded) })}
-                </p>
-              )}
+              {targetDescription}
             </div>
           );
         })}
@@ -451,6 +482,13 @@ function ImpactHorizonExplanation({ state }: ImpactHorizonExplanationProps) {
           horizon: formatImpactHorizon(data.hundredPercentMonths, compactTimeUnits),
           strong: renderStrong,
         })}
+      </p>
+      <p>
+        {t(
+          input.contributionUnit === "BTC"
+            ? "explanationPriceLevelsUnavailable"
+            : "explanationPriceLevels"
+        )}
       </p>
     </>
   );
