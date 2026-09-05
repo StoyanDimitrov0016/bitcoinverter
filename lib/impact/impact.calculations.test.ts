@@ -2,7 +2,11 @@ import { describe, expect, it } from "vitest";
 
 import { EFFECTIVE_BITCOIN_SUPPLY, WORLD_POPULATION } from "../bitcoin.constants";
 import type { AccumulationResults } from "../calculator/calculator.types";
-import { getGlobalScarcityPercent, getImpactHorizonData } from "./impact.calculations";
+import {
+  getGlobalScarcityPercent,
+  getImpactHorizonData,
+  getPriceImpactLevel,
+} from "./impact.calculations";
 import { IMPACT_TARGETS } from "./impact.constants";
 
 const RESULTS: AccumulationResults = {
@@ -75,5 +79,16 @@ describe("impact chart data", () => {
     }
     expect(data.hundredPercentMonths).toBe(7);
     expect(data.chartData.at(-1)).toEqual({ x: 7, y: 100 });
+  });
+});
+
+describe("price impact levels", () => {
+  it("calculates the BTC price where a year of contributions reaches each target", () => {
+    expect(getPriceImpactLevel(500, 0.5, 100)).toBe(12_000);
+    expect(getPriceImpactLevel(500, 0.5, 10)).toBe(120_000);
+  });
+
+  it("is unavailable without current BTC holdings", () => {
+    expect(getPriceImpactLevel(500, 0, 100)).toBeNull();
   });
 });

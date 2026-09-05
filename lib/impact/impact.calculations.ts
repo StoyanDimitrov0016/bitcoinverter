@@ -93,6 +93,19 @@ export function getImpactHorizonData(
   return { status: "available", rows, chartData, hundredPercentMonths };
 }
 
+export function getPriceImpactLevel(
+  monthlyContribution: number,
+  currentBtc: number,
+  target: ImpactTarget
+) {
+  if (currentBtc <= 0) {
+    return null;
+  }
+
+  const targetBtc = (currentBtc * target) / 100;
+  return (monthlyContribution * MONTHS_PER_YEAR) / targetBtc;
+}
+
 function getStartingValue(results: AccumulationResults, metric: GrowthMetric) {
   if (metric === "btc") {
     return results.currentBtc;
